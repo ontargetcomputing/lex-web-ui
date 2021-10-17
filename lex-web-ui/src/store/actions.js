@@ -789,6 +789,7 @@ export default {
   },
 
   initLiveChatSession(context) {
+    console.info('************ RDB - actions.initLiveChatSession');
     console.info('initLiveChat');
     console.info('config connect', context.state.config.connect);
     if (!context.state.config.ui.enableLiveChat) {
@@ -807,7 +808,7 @@ export default {
       console.error('error in initLiveChatSession() instanceId is not set in config');
       return Promise.reject(new Error('error in initLiveChatSession() instanceId is not set in config'));
     }
-
+    console.info('*****************setLiveChatStatus');
     context.commit('setLiveChatStatus', liveChatStatus.INITIALIZING);
 
     const initiateChatRequest = {
@@ -882,6 +883,7 @@ export default {
   },
 
   requestLiveChat(context) {
+    console.info('*********RDB - action.requestLiveChat')
     console.info('requestLiveChat');
     if (!context.getters.liveChatUserName()) {
       context.commit('setLiveChatStatus', liveChatStatus.REQUEST_USERNAME);
