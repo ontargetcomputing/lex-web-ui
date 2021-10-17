@@ -26,6 +26,7 @@ import silentOgg from '@/assets/silent.ogg';
 import silentMp3 from '@/assets/silent.mp3';
 
 import LexClient from '@/lib/lex/client';
+import axios from 'axios';
 
 const jwt = require('jsonwebtoken');
 const AWS = require('aws-sdk');
@@ -777,15 +778,16 @@ export default {
    *
    **********************************************************************/
   initLiveChat(context) {
-    require('amazon-connect-chatjs');
-    if (window.connect) {
-      window.connect.ChatSession.setGlobalConfig({
-        region: context.state.config.region,
-      });
-      return Promise.resolve();
-    } else {
-      return Promise.reject(new Error('failed to find Connect Chat JS global variable'));
-    }
+    console.info('***** RDB actions.initLiveChat does nothing');
+    // require('amazon-connect-chatjs');
+    // if (window.connect) {
+    //   window.connect.ChatSession.setGlobalConfig({
+    //     region: context.state.config.region,
+    //   });
+    //   return Promise.resolve();
+    // } else {
+    //   return Promise.reject(new Error('failed to find Connect Chat JS global variable'));
+    // }
   },
 
   initLiveChatSession(context) {
@@ -796,96 +798,96 @@ export default {
       console.error('error in initLiveChatSession() enableLiveChat is not true in config');
       return Promise.reject(new Error('error in initLiveChatSession() enableLiveChat is not true in config'));
     }
-    if (!context.state.config.connect.apiGatewayEndpoint) {
-      console.error('error in initLiveChatSession() apiGatewayEndpoint is not set in config');
-      return Promise.reject(new Error('error in initLiveChatSession() apiGatewayEndpoint is not set in config'));
+    if (!context.state.config.live_agent.endpoint) {
+      console.error('error in initLiveChatSession() endpoint is not set in config');
+      return Promise.reject(new Error('error in initLiveChatSession() endpoint is not set in config'));
     }
-    if (!context.state.config.connect.contactFlowId) {
-      console.error('error in initLiveChatSession() contactFlowId is not set in config');
-      return Promise.reject(new Error('error in initLiveChatSession() contactFlowId is not set in config'));
-    }
-    if (!context.state.config.connect.instanceId) {
-      console.error('error in initLiveChatSession() instanceId is not set in config');
-      return Promise.reject(new Error('error in initLiveChatSession() instanceId is not set in config'));
-    }
+
+    // if (!context.state.config.live_agent.apiGatewayEndpoint) {
+    //   console.error('error in initLiveChatSession() apiGatewayEndpoint is not set in config');
+    //   return Promise.reject(new Error('error in initLiveChatSession() apiGatewayEndpoint is not set in config'));
+    // }
+    // if (!context.state.config.connect.contactFlowId) {
+    //   console.error('error in initLiveChatSession() contactFlowId is not set in config');
+    //   return Promise.reject(new Error('error in initLiveChatSession() contactFlowId is not set in config'));
+    // }
+    // if (!context.state.config.connect.instanceId) {
+    //   console.error('error in initLiveChatSession() instanceId is not set in config');
+    //   return Promise.reject(new Error('error in initLiveChatSession() instanceId is not set in config'));
+    // }
     console.info('*****************setLiveChatStatus');
     context.commit('setLiveChatStatus', liveChatStatus.INITIALIZING);
 
-    const initiateChatRequest = {
-      ParticipantDetails: {
-        DisplayName: context.getters.liveChatUserName(),
-      },
-      ContactFlowId: context.state.config.connect.contactFlowId,
-      InstanceId: context.state.config.connect.instanceId,
+    const agentWaitConfig = {
+      method: 'post',
+      url: `${context.state.config.live_agent.endpoint}/agentWaitTime`,
     };
 
-    const uri = new URL(context.state.config.connect.apiGatewayEndpoint);
-    const endpoint = new AWS.Endpoint(uri.hostname);
-    const req = new AWS.HttpRequest(endpoint, context.state.config.region);
-    req.method = 'POST';
-    req.path = uri.pathname;
-    req.headers['Content-Type'] = 'application/json';
-    req.body = JSON.stringify(initiateChatRequest);
-    req.headers.Host = endpoint.host;
-    req.headers['Content-Length'] = Buffer.byteLength(req.body);
-
-    const signer = new AWS.Signers.V4(req, 'execute-api');
-    signer.addAuthorization(awsCredentials, new Date());
-
-    const reqInit = {
-      method: 'POST',
-      mode: 'cors',
-      headers: req.headers,
-      body: req.body,
-    };
-
-    return fetch(
-      context.state.config.connect.apiGatewayEndpoint,
-      reqInit)
-    .then(response => response.json())
-    .then(json => json.data)
-    .then((result) => {
-      console.info('Live Chat Config Success:', result);
-      context.commit('setLiveChatStatus', liveChatStatus.CONNECTING);
-      function waitMessage(context, type, message) {
-        context.commit('pushLiveChatMessage', {
-          type,
-          text: message,
-        });
-      };
-      if (context.state.config.connect.waitingForAgentMessageIntervalSeconds > 0) {
-        const intervalID = setInterval(waitMessage,
-          1000 * context.state.config.connect.waitingForAgentMessageIntervalSeconds,
-          context,
-          'bot',
-          context.state.config.connect.waitingForAgentMessage);
-        console.info(`interval now set: ${intervalID}`);
-        context.commit('setLiveChatIntervalId', intervalID);
-      }
-      liveChatSession = createLiveChatSession(result);
-      console.info('Live Chat Session Created:', liveChatSession);
-      initLiveChatHandlers(context, liveChatSession);
-      console.info('Live Chat Handlers initialised:');
-      return connectLiveChatSession(liveChatSession);
-    })
-    .then((response) => {
-      console.info('live Chat session connection response', response);
-      console.info('Live Chat Session CONNECTED:', liveChatSession);
-      context.commit('setLiveChatStatus', liveChatStatus.ESTABLISHED);
-      // context.commit('setLiveChatbotSession', liveChatSession);
-      return Promise.resolve();
-    })
-    .catch((error) => {
-      console.error("Error esablishing live chat");
-      context.commit('setLiveChatStatus', liveChatStatus.ENDED);
-      return Promise.resolve();
-    });
+    return axios(agentWaitConfig)
+      .then((response) => {
+        // RDB - TODO - what do I do with these?
+        // const liveAgentAvailable = response.data[0].outputValues.liveAgentAvailable;
+        const { waitTime } = response.data[0].outputValues;
+        context.commit(
+          'pushMessage',
+          {
+            text: `FIXME: The wait time is currently ${waitTime}, would you like to wait?`,
+            type: 'bot',
+          },
+        );
+        return 'ok';
+      }).then(() => {
+        const createCaseConfig = {
+          method: 'post',
+          url: `${context.state.config.live_agent.endpoint}/createCase`,
+        };
+        return axios(createCaseConfig);
+      }).then((result) => {
+        console.info('Live Chat Config Success:', result);
+        context.commit('setLiveChatStatus', liveChatStatus.CONNECTING);
+        function waitMessage(context, type, message) {
+          context.commit('pushLiveChatMessage', {
+            type,
+            text: message,
+          });
+        };
+        if (context.state.config.connect.waitingForAgentMessageIntervalSeconds > 0) {
+          const intervalID = setInterval(waitMessage,
+            1000 * context.state.config.connect.waitingForAgentMessageIntervalSeconds,
+            context,
+            'bot',
+            context.state.config.connect.waitingForAgentMessage);
+          console.info(`interval now set: ${intervalID}`);
+          context.commit('setLiveChatIntervalId', intervalID);
+        }
+        return createLiveChatSession();
+      }).then((liveChatSessionResponse) => {
+        liveChatSession = liveChatSessionResponse;
+        console.info('Live Chat Session Created:', liveChatSession);
+        // initLiveChatHandlers(context, liveChatSession);
+        console.info('Live Chat Handlers initialised:');
+        return connectLiveChatSession(liveChatSession);
+      })
+      .then((response) => {
+        console.info('live Chat session connection response', response);
+        console.info('Live Chat Session CONNECTED');
+        context.commit('setLiveChatStatus', liveChatStatus.ESTABLISHED);
+        // context.commit('setLiveChatbotSession', liveChatSession);
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        console.log(error)
+        console.error("Error esablishing live chat");
+        context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+        return Promise.resolve();
+      });
   },
 
   requestLiveChat(context) {
-    console.info('*********RDB - action.requestLiveChat')
-    console.info('requestLiveChat');
+    // LC - 2
+    console.info('actions.requestLiveChat');
     if (!context.getters.liveChatUserName()) {
+      console.info('actions.requestLiveChat - requesting username');
       context.commit('setLiveChatStatus', liveChatStatus.REQUEST_USERNAME);
       context.commit(
         'pushMessage',
@@ -895,6 +897,7 @@ export default {
         },
       );
     } else {
+      console.info('actions.requestLiveChat - prepping for chat');
       context.commit('setLiveChatStatus', liveChatStatus.REQUESTED);
       context.commit('setChatMode', chatMode.LIVECHAT);
       context.commit('setIsLiveChatProcessing', true);
@@ -902,19 +905,19 @@ export default {
     }
   },
   sendTypingEvent(context) {
-    console.info('actions: sendTypingEvent');
+    console.info('actions.sendTypingEvent');
     if (context.state.chatMode === chatMode.LIVECHAT && liveChatSession) {
       sendTypingEvent(liveChatSession);
     }
   },
   sendChatMessage(context, message) {
-    console.info('actions: sendChatMessage');
+    console.info('actions.sendChatMessage');
     if (context.state.chatMode === chatMode.LIVECHAT && liveChatSession) {
       sendChatMessage(liveChatSession, message);
     }
   },
   requestLiveChatEnd(context) {
-    console.info('actions: endLiveChat');
+    console.info('actions.endLiveChat');
     context.commit('clearLiveChatIntervalId');
     if (context.state.chatMode === chatMode.LIVECHAT && liveChatSession) {
       requestLiveChatEnd(liveChatSession);
@@ -922,22 +925,23 @@ export default {
     }
   },
   agentIsTyping(context) {
-    console.info('actions: agentIsTyping');
+    console.info('actions.agentIsTyping');
     context.commit('setIsLiveChatProcessing', true);
   },
   liveChatSessionReconnectRequest(context) {
-    console.info('actions: liveChatSessionReconnectRequest');
+    console.info('actions.liveChatSessionReconnectRequest');
     context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
     // TODO try re-establish connection
   },
   liveChatSessionEnded(context) {
-    console.info('actions: liveChatSessionEnded');
+    console.info('actions.liveChatSessionEnded');
     liveChatSession = null;
     context.commit('setLiveChatStatus', liveChatStatus.ENDED);
     context.commit('setChatMode', chatMode.BOT);
     context.commit('clearLiveChatIntervalId');
   },
   liveChatAgentJoined(context) {
+    console.info('actions.liveChatAgentJoined');
     context.commit('clearLiveChatIntervalId');
   },
   /***********************************************************************
