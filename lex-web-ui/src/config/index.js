@@ -62,6 +62,8 @@ const configDefault = {
     endpoint: '',
     promptForNameMessage: 'Before starting a live chat, please tell me your name?',
     disconnectingMessage: 'Thank you, you are being returned to the chatbot',
+    waitingForAgentMessage: 'Thank you for waiting. An agent will be with you when available.',
+    waitingForAgentMessageIntervalSeconds: 30,
   },
   connect: {
     // The Connect contact flow id - user configured via CF template

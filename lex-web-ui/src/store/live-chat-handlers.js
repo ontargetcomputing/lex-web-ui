@@ -93,10 +93,12 @@ export const initLiveChatHandlers = async (context, session) => {
 
     const chatEstablished = (data) => {
       console.info('Established!', data);
+      context.dispatch('liveChatAgentJoined');
+      context.commit('setIsLiveChatProcessing', false);      
       context.dispatch('pushLiveChatMessage', {
         type: 'agent',
         text: `${data.message.name} has joined`,
-      });      
+      });
     }
 
     const chatMessage = (data) => {

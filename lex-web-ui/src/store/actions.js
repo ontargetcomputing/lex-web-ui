@@ -826,12 +826,12 @@ export default {
             text: message,
           });
         };
-        if (context.state.config.connect.waitingForAgentMessageIntervalSeconds > 0) {
+        if (context.state.config.live_agent.waitingForAgentMessageIntervalSeconds > 0) {
           const intervalID = setInterval(waitMessage,
-            1000 * context.state.config.connect.waitingForAgentMessageIntervalSeconds,
+            1000 * context.state.config.live_agent.waitingForAgentMessageIntervalSeconds,
             context,
             'bot',
-            context.state.config.connect.waitingForAgentMessage);
+            context.state.config.live_agent.waitingForAgentMessage);
           console.info(`interval now set: ${intervalID}`);
           context.commit('setLiveChatIntervalId', intervalID);
         }
