@@ -27,6 +27,8 @@ import silentMp3 from '@/assets/silent.mp3';
 
 import LexClient from '@/lib/lex/client';
 import axios from 'axios';
+// import { startsWith } from 'core-js/core/string';
+import state from './state';
 
 const jwt = require('jsonwebtoken');
 const AWS = require('aws-sdk');
@@ -479,9 +481,12 @@ export default {
         }
         return Promise.resolve();
       })
-      .then(() => {
+      .then(() => { 
         if (context.state.config.ui.enableLiveChat && liveChatTerms.find(el => el === message.text.toLowerCase())) {
           return context.dispatch('requestLiveChat');
+        } else if (context.state.liveChat.status === liveChatStatus.VERIFIED) {
+          context.commit('setVerifyLiveChat', message.text.toLowerCase() === 'yes' || message.text.toLowerCase() === 'y' ? true : false);
+          return context.dispatch('requestLiveChat');          
         } else if (context.state.liveChat.status === liveChatStatus.REQUEST_USERNAME) {
           context.commit('setLiveChatUserName', message.text);
           return context.dispatch('requestLiveChat');
@@ -818,31 +823,12 @@ export default {
     console.info('*****************setLiveChatStatus');
     context.commit('setLiveChatStatus', liveChatStatus.INITIALIZING);
 
-    const agentWaitConfig = {
+    const createCaseConfig = {
       method: 'post',
-      url: `${context.state.config.live_agent.endpoint}/agentWaitTime`,
+      url: `${context.state.config.live_agent.endpoint}/createCase`,
     };
-
-    return axios(agentWaitConfig)
-      .then((response) => {
-        // RDB - TODO - what do I do with these?
-        // const liveAgentAvailable = response.data[0].outputValues.liveAgentAvailable;
-        const { waitTime } = response.data[0].outputValues;
-        context.commit(
-          'pushMessage',
-          {
-            text: `FIXME: The wait time is currently ${waitTime}, would you like to wait?`,
-            type: 'bot',
-          },
-        );
-        return 'ok';
-      }).then(() => {
-        const createCaseConfig = {
-          method: 'post',
-          url: `${context.state.config.live_agent.endpoint}/createCase`,
-        };
-        return axios(createCaseConfig);
-      }).then((result) => {
+    return axios(createCaseConfig)
+      .then((result) => {
         console.info('Live Chat Config Success:', result);
         context.commit('setLiveChatStatus', liveChatStatus.CONNECTING);
         function waitMessage(context, type, message) {
@@ -876,28 +862,67 @@ export default {
         return Promise.resolve();
       })
       .catch((error) => {
-        console.log(error)
-        console.error("Error esablishing live chat");
+        console.error('Error esablishing live chat');
+        console.error(error);
         context.commit('setLiveChatStatus', liveChatStatus.ENDED);
         return Promise.resolve();
       });
   },
 
-  requestLiveChat(context) {
+  async requestLiveChat(context) {
     // LC - 2
     console.info('actions.requestLiveChat');
-    if (!context.getters.liveChatUserName()) {
-      console.info('actions.requestLiveChat - requesting username');
-      context.commit('setLiveChatStatus', liveChatStatus.REQUEST_USERNAME);
-      context.commit(
-        'pushMessage',
-        {
-          text: context.state.config.connect.promptForNameMessage,
-          type: 'bot',
-        },
-      );
-    } else {
+    if (context.state.liveChat.status === liveChatStatus.DISCONNECTED) {
+      console.info('actions.requestingLiveChat - verifying live chat');
+      const agentWaitConfig = {
+        method: 'post',
+        url: `${context.state.config.live_agent.endpoint}/agentWaitTime`,
+      };
+      context.commit('setChatMode', chatMode.LIVECHAT);
+      await axios(agentWaitConfig)
+        .then((response) => {
+          // RDB - TODO - what do I do with these?
+          // const liveAgentAvailable = response.data[0].outputValues.liveAgentAvailable;
+          context.commit('setLiveChatStatus', liveChatStatus.VERIFIED);
+          const { waitTime } = response.data[0].outputValues;
+          context.commit(
+            'pushMessage',
+            {
+              text: `FIXME: The wait time is currently ${waitTime}, would you like to wait?`,
+              type: 'bot',
+            },
+          );
+        })
+        .catch((error) => {
+          console.error('Error determining live chat wait times');
+          console.error(error);
+          context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+        });
+    } else if (context.state.liveChat.status === liveChatStatus.VERIFIED) {
+      if (context.state.liveChat.verifyLiveChat === true) {
+        console.info('actions.requestLiveChat - requesting username');
+        context.commit('setLiveChatStatus', liveChatStatus.REQUEST_USERNAME);
+        context.commit(
+          'pushMessage',
+          {
+            text: context.state.config.live_agent.promptForNameMessage,
+            type: 'bot',
+          },
+        );
+      } else {
+        console.info('actions.requestingLiveChat - disconnecting live chat');
+        context.commit(
+          'pushMessage',
+          {
+            text: context.state.config.live_agent.disconnectingMessage,
+            type: 'bot',
+          },
+        );
+        context.dispatch('liveChatSessionEnded');
+      }
+    } else if (context.state.liveChat.status === liveChatStatus.REQUEST_USERNAME) {
       console.info('actions.requestLiveChat - prepping for chat');
+      console.info(`Username: ${context.getters.liveChatUserName()}`);
       context.commit('setLiveChatStatus', liveChatStatus.REQUESTED);
       context.commit('setChatMode', chatMode.LIVECHAT);
       context.commit('setIsLiveChatProcessing', true);

@@ -23,6 +23,7 @@ export const chatMode = {
 
 export const liveChatStatus = {
   REQUESTED: 'requested',
+  VERIFIED: 'verified',
   REQUEST_USERNAME: 'request_username',
   INITIALIZING: 'initializing',
   CONNECTING: 'connecting',
@@ -30,7 +31,6 @@ export const liveChatStatus = {
   DISCONNECTED: 'disconnected',
   ENDED: 'ended',
 };
-
 
 export default {
   version: (process.env.PACKAGE_VERSION) ?
@@ -57,6 +57,7 @@ export default {
   },
   liveChat: {
     username: '',
+    verifyLiveChat: false,
     isProcessing: false,
     status: liveChatStatus.DISCONNECTED,
     message: '',

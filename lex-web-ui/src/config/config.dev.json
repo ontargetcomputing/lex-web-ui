@@ -1,30 +1,30 @@
 {
-  "region": "us-east-1",
+  "region": "us-west-2",
   "cognito": {
-    "poolId": "",
-    "appUserPoolClientId": "",
-    "appUserPoolName": "",
-    "appDomainName": "",
-    "aws_cognito_region": "us-east-1",
-    "region": "us-east-1"
+    "poolId": "us-west-2:1845a3f1-6925-47ba-b2df-abfba9c4a6cc",
+    "appUserPoolClientId": "5bnfu6p7n1ah0jhd00913aoa7c",
+    "appUserPoolName": "us-west-2_XEFuWJqJW",
+    "appDomainName": "lexkwebkuikidentitypoolconfigkngurcghkhvhz032802432428.auth.us-west-2.amazoncognito.com",
+    "aws_cognito_region": "us-west-2",
+    "region": "us-west-2"
   },
   "lex": {
     "v2BotId": "",
     "v2BotAliasId": "",
-    "v2BotLocaleId": "",
-    "botName": "",
-    "botAlias": "$LATEST",
-    "initialText": "Type 'Buy Flowers' to get started.",
-    "initialSpeechInstruction": "Say 'Buy Flowers' to get started.",
-    "initialUtterance": "",
+    "v2BotLocaleId": "en_US",
+    "botName": "miles_dev_dev_dev_master_one_BotKeXvR",
+    "botAlias": "live",
+    "initialText": "",
+    "initialSpeechInstruction": "",
+    "initialUtterance": "QID::Welcome",
     "reInitSessionAttributesOnRestart": false,
-    "region": "us-east-1",
+    "region": "us-west-2",
     "retryOnLexPostTextTimeout": "false",
     "retryCountPostTextTimeout": "1"
   },
   "ui": {
     "parentOrigin": "",
-    "toolbarTitle": "Order Flowers",
+    "toolbarTitle": "jjjjjjj",
     "toolbarLogo": "",
     "positiveFeedbackIntent": "Thumbs up",
     "negativeFeedbackIntent": "Thumbs down",
@@ -41,8 +41,12 @@
     "showDialogStateIcon": false,
     "backButton": false,
     "messageMenu": true,
-    "hideButtonMessageBubble": false,
-    "enableLiveChat": false
+    "hideButtonMessageBubble": true,
+    "enableLiveChat": true,
+    "enableSFX": true
+  },
+  "live_agent": {
+    "endpoint": "http://localhost:3000"
   },
   "connect": {
     "contactFlowId" : "",

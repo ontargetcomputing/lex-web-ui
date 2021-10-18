@@ -58,6 +58,11 @@ const configDefault = {
     // e.g. poolId: 'us-east-1:deadbeef-cac0-babe-abcd-abcdef01234',
     poolId: '',
   },
+  live_agent: {
+    endpoint: '',
+    promptForNameMessage: 'Before starting a live chat, please tell me your name?',
+    disconnectingMessage: 'Thank you, you are being returned to the chatbot',
+  },
   connect: {
     // The Connect contact flow id - user configured via CF template
     contactFlowId: '',
@@ -68,7 +73,7 @@ const configDefault = {
     // Message to prompt the user for a name prior to establishing a session
     promptForNameMessage: 'Before starting a live chat, please tell me your name?',
     // The default message to message to display while waiting for a live agent
-    waitingForAgentMessage: "Thanks for waiting. An agent will be with you when available.",
+    waitingForAgentMessage: 'Thanks for waiting. An agent will be with you when available.',
     // The default interval with which to display the waitingForAgentMessage. When set to 0
     // the timer is disabled.
     waitingForAgentMessageIntervalSeconds: 60,

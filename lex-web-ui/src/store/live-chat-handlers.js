@@ -1,4 +1,6 @@
 /*
+
+RDB - here
  Copyright 2017-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
  Licensed under the Amazon Software License (the "License"). You may not use this file
@@ -18,20 +20,57 @@
 /* eslint no-console: ["error", { allow: ["info", "warn", "error", "time", "timeEnd"] }] */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
-export const createLiveChatSession = result =>
-  (window.connect.ChatSession.create({
-    chatDetails: result.startChatResult,
-    type: 'CUSTOMER',
-  }));
+// export const createLiveChatSession = (result) => (window.connect.ChatSession.create({
+//   chatDetails: result.startChatResult,
+//   type: 'CUSTOMER',
+// }));
+import axios from 'axios';
 
-export const connectLiveChatSession = session =>
-  Promise.resolve(session.connect().then((response) => {
-    console.info(`successful connection: ${JSON.stringify(response)}`);
-    return Promise.resolve(response);
-  }, (error) => {
-    console.info(`unsuccessful connection ${JSON.stringify(error)}`);
-    return Promise.reject(error);
-  }));
+export const createLiveChatSession = () => {
+  const config = {
+    method: 'post',
+    url: 'http://localhost:3000/startSession',
+  };
+
+  return axios(config)
+    .then((response) => response.data)
+    .then((data) => {
+      console.info(`successful session creation: ${JSON.stringify(data)}`);
+      return Promise.resolve(data)
+    }).catch((error) => {
+      console.info(`unsuccessful session creation: ${JSON.stringify(error)}`);
+      return Promise.reject(error);
+    });
+};
+
+// export const connectLiveChatSession = (session) => Promise.resolve(session.connect().then((response) => {
+//   console.info(`successful connection: ${JSON.stringify(response)}`);
+//   return Promise.resolve(response);
+// }, (error) => {
+//   console.info(`unsuccessful connection ${JSON.stringify(error)}`);
+//   return Promise.reject(error);
+// }));
+
+export const connectLiveChatSession = (session) => {
+  const config = {
+    method: 'post',
+    url: 'http://localhost:3000/connect',
+    data: JSON.stringify(session),
+  };
+  return axios(config)
+    .then((response) => response.data)
+    .then((data) => {
+      console.info(`successful connection: ${JSON.stringify(data)}`);
+      return Promise.resolve(data);
+    }).catch((error) => {
+      console.info(`unsuccessful connection ${JSON.stringify(error)}`);
+      return Promise.reject(error);
+    });
+};
+
+// RDB : TODO
+// WHAT IS context
+// WHAT IS session
 
 export const initLiveChatHandlers = (context, session) => {
   session.onConnectionEstablished((data) => {
@@ -109,17 +148,37 @@ export const initLiveChatHandlers = (context, session) => {
 };
 
 export const sendChatMessage = (liveChatSession, message) => {
-  liveChatSession.controller.sendMessage({
-    message,
-    contentType: 'text/plain',
-  });
+  // liveChatSession.controller.sendMessage({
+  //   message,
+  //   contentType: 'text/plain',
+  // });
+  const config = {
+    method: 'post',
+    url: 'http://localhost:3000/sendMessage',
+    data: {
+      message,
+      session: liveChatSession,
+    },
+  };
+  return axios(config)
+    .then((response) => response.data)
+    .then((data) => {
+      console.info(`successful sendMessage: ${JSON.stringify(data)}`);
+      return Promise.resolve(data);
+    }).catch((error) => {
+      console.info(`unsuccessful sendMessage ${JSON.stringify(error)}`);
+      return Promise.reject(error);
+    });
+
+
 };
 
 export const sendTypingEvent = (liveChatSession) => {
+  // RDB is this where agent sees...user is typing
   console.info('liveChatHandler: sendTypingEvent');
-  liveChatSession.controller.sendEvent({
-    contentType: 'application/vnd.amazonaws.connect.event.typing',
-  });
+  // liveChatSession.controller.sendEvent({
+  //   contentType: 'application/vnd.amazonaws.connect.event.typing',
+  // });
 };
 
 export const requestLiveChatEnd = (liveChatSession) => {

@@ -394,6 +394,14 @@ export default {
     state.liveChat.username = name;
   },
 
+  setVerifyLiveChat(state, bool) {
+    if (typeof bool !== 'boolean') {
+      console.error('setVerifyLiveChat is not vaild', bool);
+      return;
+    }
+    state.liveChat.verifyLiveChat = bool;
+  },
+
   reset(state) {
     const s = {
       messages: [],

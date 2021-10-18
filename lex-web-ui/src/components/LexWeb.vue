@@ -341,7 +341,8 @@ export default {
       }
     },
     handleRequestLiveChat() {
-      console.info('handleRequestLiveChat');
+      // LC - 1
+      console.info('LexWeb.vue - handleRequestLiveChat');
       this.$store.dispatch('requestLiveChat');
     },
     handleEndLiveChat() {
