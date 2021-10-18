@@ -481,12 +481,15 @@ export default {
         }
         return Promise.resolve();
       })
-      .then(() => { 
-        if (context.state.config.ui.enableLiveChat && liveChatTerms.find(el => el === message.text.toLowerCase())) {
+      .then(() => {
+        /* eslint-disable no-else-return, max-len */
+        console.info(`*****------$$$$$ - ${context.state.liveChat.status}`);
+        console.info(`*****------$$$$$ - ${context.state.chatMode}`);
+        if (context.state.config.ui.enableLiveChat && liveChatTerms.find((el) => el === message.text.toLowerCase())) {
           return context.dispatch('requestLiveChat');
         } else if (context.state.liveChat.status === liveChatStatus.VERIFIED) {
-          context.commit('setVerifyLiveChat', message.text.toLowerCase() === 'yes' || message.text.toLowerCase() === 'y' ? true : false);
-          return context.dispatch('requestLiveChat');          
+          context.commit('setVerifyLiveChat', (message.text.toLowerCase() === 'yes' || message.text.toLowerCase() === 'y'));
+          return context.dispatch('requestLiveChat');
         } else if (context.state.liveChat.status === liveChatStatus.REQUEST_USERNAME) {
           context.commit('setLiveChatUserName', message.text);
           return context.dispatch('requestLiveChat');
@@ -495,11 +498,12 @@ export default {
             return context.dispatch('sendChatMessage', message.text);
           }
         }
-        return Promise.resolve(context.commit('pushUtterance', message.text))
+        /* eslint-enable */
+        return Promise.resolve(context.commit('pushUtterance', message.text));
       })
       .then(() => {
-        if (context.state.chatMode === chatMode.BOT &&
-          context.state.liveChat.status != liveChatStatus.REQUEST_USERNAME) {
+        if (context.state.chatMode === chatMode.BOT
+          && context.state.liveChat.status !== liveChatStatus.REQUEST_USERNAME) {
           return context.dispatch('lexPostText', message.text);
         }
         return Promise.resolve();
@@ -808,19 +812,6 @@ export default {
       return Promise.reject(new Error('error in initLiveChatSession() endpoint is not set in config'));
     }
 
-    // if (!context.state.config.live_agent.apiGatewayEndpoint) {
-    //   console.error('error in initLiveChatSession() apiGatewayEndpoint is not set in config');
-    //   return Promise.reject(new Error('error in initLiveChatSession() apiGatewayEndpoint is not set in config'));
-    // }
-    // if (!context.state.config.connect.contactFlowId) {
-    //   console.error('error in initLiveChatSession() contactFlowId is not set in config');
-    //   return Promise.reject(new Error('error in initLiveChatSession() contactFlowId is not set in config'));
-    // }
-    // if (!context.state.config.connect.instanceId) {
-    //   console.error('error in initLiveChatSession() instanceId is not set in config');
-    //   return Promise.reject(new Error('error in initLiveChatSession() instanceId is not set in config'));
-    // }
-    console.info('*****************setLiveChatStatus');
     context.commit('setLiveChatStatus', liveChatStatus.INITIALIZING);
 
     const createCaseConfig = {
@@ -846,13 +837,14 @@ export default {
           console.info(`interval now set: ${intervalID}`);
           context.commit('setLiveChatIntervalId', intervalID);
         }
-        return createLiveChatSession();
+        return createLiveChatSession(context);
       }).then((liveChatSessionResponse) => {
         liveChatSession = liveChatSessionResponse;
+        console.info('**************************** RDB fix this');
         console.info('Live Chat Session Created:', liveChatSession);
-        // initLiveChatHandlers(context, liveChatSession);
+        initLiveChatHandlers(context, liveChatSession);
         console.info('Live Chat Handlers initialised:');
-        return connectLiveChatSession(liveChatSession);
+        return connectLiveChatSession(liveChatSession, context);
       })
       .then((response) => {
         console.info('live Chat session connection response', response);
@@ -938,7 +930,7 @@ export default {
   sendChatMessage(context, message) {
     console.info('actions.sendChatMessage');
     if (context.state.chatMode === chatMode.LIVECHAT && liveChatSession) {
-      sendChatMessage(liveChatSession, message);
+      sendChatMessage(context, liveChatSession, message);
     }
   },
   requestLiveChatEnd(context) {
@@ -952,6 +944,11 @@ export default {
   agentIsTyping(context) {
     console.info('actions.agentIsTyping');
     context.commit('setIsLiveChatProcessing', true);
+  },
+  agentIsNotTyping(context) {
+    // RDB Fix this
+    console.info('actions.agentIsNotTyping');
+    context.commit('setIsLiveChatProcessing', false);
   },
   liveChatSessionReconnectRequest(context) {
     console.info('actions.liveChatSessionReconnectRequest');
