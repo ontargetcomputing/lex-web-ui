@@ -483,8 +483,6 @@ export default {
       })
       .then(() => {
         /* eslint-disable no-else-return, max-len */
-        console.info(`*****------$$$$$ - ${context.state.liveChat.status}`);
-        console.info(`*****------$$$$$ - ${context.state.chatMode}`);
         if (context.state.config.ui.enableLiveChat && liveChatTerms.find((el) => el === message.text.toLowerCase())) {
           return context.dispatch('requestLiveChat');
         } else if (context.state.liveChat.status === liveChatStatus.VERIFIED) {
@@ -840,16 +838,17 @@ export default {
         return createLiveChatSession(context);
       }).then((liveChatSessionResponse) => {
         liveChatSession = liveChatSessionResponse;
-        console.info('**************************** RDB fix this');
         console.info('Live Chat Session Created:', liveChatSession);
         initLiveChatHandlers(context, liveChatSession);
         console.info('Live Chat Handlers initialised:');
+        // RDB TODO
         return connectLiveChatSession(liveChatSession, context);
       })
       .then((response) => {
         console.info('live Chat session connection response', response);
         console.info('Live Chat Session CONNECTED');
         context.commit('setLiveChatStatus', liveChatStatus.ESTABLISHED);
+        // RDB TODO
         // context.commit('setLiveChatbotSession', liveChatSession);
         return Promise.resolve();
       })
