@@ -58,7 +58,10 @@ export const connectLiveChatSession = (session, context) => {
   const config = {
     method: 'post',
     url: `${context.state.config.live_agent.endpoint}/connect`,
-    data: JSON.stringify(session),
+    data: JSON.stringify({
+      session,
+      livechat_username: context.getters.liveChatUserName(),
+    }),
   };
   return axios(config)
     .then((response) => response.data)
