@@ -61,7 +61,7 @@ export const connectLiveChatSession = (session, context) => {
     data: JSON.stringify({
       session,
       livechat_username: context.getters.liveChatUserName(),
-    }),
+    })
   };
   return axios(config)
     .then((response) => response.data)
@@ -126,19 +126,28 @@ export const initLiveChatHandlers = async (context, session) => {
       context.dispatch('agentIsTyping');
     }
 
-        const agentNotTyping = (element) => {
+    const agentNotTyping = (element) => {
       //if (typingEvent.data.ParticipantRole === 'AGENT') {
       console.info('Agent is not typing ');
       context.dispatch('agentIsNotTyping');
       //}
     }
 
+    const agentEndedChat = (element) => {
+      console.info('Agent ended chat');
+      context.dispatch('pushLiveChatMessage', {
+        type: 'agent',
+        text: 'Agent has ended the session',
+      });      
+      context.dispatch('liveChatSessionEnded');
+    }
+    
     const config = {
       method: 'post',
       url: `${context.state.config.live_agent.endpoint}/getMessage`,
       data: {
         session,
-      },
+      }
     };
     await axios(config)
       .then((response) => {
@@ -175,6 +184,9 @@ export const initLiveChatHandlers = async (context, session) => {
             case 'AgentNotTyping':
               agentNotTyping(element);
               break;
+            case 'ChatEnded':
+              agentEndedChat(element);
+              break;
             default:
               console.error(`Unknown message type:${type}`)
           }
@@ -183,12 +195,15 @@ export const initLiveChatHandlers = async (context, session) => {
         //   console.info(`successful connection: ${JSON.stringify(data)}`);
         //   return Promise.resolve(data);
         return Promise.resolve();
-      }).then(() => {
-        console.info('***************sleep');
-        return sleep(5000);
       }).catch((error) => {
-        console.info(`unsuccessful connection ${JSON.stringify(error)}`);
-        return Promise.reject(error);
+        if (error.code === 'ECONNABORTED') {
+          console.info('No messages after poll interval');  
+        } else {
+          console.info(`unsuccessful connection ${JSON.stringify(error)}`);
+        }
+      }).finally(() => {
+        console.info('Sleeping');
+        return sleep(context.state.config.live_agent.salesforcePollingInterval);
       });
     //await sleep(2000);
   }

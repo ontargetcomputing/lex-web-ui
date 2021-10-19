@@ -64,6 +64,8 @@ const configDefault = {
     disconnectingMessage: 'Thank you, you are being returned to the chatbot',
     waitingForAgentMessage: 'Thank you for waiting. An agent will be with you when available.',
     waitingForAgentMessageIntervalSeconds: 30,
+    salesforcePollingInterval: 5000,
+    apiCallTimeout: 500,
   },
   connect: {
     // The Connect contact flow id - user configured via CF template

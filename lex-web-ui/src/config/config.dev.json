@@ -46,7 +46,13 @@
     "enableSFX": true
   },
   "live_agent": {
-    "endpoint": "http://localhost:3000"
+      "endpoint": "http://localhost:3000",
+      "promptForNameMessage": "Before starting a live chat, please tell me your name?",
+      "disconnectingMessage": "Thank you, you are being returned to the chatbot",
+      "waitingForAgentMessage": "Thank you for waiting. An agent will be with you when available.",
+      "waitingForAgentMessageIntervalSeconds": 30,
+      "salesforcePollingInterval": 5000,
+      "apiCallTimeout": 500
   },
   "connect": {
     "contactFlowId" : "",
