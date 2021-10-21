@@ -285,10 +285,6 @@ export const initLiveChatHandlers = async (context, session) => {
 };
 
 export const sendChatMessage = (context, liveChatSession, message) => {
-  // liveChatSession.controller.sendMessage({
-  //   message,
-  //   contentType: 'text/plain',
-  // });
   const config = {
     method: 'post',
     url: `${context.state.config.live_agent.endpoint}/sendMessage`,
@@ -315,14 +311,31 @@ export const sendChatMessage = (context, liveChatSession, message) => {
 };
 
 export const sendTypingEvent = (liveChatSession) => {
-  // RDB is this where agent sees...user is typing
+  // TODO : send something to salesforce
   console.info('liveChatHandler: sendTypingEvent');
-  // liveChatSession.controller.sendEvent({
-  //   contentType: 'application/vnd.amazonaws.connect.event.typing',
-  // });
 };
 
-export const requestLiveChatEnd = (liveChatSession) => {
+export const requestLiveChatEnd = async (context, liveChatSession) => {
   console.info('liveChatHandler: endLiveChat', liveChatSession);
-  liveChatSession.controller.disconnectParticipant();
+  const config = {
+    method: 'post',
+    url: `${context.state.config.live_agent.endpoint}/endChat`,
+    data: {
+      session: liveChatSession,
+    }
+  };
+  await axios(config)
+    .then((response) => {
+      console.info(response);
+      context.dispatch('pushLiveChatMessage', {
+        type: 'bot',
+        text: 'TODO: Livechat session ended, returning you to Miles',
+      });
+      return Promise.resolve();
+    }).catch((error) => {
+      console.info(`unsuccessful end chat ${JSON.stringify(error)}`);
+    })
+
+  context.dispatch('liveChatSessionEnded');
+  //liveChatSession.controller.disconnectParticipant();
 };

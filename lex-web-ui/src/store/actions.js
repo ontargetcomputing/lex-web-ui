@@ -32,7 +32,7 @@ import state from './state';
 
 const jwt = require('jsonwebtoken');
 const AWS = require('aws-sdk');
-const liveChatTerms = ['live chat'];
+const liveChatTerms = ['live chat', 'livechat', 'agent'];
 
 // non-state variables that may be mutated outside of store
 // set via initializers at run time
@@ -482,12 +482,22 @@ export default {
         return Promise.resolve();
       })
       .then(() => {
+        let postToLex = true;
         /* eslint-disable no-else-return, max-len */
         if (context.state.config.ui.enableLiveChat && liveChatTerms.find((el) => el === message.text.toLowerCase())) {
           return context.dispatch('requestLiveChat');
         } else if (context.state.liveChat.status === liveChatStatus.VERIFIED) {
-          context.commit('setVerifyLiveChat', (message.text.toLowerCase() === 'yes' || message.text.toLowerCase() === 'y'));
-          return context.dispatch('requestLiveChat');
+          if (message.text.toLowerCase() === 'yes' || message.text.toLowerCase() === 'y') {
+            context.commit('setVerifyLiveChat', (message.text.toLowerCase() === 'yes' || message.text.toLowerCase() === 'y'));
+            return context.dispatch('requestLiveChat');
+          } else {
+            postToLex = false;
+            context.dispatch('pushLiveChatMessage', {
+              type: 'bot',
+              text: 'TODO: Livechat session aborted, returning you to Miles',
+            });
+            context.dispatch('liveChatSessionEnded');
+          }
         } else if (context.state.liveChat.status === liveChatStatus.REQUEST_USERNAME) {
           context.commit('setLiveChatUserName', message.text);
           return context.dispatch('requestLiveChat');
@@ -497,17 +507,20 @@ export default {
           }
         }
         /* eslint-enable */
-        return Promise.resolve(context.commit('pushUtterance', message.text));
+        // return Promise.resolve(context.commit('pushUtterance', message.text));
+        context.commit('pushUtterance', message.text);
+        return Promise.resolve(postToLex);
       })
-      .then(() => {
-        if (context.state.chatMode === chatMode.BOT
+      .then((postToLex) => {
+        console.info(`PostToLex = ${postToLex}`);
+        if (postToLex && context.state.chatMode === chatMode.BOT
           && context.state.liveChat.status !== liveChatStatus.REQUEST_USERNAME) {
           return context.dispatch('lexPostText', message.text);
         }
-        return Promise.resolve();
+        return false;
       })
       .then((response) => {
-        if (context.state.chatMode === chatMode.BOT &&
+        if (response !== false && context.state.chatMode === chatMode.BOT &&
           context.state.liveChat.status != liveChatStatus.REQUEST_USERNAME) {
           // check for an array of messages
           if (response.sessionState || (response.message && response.message.includes('{"messages":'))) {
@@ -855,14 +868,15 @@ export default {
       .catch((error) => {
         console.error('Error esablishing live chat');
         console.error(error);
-        context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+        // context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+        context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
         return Promise.resolve();
       });
   },
 
   async requestLiveChat(context) {
     // LC - 2
-    console.info('actions.requestLiveChat');
+    console.info(`actions.requestLiveChat with status=${context.state.liveChat.status}`);
     if (context.state.liveChat.status === liveChatStatus.DISCONNECTED) {
       console.info('actions.requestingLiveChat - verifying live chat');
       const agentWaitConfig = {
@@ -887,7 +901,8 @@ export default {
         .catch((error) => {
           console.error('Error determining live chat wait times');
           console.error(error);
-          context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+          // context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+          context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
         });
     } else if (context.state.liveChat.status === liveChatStatus.VERIFIED) {
       if (context.state.liveChat.verifyLiveChat === true) {
@@ -936,8 +951,10 @@ export default {
     console.info('actions.endLiveChat');
     context.commit('clearLiveChatIntervalId');
     if (context.state.chatMode === chatMode.LIVECHAT && liveChatSession) {
-      requestLiveChatEnd(liveChatSession);
-      context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+      console.info('actdions - requesting live chat end');
+      requestLiveChatEnd(context, liveChatSession);
+      // context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+      context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
     }
   },
   agentIsTyping(context) {
@@ -945,7 +962,6 @@ export default {
     context.commit('setIsLiveChatProcessing', true);
   },
   agentIsNotTyping(context) {
-    // RDB Fix this
     console.info('actions.agentIsNotTyping');
     context.commit('setIsLiveChatProcessing', false);
   },
@@ -957,7 +973,8 @@ export default {
   liveChatSessionEnded(context) {
     console.info('actions.liveChatSessionEnded');
     liveChatSession = null;
-    context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+    context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
+    // context.commit('setLiveChatStatus', liveChatStatus.ENDED);
     context.commit('setChatMode', chatMode.BOT);
     context.commit('clearLiveChatIntervalId');
   },
