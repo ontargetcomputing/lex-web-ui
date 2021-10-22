@@ -42,11 +42,13 @@
       v-bind:initial-speech-instruction="initialSpeechInstruction"
       @endLiveChatClicked="handleEndLiveChat"
     ></input-container>
+
     <div
       v-if="isSFXOn"
       id="sound"
       aria-hidden="true"
     />
+    <footer-buttons></footer-buttons>
   </v-app>
 </template>
 
@@ -72,6 +74,7 @@ import MessageList from '@/components/MessageList';
 import InputContainer from '@/components/InputContainer';
 import LexRuntime from 'aws-sdk/clients/lexruntime';
 import LexRuntimeV2 from 'aws-sdk/clients/lexruntimev2';
+import FooterButtons from '@/components/FooterButtons';
 
 import { Config as AWSConfig, CognitoIdentityCredentials }
   from 'aws-sdk/global';
@@ -89,6 +92,7 @@ export default {
     ToolbarContainer,
     MessageList,
     InputContainer,
+    FooterButtons
   },
   computed: {
     initialSpeechInstruction() {
@@ -514,19 +518,6 @@ export default {
 </script>
 
 <style>
-/*
-The Vuetify toolbar height is based on screen width breakpoints
-The toolbar can be 48px, 56px and 64px.
-It is fixed to 48px when using 'dense'
-
-The message list is placed between the toolbar at the top and input
-container on the bottom. Both the toolbar and the input-container
-dynamically change height based on width breakpoints.
-So we duplicate the height and substract it from the total height
-of the message list to make it fit between the toolbar and input container
-
-NOTE: not using var() for different heights due to IE11 compatibility
-*/
 .message-list-container {
   position: fixed;
 }
@@ -543,10 +534,7 @@ NOTE: not using var() for different heights due to IE11 compatibility
   top: 64px;
   height: calc(100% - 2 * 64px);
 }
-
-#lex-web[ui-minimized] {
-  /* make background transparent when running minimized so only
-  the button is shown */
-  background: transparent;
+.content--wrap .message-list {
+  padding-bottom: 6rem !important;
 }
 </style>
