@@ -1,6 +1,5 @@
 /*
 
-RDB - here
  Copyright 2017-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
  Licensed under the Amazon Software License (the "License"). You may not use this file
@@ -28,7 +27,6 @@ RDB - here
 import axios from 'axios';
 import { liveChatStatus } from '@/store/state';
 
-// RDB TODO
 export const createLiveChatSession = (context) => {
   const config = {
     method: 'post',
@@ -46,20 +44,13 @@ export const createLiveChatSession = (context) => {
     });
 };
 
-// export const connectLiveChatSession = (session) => Promise.resolve(session.connect().then((response) => {
-//   console.info(`successful connection: ${JSON.stringify(response)}`);
-//   return Promise.resolve(response);
-// }, (error) => {
-//   console.info(`unsuccessful connection ${JSON.stringify(error)}`);
-//   return Promise.reject(error);
-// }));
-
 export const connectLiveChatSession = (session, context) => {
   const config = {
     method: 'post',
     url: `${context.state.config.live_agent.endpoint}/connect`,
     data: JSON.stringify({
       session,
+      chat_history: context.state.messages,
       livechat_username: context.getters.liveChatUserName(),
     })
   };
@@ -74,10 +65,6 @@ export const connectLiveChatSession = (session, context) => {
     });
 };
 
-// RDB : TODO
-// WHAT IS context
-// WHAT IS session
-
 export const initLiveChatHandlers = async (context, session) => {
   console.info(`initLiveChatHandlers status=${context.state.liveChat.status}`);
   const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
@@ -86,7 +73,6 @@ export const initLiveChatHandlers = async (context, session) => {
     console.info('live-chat-handlers: polling live agent');
 
     const chatRequestSuccess = (data) => {
-      console.info('------------chatRequestSuccess')
       console.info('chatRequestSuccess!', data);
       context.dispatch('pushLiveChatMessage', {
         type: 'agent',
@@ -114,11 +100,11 @@ export const initLiveChatHandlers = async (context, session) => {
     }
 
     const customEvent = (element) => {
-      console.info('------------CustomEvent')
+      console.info('CustomEvent')
     }
 
     const queueUpdate = (element) => {
-      console.info('------------queueUpdate')
+      console.info('queueUpdate')
     }
 
     const agentTyping = (element) => {
@@ -127,10 +113,8 @@ export const initLiveChatHandlers = async (context, session) => {
     }
 
     const agentNotTyping = (element) => {
-      //if (typingEvent.data.ParticipantRole === 'AGENT') {
       console.info('Agent is not typing ');
       context.dispatch('agentIsNotTyping');
-      //}
     }
 
     const agentEndedChat = (element) => {
@@ -164,13 +148,8 @@ export const initLiveChatHandlers = async (context, session) => {
               chatEstablished(element);
               break;
             case 'ChatMessage':
-
-              console.info('--------------------------------')
               console.info(JSON.stringify(context.state.messages))
-              console.info('--------------------------------')
               chatMessage(element);
-
-
               break;
             case 'CustomEvent':
               customEvent(element);
@@ -191,9 +170,6 @@ export const initLiveChatHandlers = async (context, session) => {
               console.error(`Unknown message type:${type}`)
           }
         })
-        // .then((data) => {
-        //   console.info(`successful connection: ${JSON.stringify(data)}`);
-        //   return Promise.resolve(data);
         return Promise.resolve();
       }).catch((error) => {
         if (error.code === 'ECONNABORTED') {
@@ -205,83 +181,7 @@ export const initLiveChatHandlers = async (context, session) => {
         console.info('Sleeping');
         return sleep(context.state.config.live_agent.salesforcePollingInterval);
       });
-    //await sleep(2000);
   }
-
-
-  // session.onConnectionEstablished((data) => {
-  //   console.info('Established!', data);
-  //   context.dispatch('pushLiveChatMessage', {
-  //     type: 'agent',
-  //     text: 'Live Chat Connection Established',
-  //   });
-  // });
-
-  // session.onMessage((event) => {
-  //   const { chatDetails, data } = event;
-  //   console.info(`Received message: ${JSON.stringify(event)}`);
-  //   console.info('Received message chatDetails:', chatDetails);
-  //   let type = '';
-  //   switch (data.ContentType) {
-  //     case 'application/vnd.amazonaws.connect.event.participant.joined':
-  //       // TODO
-  //       if (data.DisplayName !== context.state.liveChat.username) {
-  //         context.dispatch('liveChatAgentJoined');
-  //         context.commit('setIsLiveChatProcessing', false);
-  //         context.dispatch('pushLiveChatMessage', {
-  //           type: 'agent',
-  //           text: `${data.DisplayName} has joined`,
-  //         });
-  //       }
-  //       break;
-  //     case 'application/vnd.amazonaws.connect.event.participant.left':
-  //     case 'application/vnd.amazonaws.connect.event.chat.ended':
-  //       context.dispatch('liveChatSessionEnded');
-  //       break;
-  //     case 'text/plain':
-  //       switch (data.ParticipantRole) {
-  //         case 'SYSTEM':
-  //           type = 'bot';
-  //           break;
-  //         case 'AGENT':
-  //           type = 'agent';
-  //           break;
-  //         case 'CUSTOMER':
-  //           type = 'human';
-  //           break;
-  //         default:
-  //           break;
-  //       }
-  //       context.commit('setIsLiveChatProcessing', false);
-  //       context.dispatch('pushLiveChatMessage', {
-  //         type,
-  //         text: data.Content,
-  //       });
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // });
-
-  // session.onTyping((typingEvent) => {
-  //   if (typingEvent.data.ParticipantRole === 'AGENT') {
-  //     console.info('Agent is typing ');
-  //     context.dispatch('agentIsTyping');
-  //   }
-  // });
-
-  // session.onConnectionBroken((data) => {
-  //   console.info('Connection broken', data);
-  //   context.dispatch('liveChatSessionReconnectRequest');
-  // });
-
-  /*
-  NOT WORKING
-  session.onEnded((data) => {
-    console.info('Connection ended', data);
-    context.dispatch('liveChatSessionEnded');
-  });
-  */
 };
 
 export const sendChatMessage = (context, liveChatSession, message) => {
@@ -337,5 +237,4 @@ export const requestLiveChatEnd = async (context, liveChatSession) => {
     })
 
   context.dispatch('liveChatSessionEnded');
-  //liveChatSession.controller.disconnectParticipant();
 };
