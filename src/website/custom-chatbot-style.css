@@ -1,91 +1,54 @@
-/* Example custom css file for lex-web-ui. Entire file is commented out as a default. Uncomment and
- adjust as needed.
-
 .toolbar.theme--dark {
-    background-color: #2b2b2b !important;
+  background: #163159 !important;
 }
 
-.toolbar__title {
-  font-family:"Sans-serif" !important;
-  font-size: 1.875em !important;
-  color: #ffffff !important;
+.toolbar__content img {
+  height: 90% !important;
+  margin: 50% !important;
 }
 
 .message-list-container {
-  background-color: #dcdbdc !important
+  background-color: #ffffff !important;
 }
 
 .message-bot .message-bubble {
-    background-color: #eeedeb !important;
+  background-color: #ffffff !important;
 }
 
-.message-human .message-bubble {
-    background-color: #afcffa !important;
-}
-
-.message-bubble p {
-    margin-bottom: 8px;
-}
-
-.message-bubble p:last-child {
-    margin-bottom: 0px;
-}
-
-.message-bubble .message-text {
-    padding-left:  0;
-    padding-right: 0;
-    line-height: 1.6;
-    font-size: 1rem;
+.message-bot {
+  padding: 0.938em !important;
 }
 
 .message-bubble {
-    border-radius: 10px !important;
-    padding: 2px 18px !important;
+  border-radius: 0 !important;
+  border-left: 0.15em solid #ffc107 !important;
+  padding: 0 !important;
 }
 
-.message-text {
-  color: #000000;
+.message-text ul {
+  list-style-type: none !important;
+}
+
+.secondary--text .btn__content {
+  background: #0077c8 !important;
+  color: #ffffff;
+}
+
+.secondary--text .btn__content:hover {
+  background: #d3eee7 !important;
+  color: #163159 !important;
+}
+
+.input-container button .btn__content {
+  border-radius: 0.313em;
+  background: #00811e;
+  fill: #fff;
+  margin-left: auto;
+  margin-right: 0;
+  padding: 0.5em 0.5em;
+  height: 2.25em;
+  display: inline-flex;
+  vertical-align: bottom;
   width: 100%;
-}
-
-.headline {
-    font-size: 1.2rem !important;
-    line-height: 1.4 !important;
-}
-
-.card__title {
-    padding: 10px 16px !important;
-}
-
-.card__text {
-    padding: 8px 16px 16px !important;
-    line-height: 1.4;
-}
-
-.card__title.card__title--primary {
-    background-color: #eeedeb !important;
-}
-
-
-.input-group--text-field input,
-.input-group--text-field textarea,
-.input-group--text-field label {
-    font-size: 14px !important;
-}
-
-.card__actions .btn {
-  margin: 4px 4px !important;
-  font-size: 1em !important;
-  min-width: 44px !important;
-  background-color: #afcffa !important;
-}
-
-*/
-
-button.min-button {
-    border-radius: 60px;
-}
-
-.message-button {
-    display: none;
+  color: white;
 }

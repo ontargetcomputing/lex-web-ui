@@ -7,7 +7,9 @@
     <v-btn class="footer-btn">
       Save Chat
     </v-btn>
-    <v-btn class="footer-btn">
+    <v-btn 
+      v-on:click="onLanguageClick"
+      class="footer-btn">
       Language
     </v-btn>
     <v-btn class="footer-btn">
@@ -19,6 +21,11 @@
 <script>
   export default {
     data: () => ({}),
+    methods: {
+      onLanguageClick() {
+        this.$emit('languageClicked');
+      },    
+    }
   }
 </script>
 

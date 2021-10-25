@@ -957,6 +957,9 @@ export default {
       context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
     }
   },
+  requestLanguageChange(context) {
+    context.commit('setTargetLanguage', 'RDB FIXME TODO');
+  },
   agentIsTyping(context) {
     console.info('actions.agentIsTyping');
     context.commit('setIsLiveChatProcessing', true);

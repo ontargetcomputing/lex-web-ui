@@ -54,6 +54,7 @@ export default {
     ) ? { ...config.lex.sessionAttributes } : {},
     slotToElicit: '',
     slots: {},
+    targetLanguage: 'en',
   },
   liveChat: {
     username: '',

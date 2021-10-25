@@ -376,6 +376,18 @@ export default {
     state.liveChat.status = status.toLowerCase();
   },
   /**
+   * use to change the target language
+   */
+  setTargetLanguage(state, language) {
+    if (state.lex.targetLanguage === 'en') {
+      console.info('Changing to es');
+      state.lex.targetLanguage = 'es';
+    } else {
+      console.info('Changing to en');
+      state.lex.targetLanguage = 'en';
+    }
+  },
+  /**
   * set to true while live chat session is being created or agent is typing
   */
   setIsLiveChatProcessing(state, bool) {

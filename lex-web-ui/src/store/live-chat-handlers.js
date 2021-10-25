@@ -131,7 +131,7 @@ export const initLiveChatHandlers = async (context, session) => {
       url: `${context.state.config.live_agent.endpoint}/getMessage`,
       data: {
         session,
-        targetLanguage: 'en'
+        targetLanguage: context.state.lex.targetLanguage
       }
     };
     await axios(config)
@@ -192,8 +192,8 @@ export const sendChatMessage = (context, liveChatSession, message) => {
     data: {
       message,
       session: liveChatSession,
-        sourceLanguage: 'en',
-        targetLanguage: 'en'      
+        sourceLanguage: context.state.lex.targetLanguage,
+        targetLanguage: 'en'    // This is always EN    
     },
   };
   return axios(config)

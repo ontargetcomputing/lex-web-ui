@@ -48,7 +48,10 @@
       id="sound"
       aria-hidden="true"
     />
-    <footer-buttons></footer-buttons>
+    <footer-buttons
+      ref="FooterButtons"
+      @languageClicked="handleLanguageSelection"
+      ></footer-buttons>
   </v-app>
 </template>
 
@@ -352,6 +355,10 @@ export default {
     handleEndLiveChat() {
       console.info('LexWeb: handleEndLiveChat');
       this.$store.dispatch('requestLiveChatEnd');
+    },
+    handleLanguageSelection() {
+      console.info('LexWeb: handleLanguageSelection');
+      this.$store.dispatch('requestLanguageChange');
     },
     // messages from parent
     messageHandler(evt) {
