@@ -60,7 +60,9 @@ const configDefault = {
   },
   live_agent: {
     endpoint: '',
-    promptForNameMessage: 'Before starting a live chat, please tell me your name?',
+    promptForFirstNameMessage: 'What is your first name?',
+    promptForLastNameMessage: 'What is your last name?',
+    promptForEmailAddressMessage: 'What is your email address?',
     disconnectingMessage: 'Thank you, you are being returned to the chatbot',
     waitingForAgentMessage: 'Thank you for waiting. An agent will be with you when available.',
     waitingForAgentMessageIntervalSeconds: 30,

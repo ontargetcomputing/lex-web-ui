@@ -29,8 +29,8 @@
     "parentOrigin": "http://localhost:8000",
     "toolbarTitle": "Order Flowers",
     "toolbarLogo": "",
-    "positiveFeedbackIntent": "Thumbs up",
-    "negativeFeedbackIntent": "Thumbs down",
+    "positiveFeedbackIntent": "",
+    "negativeFeedbackIntent": "",
     "helpIntent": "Help",
     "enableLogin": false,
     "enableSFX": false,
@@ -52,7 +52,8 @@
     "voiceId": "Salli"
   },
   "recorder": {
-    "preset": "speech_recognition"
+    "preset": "speech_recognition",
+    "enable": false
   },
   "iframe": {
     "iframeOrigin": "",

@@ -498,8 +498,17 @@ export default {
             });
             context.dispatch('liveChatSessionEnded');
           }
-        } else if (context.state.liveChat.status === liveChatStatus.REQUEST_USERNAME) {
-          context.commit('setLiveChatUserName', message.text);
+        // } else if (context.state.liveChat.status === liveChatStatus.REQUEST_USERNAME) {
+        //   context.commit('setLiveChatUserName', message.text);
+        //   return context.dispatch('requestLiveChat');
+        } else if (context.state.liveChat.status === liveChatStatus.REQUEST_FIRSTNAME) {
+          context.commit('setLiveChatFirstName', message.text);
+          return context.dispatch('requestLiveChat');
+        } else if (context.state.liveChat.status === liveChatStatus.REQUEST_LASTNAME) {
+          context.commit('setLiveChatLastName', message.text);
+          return context.dispatch('requestLiveChat');
+        } else if (context.state.liveChat.status === liveChatStatus.REQUEST_EMAIL) {
+          context.commit('setLiveChatEmail', message.text);
           return context.dispatch('requestLiveChat');
         } else if (context.state.chatMode === chatMode.LIVECHAT) {
           if (context.state.liveChat.status === liveChatStatus.ESTABLISHED) {
@@ -875,7 +884,6 @@ export default {
   },
 
   async requestLiveChat(context) {
-    // LC - 2
     console.info(`actions.requestLiveChat with status=${context.state.liveChat.status}`);
     if (context.state.liveChat.status === liveChatStatus.DISCONNECTED) {
       console.info('actions.requestingLiveChat - verifying live chat');
@@ -893,7 +901,7 @@ export default {
           context.commit(
             'pushMessage',
             {
-              text: `FIXME: The wait time is currently ${waitTime}, would you like to wait?`,
+              text: `The wait time is currently ${waitTime}, would you like to wait?`,
               type: 'bot',
             },
           );
@@ -906,12 +914,12 @@ export default {
         });
     } else if (context.state.liveChat.status === liveChatStatus.VERIFIED) {
       if (context.state.liveChat.verifyLiveChat === true) {
-        console.info('actions.requestLiveChat - requesting username');
-        context.commit('setLiveChatStatus', liveChatStatus.REQUEST_USERNAME);
+        console.info('actions.requestLiveChat - requesting firstname');
+        context.commit('setLiveChatStatus', liveChatStatus.REQUEST_FIRSTNAME);
         context.commit(
           'pushMessage',
           {
-            text: context.state.config.live_agent.promptForNameMessage,
+            text: context.state.config.live_agent.promptForFirstNameMessage,
             type: 'bot',
           },
         );
@@ -926,8 +934,28 @@ export default {
         );
         context.dispatch('liveChatSessionEnded');
       }
-    } else if (context.state.liveChat.status === liveChatStatus.REQUEST_USERNAME) {
-      console.info('actions.requestLiveChat - prepping for chat');
+    } else if (context.state.liveChat.status === liveChatStatus.REQUEST_FIRSTNAME) {
+      console.info('actions.requestLiveChat - requesting lastname');
+      context.commit('setLiveChatStatus', liveChatStatus.REQUEST_LASTNAME);
+      context.commit(
+        'pushMessage',
+        {
+          text: context.state.config.live_agent.promptForLastNameMessage,
+          type: 'bot',
+        },
+      );
+    } else if (context.state.liveChat.status === liveChatStatus.REQUEST_LASTNAME) {
+      console.info('actions.requestLiveChat - requesting email');
+      context.commit('setLiveChatStatus', liveChatStatus.REQUEST_EMAIL);
+      context.commit(
+        'pushMessage',
+        {
+          text: context.state.config.live_agent.promptForEmailAddressMessage,
+          type: 'bot',
+        },
+      );
+    } else if (context.state.liveChat.status === liveChatStatus.REQUEST_EMAIL) {
+      console.info('actions.requestLiveChat - initiating livechat');
       console.info(`Username: ${context.getters.liveChatUserName()}`);
       context.commit('setLiveChatStatus', liveChatStatus.REQUESTED);
       context.commit('setChatMode', chatMode.LIVECHAT);

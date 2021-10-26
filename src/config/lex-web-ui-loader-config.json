@@ -65,7 +65,8 @@
     "voiceId": "Salli"
   },
   "recorder": {
-    "preset": "speech_recognition"
+    "preset": "speech_recognition",
+    "enable": false
   },
   "iframe": {
     "iframeOrigin": "",

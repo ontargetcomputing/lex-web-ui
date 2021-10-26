@@ -46,6 +46,11 @@ export default {
     return v;
   },
   liveChatUserName: state => () => {
+    console.info(`*****************`);
+    console.info(`${state.liveChat.firstname}`)
+    console.info(`${state.liveChat.lastname}`)
+    console.info(`${state.liveChat.email}`)
+    console.info(`*****************`);
     let v = '';
     if (state.tokens && state.tokens.idtokenjwt) {
       const decoded = jwt.decode(state.tokens.idtokenjwt, { complete: true });
@@ -57,8 +62,8 @@ export default {
         }
       }
       return `[${v}]`;
-    } else if (state.liveChat.username) {
-      return state.liveChat.username;
+    } else if (state.liveChat.firstname && state.liveChat.lastname && state.liveChat.email) {
+      return `${state.liveChat.firstname} ${state.liveChat.lastname} - ${state.liveChat.email}`;
     }
     return v;
   },
