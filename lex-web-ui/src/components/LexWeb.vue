@@ -1,58 +1,69 @@
 <template>
-  <v-app id="lex-web"
-    v-bind:ui-minimized="isUiMinimized"
-  >
-    <min-button
-      v-bind:toolbar-color="toolbarColor"
-      v-bind:is-ui-minimized="isUiMinimized"
-      v-on:toggleMinimizeUi="toggleMinimizeUi"
-    ></min-button>
-    <toolbar-container
-      v-if="!isUiMinimized"
-      v-bind:userName="userNameValue"
-      v-bind:toolbar-title="toolbarTitle"
-      v-bind:toolbar-color="toolbarColor"
-      v-bind:toolbar-logo="toolbarLogo"
-      v-bind:is-ui-minimized="isUiMinimized"
-      v-on:toggleMinimizeUi="toggleMinimizeUi"
-      @requestLogin="handleRequestLogin"
-      @requestLogout="handleRequestLogout"
-      @requestLiveChat="handleRequestLiveChat"
-      @endLiveChat="handleEndLiveChat"
-      transition="fade-transition"
-    ></toolbar-container>
-
-    <v-content
-      v-if="!isUiMinimized"
+<div>
+  <div v-if="!show">
+    <v-app id="lex-web"
+      v-bind:ui-minimized="isUiMinimized"
     >
-      <v-container
-        class="message-list-container"
-        v-bind:class="`toolbar-height-${toolbarHeightClassSuffix}`"
-        fluid pa-0
+      <min-button
+        v-bind:toolbar-color="toolbarColor"
+        v-bind:is-ui-minimized="isUiMinimized"
+        v-on:toggleMinimizeUi="toggleMinimizeUi"
+      ></min-button>
+      <toolbar-container
+        v-if="!isUiMinimized"
+        v-bind:userName="userNameValue"
+        v-bind:toolbar-title="toolbarTitle"
+        v-bind:toolbar-color="toolbarColor"
+        v-bind:toolbar-logo="toolbarLogo"
+        v-bind:is-ui-minimized="isUiMinimized"
+        v-on:toggleMinimizeUi="toggleMinimizeUi"
+        @requestLogin="handleRequestLogin"
+        @requestLogout="handleRequestLogout"
+        @requestLiveChat="handleRequestLiveChat"
+        @endLiveChat="handleEndLiveChat"
+        transition="fade-transition"
+      ></toolbar-container>
+
+      <v-content
+        v-if="!isUiMinimized"
       >
-        <message-list v-if="!isUiMinimized"
-        ></message-list>
-      </v-container>
-    </v-content>
+        <v-container
+          class="message-list-container"
+          v-bind:class="`toolbar-height-${toolbarHeightClassSuffix}`"
+          fluid pa-0
+        >
+          <message-list v-if="!isUiMinimized"
+          ></message-list>
+        </v-container>
+      </v-content>
 
-    <input-container
-      ref="InputContainer"
-      v-if="!isUiMinimized && !hasButtons"
-      v-bind:text-input-placeholder="textInputPlaceholder"
-      v-bind:initial-speech-instruction="initialSpeechInstruction"
-      @endLiveChatClicked="handleEndLiveChat"
-    ></input-container>
+      <input-container
+        ref="InputContainer"
+        v-if="!isUiMinimized && !hasButtons"
+        v-bind:text-input-placeholder="textInputPlaceholder"
+        v-bind:initial-speech-instruction="initialSpeechInstruction"
+        @endLiveChatClicked="handleEndLiveChat"
+      ></input-container>
 
-    <div
-      v-if="isSFXOn"
-      id="sound"
-      aria-hidden="true"
-    />
-    <footer-buttons
-      ref="FooterButtons"
-      @languageClicked="handleLanguageSelection"
-      ></footer-buttons>
-  </v-app>
+      <footer-buttons 
+        ref="FooterButtons"
+        @languageClicked="showLanguage"
+        @saveChatClicked="saveChat"
+        @endChatClicked="endChat"></footer-buttons>
+      
+      <div
+        v-if="isSFXOn"
+        id="sound"
+        aria-hidden="true"
+      />
+    </v-app>
+  </div>
+
+  <div v-if="show">
+    <language-card @clicked="showLexWeb"></language-card>
+  </div>
+  
+  </div>
 </template>
 
 <script>
@@ -78,6 +89,7 @@ import InputContainer from '@/components/InputContainer';
 import LexRuntime from 'aws-sdk/clients/lexruntime';
 import LexRuntimeV2 from 'aws-sdk/clients/lexruntimev2';
 import FooterButtons from '@/components/FooterButtons';
+import LanguageCard from '@/components/LanguageCard';
 
 import { Config as AWSConfig, CognitoIdentityCredentials }
   from 'aws-sdk/global';
@@ -88,6 +100,7 @@ export default {
     return {
       userNameValue: '',
       toolbarHeightClassSuffix: 'md',
+      show: false
     };
   },
   components: {
@@ -95,7 +108,8 @@ export default {
     ToolbarContainer,
     MessageList,
     InputContainer,
-    FooterButtons
+    FooterButtons,
+    LanguageCard
   },
   computed: {
     initialSpeechInstruction() {
@@ -348,7 +362,6 @@ export default {
       }
     },
     handleRequestLiveChat() {
-      // LC - 1
       console.info('LexWeb.vue - handleRequestLiveChat');
       this.$store.dispatch('requestLiveChat');
     },
@@ -520,6 +533,18 @@ export default {
         this.$refs.InputContainer.setInputTextFieldFocus();
       }
     },
+    showLanguage(value) {
+      this.show = true;
+    },
+    saveChat(value) {
+      console.info('LexWeb: saveChat')
+    },
+    endChat(value) {
+      console.info('LexWeb: endChat')
+    },
+    showLexWeb() {
+      this.show = false;
+    }
   },
 };
 </script>
