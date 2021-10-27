@@ -1,5 +1,5 @@
 <template>
-  <v-row
+  <v-layout
     class="footer"
     align="start"
     justify="space-around"
@@ -13,7 +13,7 @@
     <v-btn v-on:click="handleEndChat" class="footer-btn">
       End Chat
     </v-btn>
-  </v-row>
+  </v-layout>
 </template>
 
 <script>

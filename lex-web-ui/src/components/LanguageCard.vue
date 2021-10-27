@@ -4,56 +4,59 @@
     <h4 class="headline-text">Change language</h4>
   </v-toolbar>
   <v-container class="language-body">
-      <v-row>
-        <img class="logo" src="https://realid.dmv.ca.gov/wp-content/themes/dmv/assets/images/chatbot-icon-circle.png" width="200"/>
-      </v-row>
-      <v-row>
+      <v-layout>
+        <img class="logo" src="../assets/chatbot-icon-circle.png" width="200"/>
+      </v-layout>
+      <v-layout>
         <h2 class="welcome-text">WELCOME</h2>
-      </v-row>
-      <v-row>
+      </v-layout>
+      <v-layout>
         <h5 class="body-text">SELECT YOUR PREFERRED LANGUAGE FROM THE LIST <br /> BELOW TO GET STARTED.</h5>
-      </v-row>
-      <v-row>
-        <div class="languages">
-          <select @change="onChange($event)" class="lang-select" name="languages" id="languages">
-            <option value="ara">Arabic</option>
-            <option value="arm">Armenian</option>
-            <option value="cht (Traditional)">Chinese (Traditional)</option>
-            <option value="eng" selected>English</option>
-            <option value="hin">Hindi</option>
-            <option value="jpn">Japanese</option>
-            <option value="kor">Korean</option>
-            <option value="per">Persian</option>
-            <option value="rus">Russian</option>
-            <option value="spa">Spanish</option>
-            <option value="vie">Vietnamese</option>
-            <option value="tl">Tagalog</option>
-            <option value="pa">Punjabi</option>
-            <option value="km">Khmer</option>
-          </select>
-        </div>
-      </v-row>
-      <v-row>
+      </v-layout>
+      <v-layout>
+        <v-flex>
+          <div class="languages">
+            <select @change="onChange($event)" class="lang-select" name="languages" id="languages">
+              <option value="ar">Arabic</option>
+              <option value="hy">Armenian</option>
+              <option value="zh-TW">Chinese (Traditional)</option>
+              <option value="en" selected>English</option>
+              <option value="hi">Hindi</option>
+              <option value="ja">Japanese</option>
+              <option value="ko">Korean</option>
+              <option value="per">Persian</option>
+              <option value="ru">Russian</option>
+              <option value="es">Spanish</option>
+              <option value="vi">Vietnamese</option>
+              <option value="tl">Tagalog</option>
+            </select>
+          </div>
+        </v-flex>
+      </v-layout>
+      <v-layout>
         <div v-on:click="handleBack" class="back-arrow">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
             <path stroke-width="5" fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
           </svg>
         </div>
-      </v-row>
+      </v-layout>
   </v-container>
 </div>
 </template>
 
+
 <script>
   export default {
-    name: "languages-card",
+    name: "language-card",
     data: () => ({}),
     methods: {
       handleBack() {
          this.$emit('clicked')
       },
       onChange(event) {
-         console.log(event.target.value)
+         console.log(`${event.target.value} chosen as new language`)
+         this.$store.commit('setTargetLanguage', event.target.value);
+         this.$emit('clicked')
       },
     }
   }

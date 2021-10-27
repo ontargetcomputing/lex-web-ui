@@ -1,5 +1,8 @@
+/* Example custom css file for lex-web-ui. Entire file is commented out as a default. Uncomment and
+ adjust as needed. */
+
 .toolbar.theme--dark {
-  background: #163159 !important;
+  background: linear-gradient(180deg, #084897 0%, #001a72 100%) !important;
 }
 
 .toolbar__content img {
@@ -11,6 +14,51 @@
   background-color: #ffffff !important;
 }
 
+.message-human .message-bubble {
+  background-color: #ffffff;
+}
+
+.message-human .focusable {
+  padding: 0;
+  box-shadow: none;
+}
+
+.smicon {
+  visibility: hidden;
+}
+
+.message-human:before {
+  content: "Me:";
+  margin-top: -20px;
+  margin-right: -58px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #084897 0%, #001a72 100%);
+  color: #fff;
+  height: 35%;
+  padding-top: 1px;
+  padding-left: 5px;
+  padding-right: 11px;
+}
+
+.message-bot .focusable {
+  padding: 0;
+  box-shadow: none;
+}
+
+.message-bot:before {
+  display: block;
+  content: "Miles:";
+  margin-top: -20px;
+  margin-right: -59px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #ffd457 0%, #ffc107 100%);
+  color: #203376;
+  height: 22px;
+  padding-top: 1px;
+  padding-left: 5px;
+  padding-right: 11px;
+}
+
 .message-bot .message-bubble {
   background-color: #ffffff !important;
 }
@@ -19,10 +67,23 @@
   padding: 0.938em !important;
 }
 
-.message-bubble {
+.message-bot .message-bubble {
   border-radius: 0 !important;
   border-left: 0.15em solid #ffc107 !important;
   padding: 0 !important;
+}
+
+.message-bot .card__actions {
+  margin-left: -24px !important;
+}
+
+.message-bubble .message-text {
+  background-color: white;
+  border-left: none;
+}
+
+.message-bubble .menu {
+  background-color: white;
 }
 
 .message-text ul {
@@ -30,13 +91,14 @@
 }
 
 .secondary--text .btn__content {
-  background: #0077c8 !important;
-  color: #ffffff;
+  background: #fec31b !important;
+  color: #053b8c !important;
+  border-radius: 5px;
 }
 
 .secondary--text .btn__content:hover {
-  background: #d3eee7 !important;
-  color: #163159 !important;
+  background: #001a72 !important;
+  color: #ffffff !important;
 }
 
 .input-container button .btn__content {
@@ -51,4 +113,48 @@
   vertical-align: bottom;
   width: 100%;
   color: white;
+}
+
+.input-container .toolbar__content {
+  background-color: #f2f2f2 !important;
+}
+
+#text-input {
+  border-style: solid !important;
+  border-color: #dadada;
+  background: #ffffff;
+  border-radius: 5px;
+}
+
+.input-group__details:before {
+  height: 0 !important;
+  transition: none !important;
+}
+
+.input-group__details::after {
+  transition: none !important;
+  height: 0 !important;
+}
+
+#text-input:focus {
+  border-style: solid !important;
+  border-color: #007bff;
+}
+
+.input-button {
+  width: 25%;
+}
+
+.input-button .btn__content:hover {
+  background-color: rgb(1 98 1) !important;
+  border-radius: 5px;
+}
+
+.btn:focus .btn__content:before,
+.btn:hover .btn__content:before {
+  background-color: rgb(1 98 1) !important;
+}
+
+.btn:not(.btn--depressed) {
+  box-shadow: none;
 }
