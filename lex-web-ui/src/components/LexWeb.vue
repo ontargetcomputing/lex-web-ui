@@ -47,6 +47,7 @@
 
       <footer-buttons 
         ref="FooterButtons"
+        v-if="!isUiMinimized"
         @languageClicked="showLanguage"
         @saveChatClicked="saveChat"
         @endChatClicked="endChat"></footer-buttons>
