@@ -1209,4 +1209,10 @@ export default {
   changeLocaleIds(context, data) {
     context.commit('updateLocaleIds', data);
   },
+  endChat(context) {
+    console.log('actions: endChat')
+    context.dispatch('resetHistory');
+    context.dispatch('toggleIsUiMinimized');
+    context.dispatch('deleteSession');
+  },
 };

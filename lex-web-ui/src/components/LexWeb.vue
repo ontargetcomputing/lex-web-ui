@@ -51,7 +51,7 @@
         @endLiveChatClicked="handleEndLiveChat"
       ></input-container>
 
-      <footer-buttons @clicked="showLanguage"></footer-buttons>
+      <footer-buttons @languageClicked="showLanguage" @saveChatClicked="saveChat" @endChatClicked="endChat"></footer-buttons>
       
       <div
         v-if="isSFXOn"
@@ -538,6 +538,7 @@ export default {
       }
     },
     showLanguage(value) {
+      console.info('LexWeb: showLanguage')
       this.show = true;
     },
     saveChat(value) {
@@ -545,6 +546,7 @@ export default {
     },
     endChat(value) {
       console.info('LexWeb: endChat')
+      return this.$store.dispatch('endChat')
     },
     showLexWeb() {
       this.show = false;
