@@ -51,7 +51,7 @@ const configEnvFile = (process.env.BUILD_TARGET === 'lib') ?
 // environment and dynamic configs
 const configDefault = {
   // AWS region
-  region: 'us-east-1',
+  region: 'us-west-2',
 
   cognito: {
     // Cognito pool id used to obtain credentials
@@ -59,7 +59,7 @@ const configDefault = {
     poolId: '',
   },
   live_agent: {
-    endpoint: '',
+    endpoint: "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
     promptForFirstNameMessage: 'What is your first name?',
     promptForLastNameMessage: 'What is your last name?',
     promptForEmailAddressMessage: 'What is your email address?',
@@ -151,7 +151,7 @@ const configDefault = {
 
   ui: {
     // this dynamicall changes the pageTitle injected at build time
-    pageTitle: 'Order Flowers Bot',
+    pageTitle: 'Miles',
 
     // when running as an embedded iframe, this will be used as the
     // be the parent origin used to send/receive messages
@@ -169,7 +169,7 @@ const configDefault = {
     messageReceivedSFX: 'received.mp3',
 
     // chat window text placeholder
-    textInputPlaceholder: 'Type here or click on the mic',
+    textInputPlaceholder: 'Type here',
 
     // text shown when you hover over the minimized bot button
     minButtonContent: '',
@@ -177,7 +177,7 @@ const configDefault = {
     toolbarColor: 'red',
 
     // chat window title
-    toolbarTitle: 'Order Flowers',
+    toolbarTitle: 'Miles',
 
     // logo used in toolbar - also used as favicon not specificied
     toolbarLogo: '',
@@ -217,7 +217,7 @@ const configDefault = {
     showDialogStateIcon: true,
 
     // Hide the message bubble on a response card button press
-    hideButtonMessageBubble: false,
+    hideButtonMessageBubble: true,
 
     // shows a thumbs up and thumbs down button which can be clicked
     positiveFeedbackIntent: '',
@@ -249,7 +249,7 @@ const configDefault = {
     enableLogin: false,
 
     // enable Sound Effects
-    enableSFX: false,
+    enableSFX: true,
 
     // Optionally force login automatically when load
     forceLogin: false,
@@ -273,7 +273,7 @@ const configDefault = {
   recorder: {
     // if set to true, voice interaction would be enabled on supported browsers
     // set to false if you don't want voice enabled
-    enable: true,
+    enable: false,
 
     // maximum recording time in seconds
     recordingTimeMax: 10,

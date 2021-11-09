@@ -5,7 +5,7 @@
   </v-toolbar>
   <v-container class="language-body">
       <v-layout>
-        <img class="logo" src="../assets/chatbot-icon-circle.png" width="200"/>
+        <img class="logo" src="https://realid.dmv.ca.gov/wp-content/themes/dmv/assets/images/chatbot-icon-circle.png" width="200"/>
       </v-layout>
       <v-layout>
         <h2 class="welcome-text">WELCOME</h2>

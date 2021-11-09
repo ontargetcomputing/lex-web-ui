@@ -24,8 +24,8 @@
   },
   "ui": {
     "parentOrigin": "",
-    "toolbarTitle": "MILES",
-    "toolbarLogo": "",
+    "toolbarTitle": "DEV - MILES",
+    "toolbarLogo": "DEV",
     "positiveFeedbackIntent": "",
     "negativeFeedbackIntent": "Thumbs down",
     "helpIntent": "Help",
@@ -46,7 +46,7 @@
     "enableSFX": true
   },
   "live_agent": {
-      "endpoint": "http://localhost:3000",
+      "endpoint": "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
       "promptForFirstNameMessage": "What is your first name?",
       "promptForLastNameMessage": "What is your last name?",
       "promptForEmailAddressMessage": "What is your email address?",

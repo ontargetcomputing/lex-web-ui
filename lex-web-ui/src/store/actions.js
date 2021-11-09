@@ -476,15 +476,18 @@ export default {
 
     return context.dispatch('interruptSpeechConversation')
       .then(() => {
+        console.info('Got this far - take me out-' + message)
         if (context.state.chatMode === chatMode.BOT) {
           return context.dispatch('pushMessage', message);
         }
         return Promise.resolve();
       })
       .then(() => {
+        console.info('postToLex = true')
         let postToLex = true;
         /* eslint-disable no-else-return, max-len */
         if (context.state.config.ui.enableLiveChat && liveChatTerms.find((el) => el === message.text.toLowerCase())) {
+          console.info('Requesting Live Chat')
           return context.dispatch('requestLiveChat');
         } else if (context.state.liveChat.status === liveChatStatus.VERIFIED) {
           if (message.text.toLowerCase() === 'yes' || message.text.toLowerCase() === 'y') {
