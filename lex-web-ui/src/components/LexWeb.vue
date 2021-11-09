@@ -1,5 +1,11 @@
 <template>
 <div>
+<div v-if="!showChatBot">
+  <v-btn v-on:click="toggleChatBot">
+    Ask DMV
+  </v-btn>
+</div>
+<div v-if="showChatBot">
   <div v-if="!show">
     <v-app id="lex-web"
       v-bind:ui-minimized="isUiMinimized"
@@ -45,12 +51,7 @@
         @endLiveChatClicked="handleEndLiveChat"
       ></input-container>
 
-      <footer-buttons 
-        ref="FooterButtons"
-        v-if="!isUiMinimized"
-        @languageClicked="showLanguage"
-        @saveChatClicked="saveChat"
-        @endChatClicked="endChat"></footer-buttons>
+      <footer-buttons @clicked="showLanguage"></footer-buttons>
       
       <div
         v-if="isSFXOn"
@@ -64,6 +65,7 @@
     <language-card @clicked="showLexWeb"></language-card>
   </div>
   
+  </div>
   </div>
 </template>
 
@@ -101,7 +103,8 @@ export default {
     return {
       userNameValue: '',
       toolbarHeightClassSuffix: 'md',
-      show: false
+      show: false,
+      showChatBot: false
     };
   },
   components: {
@@ -545,6 +548,9 @@ export default {
     },
     showLexWeb() {
       this.show = false;
+    },
+    toggleChatBot() {
+      this.showChatBot = true;
     }
   },
 };
