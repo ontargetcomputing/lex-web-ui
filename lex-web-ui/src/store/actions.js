@@ -886,10 +886,13 @@ export default {
           // const liveAgentAvailable = response.data[0].outputValues.liveAgentAvailable;
           context.commit('setLiveChatStatus', liveChatStatus.VERIFIED);
           const { waitTime } = response.data[0].outputValues;
+          return context.dispatch('translate', { targetLanguage: context.state.lex.targetLanguage, message: `The wait time is currently ${waitTime}, would you like to wait?` })
+        })
+        .then((message)=> {
           context.commit(
             'pushMessage',
             {
-              text: `The wait time is currently ${waitTime}, would you like to wait?`,
+              text: message,
               type: 'bot',
             },
           );
@@ -907,7 +910,7 @@ export default {
         context.commit(
           'pushMessage',
           {
-            text: context.state.config.live_agent.promptForFirstNameMessage,
+            text: await context.dispatch('translate', {targetLanguage: context.state.lex.targetLanguage, message: context.state.config.live_agent.promptForFirstNameMessage}),
             type: 'bot',
           },
         );
@@ -916,7 +919,7 @@ export default {
         context.commit(
           'pushMessage',
           {
-            text: context.state.config.live_agent.disconnectingMessage,
+            text: await context.dispatch('translate', {targetLanguage: context.state.lex.targetLanguage, message: context.state.config.live_agent.disconnectingMessage}),
             type: 'bot',
           },
         );
@@ -928,7 +931,7 @@ export default {
       context.commit(
         'pushMessage',
         {
-          text: context.state.config.live_agent.promptForLastNameMessage,
+          text: await context.dispatch('translate', {targetLanguage: context.state.lex.targetLanguage, message: context.state.config.live_agent.promptForLastNameMessage}),
           type: 'bot',
         },
       );
@@ -938,7 +941,7 @@ export default {
       context.commit(
         'pushMessage',
         {
-          text: context.state.config.live_agent.promptForEmailAddressMessage,
+          text: await context.dispatch('translate', {targetLanguage: context.state.lex.targetLanguage, message: context.state.config.live_agent.promptForEmailAddressMessage}),
           type: 'bot',
         },
       );
@@ -1264,4 +1267,23 @@ export default {
     context.dispatch('toggleIsUiMinimized');
     context.dispatch('deleteSession');
   },
+  translate(context, data) {
+
+    const config = {
+      method: 'post',
+      url: `${context.state.config.live_agent.endpoint}/translate`,
+      data,
+    };
+    return axios(config)
+      .then((response) => {
+        return Promise.resolve(response['data']['translation'])
+      })
+      .then((translation) => {
+        console.info(`successful translate: ${JSON.stringify(translation)}`);
+        return Promise.resolve(translation);
+      }).catch((error) => {
+        console.info(`unsuccessful translate ${JSON.stringify(error)}`);
+        return Promise.reject(error);
+      });
+  }
 };
