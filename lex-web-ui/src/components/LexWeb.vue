@@ -537,14 +537,14 @@ export default {
         this.$refs.InputContainer.setInputTextFieldFocus();
       }
     },
-    showLanguage(value) {
-      console.info('LexWeb: showLanguage')
+    showLanguage() {
+      // console.info('LexWeb: showLanguage')
       this.show = true;
     },
-    saveChat(value) {
+    saveChat() {
       console.info('LexWeb: saveChat')
     },
-    endChat(value) {
+    endChat() {
       console.info('LexWeb: endChat')
       return this.$store.dispatch('endChat')
     },

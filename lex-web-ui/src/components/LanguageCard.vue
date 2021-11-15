@@ -15,12 +15,12 @@
       </v-layout>
       <v-layout>
         <v-flex>
-          <div class="languages">
+          <div v-if="isEnglishSelected" class="languages">
             <select @change="onChange($event)" class="lang-select" name="languages" id="languages">
               <option value="ar">Arabic</option>
               <option value="hy">Armenian</option>
               <option value="zh-TW">Chinese (Traditional)</option>
-              <option value="en" selected>English</option>
+              <option disabled value="en">English</option>
               <option value="hi">Hindi</option>
               <option value="ja">Japanese</option>
               <option value="ko">Korean</option>
@@ -29,6 +29,24 @@
               <option value="es">Spanish</option>
               <option value="vi">Vietnamese</option>
               <option value="tl">Tagalog</option>
+              <option selected value="">Please select language</option>
+            </select>
+          </div>
+          <div class="languages" v-else>
+            <select @change="onChange($event)" class="lang-select" name="languages" id="languages">
+              <option disabled value="ar">Arabic</option>
+              <option disabled value="hy">Armenian</option>
+              <option disabled value="zh-TW">Chinese (Traditional)</option>
+              <option value="en">English</option>
+              <option disabled value="hi">Hindi</option>
+              <option disabled value="ja">Japanese</option>
+              <option disabled value="ko">Korean</option>
+              <option disabled value="per">Persian</option>
+              <option disabled value="ru">Russian</option>
+              <option disabled value="es">Spanish</option>
+              <option disabled value="vi">Vietnamese</option>
+              <option disabled value="tl">Tagalog</option>
+              <option selected value="">Please select language</option>
             </select>
           </div>
         </v-flex>
@@ -49,15 +67,20 @@
   export default {
     name: "language-card",
     data: () => ({}),
+    computed: {
+      isEnglishSelected() {
+        return this.$store.state.lex.targetLanguage === 'en';
+      }      
+    },
     methods: {
       handleBack() {
          this.$emit('clicked')
       },
       onChange(event) {
-         console.log(`${event.target.value} chosen as new language`)
-         this.$store.commit('setTargetLanguage', event.target.value);
+         this.$store.dispatch('requestLanguageChange', event.target.value)
+         // this.$store.commit('setTargetLanguage', event.target.value);
          this.$emit('clicked')
-      },
+      }
     }
   }
 </script>

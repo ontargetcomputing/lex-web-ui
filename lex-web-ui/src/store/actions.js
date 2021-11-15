@@ -471,19 +471,18 @@ export default {
   },
   postTextMessage(context, message) {
     if (context.state.isSFXOn && !context.state.lex.isPostTextRetry) {
-      context.dispatch('playSound', context.state.config.ui.messageSentSFX);
+    // RDB  context.dispatch('playSound', context.state.config.ui.messageSentSFX);
     }
 
     return context.dispatch('interruptSpeechConversation')
       .then(() => {
-        console.info('Got this far - take me out-' + message)
+        console.info('TODO - REMOVE THIS - Got this far - take me out-' + message)
         if (context.state.chatMode === chatMode.BOT) {
           return context.dispatch('pushMessage', message);
         }
         return Promise.resolve();
       })
       .then(() => {
-        console.info('postToLex = true')
         let postToLex = true;
         /* eslint-disable no-else-return, max-len */
         if (context.state.config.ui.enableLiveChat && liveChatTerms.find((el) => el === message.text.toLowerCase())) {
@@ -497,13 +496,10 @@ export default {
             postToLex = false;
             context.dispatch('pushLiveChatMessage', {
               type: 'bot',
-              text: 'TODO: Livechat session aborted, returning you to Miles',
+              text: 'Livechat session initiation aborted, returning you to Miles',
             });
             context.dispatch('liveChatSessionEnded');
           }
-        // } else if (context.state.liveChat.status === liveChatStatus.REQUEST_USERNAME) {
-        //   context.commit('setLiveChatUserName', message.text);
-        //   return context.dispatch('requestLiveChat');
         } else if (context.state.liveChat.status === liveChatStatus.REQUEST_FIRSTNAME) {
           context.commit('setLiveChatFirstName', message.text);
           return context.dispatch('requestLiveChat');
@@ -527,7 +523,8 @@ export default {
         console.info(`PostToLex = ${postToLex}`);
         if (postToLex && context.state.chatMode === chatMode.BOT
           && context.state.liveChat.status !== liveChatStatus.REQUEST_USERNAME) {
-          return context.dispatch('lexPostText', message.text);
+            
+            return context.dispatch('lexPostText', message.text);
         }
         return false;
       })
@@ -677,7 +674,9 @@ export default {
       : undefined;
     return context.dispatch('refreshAuthTokens')
       .then(() => context.dispatch('getCredentials'))
-      .then(() => lexClient.postText(text, localeId, session))
+      .then(() => {
+        return lexClient.postText(text, localeId, session)
+      })
       .then((data) => {
         context.commit('setIsLexProcessing', false);
         return context.dispatch('updateLexState', data)
@@ -810,22 +809,10 @@ export default {
    *
    **********************************************************************/
   initLiveChat(context) {
-    console.info('***** RDB actions.initLiveChat does nothing');
-    // require('amazon-connect-chatjs');
-    // if (window.connect) {
-    //   window.connect.ChatSession.setGlobalConfig({
-    //     region: context.state.config.region,
-    //   });
-    //   return Promise.resolve();
-    // } else {
-    //   return Promise.reject(new Error('failed to find Connect Chat JS global variable'));
-    // }
+    // This is a holdover from the original implementation that uses AWS Connect
   },
 
   initLiveChatSession(context) {
-    console.info('************ RDB - actions.initLiveChatSession');
-    console.info('initLiveChat');
-    console.info('config connect', context.state.config.connect);
     if (!context.state.config.ui.enableLiveChat) {
       console.error('error in initLiveChatSession() enableLiveChat is not true in config');
       return Promise.reject(new Error('error in initLiveChatSession() enableLiveChat is not true in config'));
@@ -866,7 +853,6 @@ export default {
         console.info('Live Chat Session Created:', liveChatSession);
         initLiveChatHandlers(context, liveChatSession);
         console.info('Live Chat Handlers initialised:');
-        // RDB TODO
         return connectLiveChatSession(liveChatSession, context);
       })
       .then((response) => {
@@ -880,7 +866,6 @@ export default {
       .catch((error) => {
         console.error('Error esablishing live chat');
         console.error(error);
-        // context.commit('setLiveChatStatus', liveChatStatus.ENDED);
         context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
         return Promise.resolve();
       });
@@ -982,14 +967,78 @@ export default {
     console.info('actions.endLiveChat');
     context.commit('clearLiveChatIntervalId');
     if (context.state.chatMode === chatMode.LIVECHAT && liveChatSession) {
-      console.info('actdions - requesting live chat end');
+      console.info('actions - requesting live chat end');
       requestLiveChatEnd(context, liveChatSession);
       // context.commit('setLiveChatStatus', liveChatStatus.ENDED);
       context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
     }
   },
-  requestLanguageChange(context) {
-    context.commit('setTargetLanguage', 'RDB FIXME TODO');
+  requestLanguageChange(context, language) {
+    console.log('*******')
+    context.commit('setTargetLanguage', language);
+
+    let languageCooked;
+    switch(language) {
+      case 'ar':
+        languageCooked = 'Armenian';
+        break;
+      case 'hy':
+        languageCooked = 'Arabic';
+        break;
+      case 'zh-TW':
+        languageCooked = 'Chinese';
+        break;
+      case 'en':
+        languageCooked = 'English';
+        break;
+      case 'hi':
+        languageCooked = 'Hindi';
+        break;
+      case 'ja':
+        languageCooked = 'Japanese'; 
+        break;
+      case 'ko':
+        languageCooked = 'Korean';
+        break;
+      case 'per':
+        languageCooked = 'Persian';
+        break;
+      case 'ru':
+        languageCooked = 'Russian';
+        break;
+      case 'es':
+        languageCooked = 'Spanish';
+        break;
+      case 'vi':
+        languageCooked = 'Vietnamese';
+        break;
+      case 'tl':
+        languageCooked = 'Tagalog';
+        break;
+      default:
+        console.error(`Unknown language code ${language}`)
+        return
+    }
+
+    // context.commit(
+    //       'pushMessage',
+    //       {
+    //         text: languageCooked,
+    //         type: 'human',
+    //       },
+    // );
+
+    const messageWrapper = {
+      type: 'human',
+      text: languageCooked,
+    };
+
+    return context.dispatch('postTextMessage', messageWrapper)
+        .then(() => {
+          console.info('changing the language')
+          return
+        });
+   
   },
   agentIsTyping(context) {
     console.info('actions.agentIsTyping');
