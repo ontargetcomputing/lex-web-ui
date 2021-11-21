@@ -12,11 +12,22 @@
   },
   "ui": {
     "parentOrigin": "",
-    "pageTitle": "Order Flowers Bot",
-    "toolbarTitle": "Order Flowers",
+    "pageTitle": "PROD - Order Flowers Bot",
+    "toolbarTitle": "PROD - Order Flowers",
     "enableLiveChat": false
   },
-  "connect": {
+  "live_agent": {
+    "endpoint": "http://localhost:3000",
+    "promptForFirstNameMessage": "What is your first name?",
+    "promptForLastNameMessage": "What is your last name?",
+    "promptForEmailAddressMessage": "What is your email address?",
+    "disconnectingMessage": "Thank you, you are being returned to the chatbot",
+    "waitingForAgentMessage": "Thank you for waiting. An agent will be with you when available.",
+    "waitingForAgentMessageIntervalSeconds": 30,
+    "salesforcePollingInterval": 5000,
+    "apiCallTimeout": 500
+  },
+    "connect": {
     "contactFlowId" : "",
     "instanceId" : "",
     "apiGatewayEndpoint" : ""

@@ -51,12 +51,23 @@ const configEnvFile = (process.env.BUILD_TARGET === 'lib') ?
 // environment and dynamic configs
 const configDefault = {
   // AWS region
-  region: 'us-east-1',
+  region: 'us-west-2',
 
   cognito: {
     // Cognito pool id used to obtain credentials
     // e.g. poolId: 'us-east-1:deadbeef-cac0-babe-abcd-abcdef01234',
     poolId: '',
+  },
+  live_agent: {
+    endpoint: "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
+    promptForFirstNameMessage: 'What is your first name?',
+    promptForLastNameMessage: 'What is your last name?',
+    promptForEmailAddressMessage: 'What is your email address?',
+    disconnectingMessage: 'Thank you, you are being returned to the chatbot',
+    waitingForAgentMessage: 'Thank you for waiting. An agent will be with you when available.',
+    waitingForAgentMessageIntervalSeconds: 30,
+    salesforcePollingInterval: 5000,
+    apiCallTimeout: 500,
   },
   connect: {
     // The Connect contact flow id - user configured via CF template
@@ -68,7 +79,7 @@ const configDefault = {
     // Message to prompt the user for a name prior to establishing a session
     promptForNameMessage: 'Before starting a live chat, please tell me your name?',
     // The default message to message to display while waiting for a live agent
-    waitingForAgentMessage: "Thanks for waiting. An agent will be with you when available.",
+    waitingForAgentMessage: 'Thanks for waiting. An agent will be with you when available.',
     // The default interval with which to display the waitingForAgentMessage. When set to 0
     // the timer is disabled.
     waitingForAgentMessageIntervalSeconds: 60,
@@ -140,7 +151,7 @@ const configDefault = {
 
   ui: {
     // this dynamicall changes the pageTitle injected at build time
-    pageTitle: 'Order Flowers Bot',
+    pageTitle: 'Miles',
 
     // when running as an embedded iframe, this will be used as the
     // be the parent origin used to send/receive messages
@@ -158,7 +169,7 @@ const configDefault = {
     messageReceivedSFX: 'received.mp3',
 
     // chat window text placeholder
-    textInputPlaceholder: 'Type here or click on the mic',
+    textInputPlaceholder: 'Type here',
 
     // text shown when you hover over the minimized bot button
     minButtonContent: '',
@@ -166,7 +177,7 @@ const configDefault = {
     toolbarColor: 'red',
 
     // chat window title
-    toolbarTitle: 'Order Flowers',
+    toolbarTitle: 'Miles',
 
     // logo used in toolbar - also used as favicon not specificied
     toolbarLogo: '',
@@ -206,7 +217,7 @@ const configDefault = {
     showDialogStateIcon: true,
 
     // Hide the message bubble on a response card button press
-    hideButtonMessageBubble: false,
+    hideButtonMessageBubble: true,
 
     // shows a thumbs up and thumbs down button which can be clicked
     positiveFeedbackIntent: '',
@@ -238,7 +249,7 @@ const configDefault = {
     enableLogin: false,
 
     // enable Sound Effects
-    enableSFX: false,
+    enableSFX: true,
 
     // Optionally force login automatically when load
     forceLogin: false,
@@ -262,7 +273,7 @@ const configDefault = {
   recorder: {
     // if set to true, voice interaction would be enabled on supported browsers
     // set to false if you don't want voice enabled
-    enable: true,
+    enable: false,
 
     // maximum recording time in seconds
     recordingTimeMax: 10,

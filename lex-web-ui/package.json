@@ -7,11 +7,11 @@
   "private": true,
   "main": "dist/bundle/lex-web-ui.js",
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --skip-plugins @vue/cli-plugin-eslint",
     "dev": "vue-cli-service serve",
     "start": "vue-cli-service serve",
     "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint",
-    "build:dev": "vue-cli-service build --mode development",
+    "build:dev": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint --mode development",
     "build-dist": "npm run build:lib-dev && npm run build:lib-prod",
     "build:lib-dev": "BUILD_TARGET=lib vue-cli-service build --skip-plugins @vue/cli-plugin-eslint ---no-clean --mode development src/lex-web-ui.js",
     "build:lib-prod": "BUILD_TARGET=lib vue-cli-service build --skip-plugins @vue/cli-plugin-eslint --no-clean ---mode production src/lex-web-ui.js",
@@ -20,7 +20,8 @@
   "dependencies": {
     "amazon-connect-chatjs": "^1.1.4",
     "aws-sdk": "^2.903.0",
-    "core-js": "^3.6.5",
+    "axios": "^0.23.0",
+    "core-js": "^3.18.3",
     "jsonwebtoken": "^8.5.1",
     "marked": "^2.0.1",
     "material-design-icons": "^3.0.1",

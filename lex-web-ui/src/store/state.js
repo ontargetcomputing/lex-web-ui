@@ -23,14 +23,17 @@ export const chatMode = {
 
 export const liveChatStatus = {
   REQUESTED: 'requested',
+  VERIFIED: 'verified',
   REQUEST_USERNAME: 'request_username',
+  REQUEST_FIRSTNAME: 'request_firstname',
+  REQUEST_LASTNAME: 'request_lastname',
+  REQUEST_EMAIL: 'request_email',
   INITIALIZING: 'initializing',
   CONNECTING: 'connecting',
   ESTABLISHED: 'established',
   DISCONNECTED: 'disconnected',
   ENDED: 'ended',
 };
-
 
 export default {
   version: (process.env.PACKAGE_VERSION) ?
@@ -54,9 +57,14 @@ export default {
     ) ? { ...config.lex.sessionAttributes } : {},
     slotToElicit: '',
     slots: {},
+    targetLanguage: 'en',
   },
   liveChat: {
     username: '',
+    firstname: '',
+    lastname: '',
+    email: '',
+    verifyLiveChat: false,
     isProcessing: false,
     status: liveChatStatus.DISCONNECTED,
     message: '',

@@ -1,4 +1,5 @@
 /*
+
  Copyright 2017-2021 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 
  Licensed under the Amazon Software License (the "License"). You may not use this file
@@ -18,111 +19,225 @@
 /* eslint no-console: ["error", { allow: ["info", "warn", "error", "time", "timeEnd"] }] */
 /* eslint no-param-reassign: ["error", { "props": false }] */
 
-export const createLiveChatSession = result =>
-  (window.connect.ChatSession.create({
-    chatDetails: result.startChatResult,
-    type: 'CUSTOMER',
-  }));
+// export const createLiveChatSession = (result) => (window.connect.ChatSession.create({
+//   chatDetails: result.startChatResult,
+//   type: 'CUSTOMER',
+// }));
+/* eslint-disable */
+import axios from 'axios';
+import { liveChatStatus } from '@/store/state';
 
-export const connectLiveChatSession = session =>
-  Promise.resolve(session.connect().then((response) => {
-    console.info(`successful connection: ${JSON.stringify(response)}`);
-    return Promise.resolve(response);
-  }, (error) => {
-    console.info(`unsuccessful connection ${JSON.stringify(error)}`);
-    return Promise.reject(error);
-  }));
+export const createLiveChatSession = (context) => {
+  const config = {
+    method: 'post',
+    url: `${context.state.config.live_agent.endpoint}/startSession`,
+  };
 
-export const initLiveChatHandlers = (context, session) => {
-  session.onConnectionEstablished((data) => {
-    console.info('Established!', data);
-    // context.dispatch('pushLiveChatMessage', {
-    //   type: 'agent',
-    //   text: 'Live Chat Connection Established',
-    // });
-  });
+  return axios(config)
+    .then((response) => response.data)
+    .then((data) => {
+      console.info(`successful session creation: ${JSON.stringify(data)}`);
+      return Promise.resolve(data);
+    }).catch((error) => {
+      console.info(`unsuccessful session creation: ${JSON.stringify(error)}`);
+      return Promise.reject(error);
+    });
+};
 
-  session.onMessage((event) => {
-    const { chatDetails, data } = event;
-    console.info(`Received message: ${JSON.stringify(event)}`);
-    console.info('Received message chatDetails:', chatDetails);
-    let type = '';
-    switch (data.ContentType) {
-      case 'application/vnd.amazonaws.connect.event.participant.joined':
-        if (data.DisplayName !== context.state.liveChat.username) {
-          context.dispatch('liveChatAgentJoined');
-          context.commit('setIsLiveChatProcessing', false);
-          context.dispatch('pushLiveChatMessage', {
-            type: 'agent',
-            text: `${data.DisplayName} has joined`,
-          });
-        }
-        break;
-      case 'application/vnd.amazonaws.connect.event.participant.left':
-      case 'application/vnd.amazonaws.connect.event.chat.ended':
-        context.dispatch('liveChatSessionEnded');
-        break;
-      case 'text/plain':
-        switch (data.ParticipantRole) {
-          case 'SYSTEM':
-            type = 'bot';
-            break;
-          case 'AGENT':
-            type = 'agent';
-            break;
-          case 'CUSTOMER':
-            type = 'human';
-            break;
-          default:
-            break;
-        }
-        context.commit('setIsLiveChatProcessing', false);
-        context.dispatch('pushLiveChatMessage', {
-          type,
-          text: data.Content,
-        });
-        break;
-      default:
-        break;
+export const connectLiveChatSession = (session, context) => {
+  const config = {
+    method: 'post',
+    url: `${context.state.config.live_agent.endpoint}/connect`,
+    data: JSON.stringify({
+      session,
+      chat_history: context.state.messages,
+      livechat_username: context.getters.liveChatUserName(),
+    })
+  };
+  return axios(config)
+    .then((response) => response.data)
+    .then((data) => {
+      console.info(`successful connection: ${JSON.stringify(data)}`);
+      return Promise.resolve(data);
+    }).catch((error) => {
+      console.info(`unsuccessful connection ${JSON.stringify(error)}`);
+      return Promise.reject(error);
+    });
+};
+
+export const initLiveChatHandlers = async (context, session) => {
+  console.info(`initLiveChatHandlers status=${context.state.liveChat.status}`);
+  const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
+
+  while ([liveChatStatus.ESTABLISHED, liveChatStatus.CONNECTING].includes(context.state.liveChat.status)) {
+    console.info('live-chat-handlers: polling live agent');
+
+    const chatRequestSuccess = (data) => {
+      console.info('chatRequestSuccess!', data);
+      context.dispatch('pushLiveChatMessage', {
+        type: 'agent',
+        text: 'Live Chat Connection Established',
+      });      
     }
-  });
 
-  session.onTyping((typingEvent) => {
-    if (typingEvent.data.ParticipantRole === 'AGENT') {
+    const chatEstablished = (data) => {
+      console.info('Established!', data);
+      context.dispatch('liveChatAgentJoined');
+      context.commit('setIsLiveChatProcessing', false);      
+      context.dispatch('pushLiveChatMessage', {
+        type: 'agent',
+        text: `${data.message.name} has joined`,
+      });
+    }
+
+    const chatMessage = (data) => {
+      console.info(`Received message: ${JSON.stringify(data.message.text)}`);
+      context.commit('setIsLiveChatProcessing', false);
+      context.dispatch('pushLiveChatMessage', {
+        type: 'agent',
+        text: data.message.text,
+      });
+    }
+
+    const customEvent = (element) => {
+      console.info('CustomEvent')
+    }
+
+    const queueUpdate = (element) => {
+      console.info('queueUpdate')
+    }
+
+    const agentTyping = (element) => {
       console.info('Agent is typing ');
       context.dispatch('agentIsTyping');
     }
-  });
 
-  session.onConnectionBroken((data) => {
-    console.info('Connection broken', data);
-    context.dispatch('liveChatSessionReconnectRequest');
-  });
+    const agentNotTyping = (element) => {
+      console.info('Agent is not typing ');
+      context.dispatch('agentIsNotTyping');
+    }
 
-  /*
-  NOT WORKING
-  session.onEnded((data) => {
-    console.info('Connection ended', data);
-    context.dispatch('liveChatSessionEnded');
-  });
-  */
+    const agentEndedChat = (element) => {
+      console.info('Agent ended chat');
+      context.dispatch('pushLiveChatMessage', {
+        type: 'agent',
+        text: 'Agent has ended the session',
+      });      
+      context.dispatch('liveChatSessionEnded');
+    }
+    
+    const config = {
+      method: 'post',
+      url: `${context.state.config.live_agent.endpoint}/getMessage`,
+      data: {
+        session,
+        targetLanguage: context.state.lex.targetLanguage
+      }
+    };
+    await axios(config)
+      .then((response) => {
+        console.info('live-chat-handlers - get messages')
+        console.info(response);
+        response.data.messages.forEach(element => {
+          const type = element.type;
+          console.info(`Received type:${type}`)
+          switch (type) {
+            case 'ChatRequestSuccess':
+              chatRequestSuccess(element);
+              break;
+            case 'ChatEstablished':
+              chatEstablished(element);
+              break;
+            case 'ChatMessage':
+              console.info(JSON.stringify(context.state.messages))
+              chatMessage(element);
+              break;
+            case 'CustomEvent':
+              customEvent(element);
+              break;               
+            case 'QueueUpdate':
+              queueUpdate(element);
+              break;               
+            case 'AgentTyping':
+              agentTyping(element);
+              break;
+            case 'AgentNotTyping':
+              agentNotTyping(element);
+              break;
+            case 'ChatEnded':
+              agentEndedChat(element);
+              break;
+            default:
+              console.error(`Unknown message type:${type}`)
+          }
+        })
+        return Promise.resolve();
+      }).catch((error) => {
+        if (error.code === 'ECONNABORTED') {
+          console.info('No messages after poll interval');  
+        } else {
+          console.info(`unsuccessful connection ${JSON.stringify(error)}`);
+        }
+      }).finally(() => {
+        console.info('Sleeping');
+        return sleep(context.state.config.live_agent.salesforcePollingInterval);
+      });
+  }
 };
 
-export const sendChatMessage = (liveChatSession, message) => {
-  liveChatSession.controller.sendMessage({
-    message,
-    contentType: 'text/plain',
-  });
+export const sendChatMessage = (context, liveChatSession, message) => {
+  const config = {
+    method: 'post',
+    url: `${context.state.config.live_agent.endpoint}/sendMessage`,
+    data: {
+      message,
+      session: liveChatSession,
+        sourceLanguage: context.state.lex.targetLanguage,
+        targetLanguage: 'en'    // This is always EN    
+    },
+  };
+  return axios(config)
+    .then((response) => response.data)
+    .then((data) => {
+      console.info(`successful sendMessage: ${JSON.stringify(data)}`);
+      context.dispatch('pushLiveChatMessage', {
+        type: 'human',
+        text: message,
+      });
+      return Promise.resolve(data);
+    }).catch((error) => {
+      console.info(`unsuccessful sendMessage ${JSON.stringify(error)}`);
+      return Promise.reject(error);
+    });
+
+
 };
 
 export const sendTypingEvent = (liveChatSession) => {
+  // TODO : send something to salesforce
   console.info('liveChatHandler: sendTypingEvent');
-  liveChatSession.controller.sendEvent({
-    contentType: 'application/vnd.amazonaws.connect.event.typing',
-  });
 };
 
-export const requestLiveChatEnd = (liveChatSession) => {
+export const requestLiveChatEnd = async (context, liveChatSession) => {
   console.info('liveChatHandler: endLiveChat', liveChatSession);
-  liveChatSession.controller.disconnectParticipant();
+  const config = {
+    method: 'post',
+    url: `${context.state.config.live_agent.endpoint}/endChat`,
+    data: {
+      session: liveChatSession,
+    }
+  };
+  await axios(config)
+    .then((response) => {
+      console.info(response);
+      context.dispatch('pushLiveChatMessage', {
+        type: 'bot',
+        text: 'TODO: Livechat session ended, returning you to Miles',
+      });
+      return Promise.resolve();
+    }).catch((error) => {
+      console.info(`unsuccessful end chat ${JSON.stringify(error)}`);
+    })
+
+  context.dispatch('liveChatSessionEnded');
 };

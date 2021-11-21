@@ -1,10 +1,77 @@
 {
+  "region": "us-west-2",
+  "cognito": {
+    "poolId": "us-west-2:1845a3f1-6925-47ba-b2df-abfba9c4a6cc",
+    "appUserPoolClientId": "5bnfu6p7n1ah0jhd00913aoa7c",
+    "appUserPoolName": "us-west-2_XEFuWJqJW",
+    "appDomainName": "lexkwebkuikidentitypoolconfigkngurcghkhvhz032802432428.auth.us-west-2.amazoncognito.com",
+    "aws_cognito_region": "us-west-2",
+    "region": "us-west-2"
+  },
+  "lex": {
+    "v2BotId": "",
+    "v2BotAliasId": "",
+    "v2BotLocaleId": "en_US",
+    "botName": "miles_dev_dev_dev_master_one_BotKeXvR",
+    "botAlias": "live",
+    "initialText": "",
+    "initialSpeechInstruction": "",
+    "initialUtterance": "QID::Welcome",
+    "reInitSessionAttributesOnRestart": false,
+    "region": "us-west-2",
+    "retryOnLexPostTextTimeout": "false",
+    "retryCountPostTextTimeout": "1"
+  },
+  "ui": {
+    "parentOrigin": "",
+    "toolbarTitle": "DEV - MILES",
+    "toolbarLogo": "DEV",
+    "positiveFeedbackIntent": "",
+    "negativeFeedbackIntent": "Thumbs down",
+    "helpIntent": "Help",
+    "enableLogin": false,
+    "forceLogin": false,
+    "AllowSuperDangerousHTMLInMessage": true,
+    "shouldDisplayResponseCardTitle": false,
+    "saveHistory": false,
+    "minButtonContent": "",
+    "hideInputFieldsForButtonResponse": false,
+    "pushInitialTextOnRestart": false,
+    "directFocusToBotInput": false,
+    "showDialogStateIcon": false,
+    "backButton": false,
+    "messageMenu": true,
+    "hideButtonMessageBubble": true,
+    "enableLiveChat": true,
+    "enableSFX": true
+  },
+  "live_agent": {
+    "endpoint": "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
+    "promptForFirstNameMessage": "What is your first name?",
+    "promptForLastNameMessage": "What is your last name?",
+    "promptForEmailAddressMessage": "What is your email address?",
+    "disconnectingMessage": "Thank you, you are being returned to the chatbot",
+    "waitingForAgentMessage": "Thank you for waiting. An agent will be with you when available.",
+    "waitingForAgentMessageIntervalSeconds": 30,
+    "salesforcePollingInterval": 5000,
+    "apiCallTimeout": 500
+  },
   "connect": {
     "contactFlowId": "",
     "instanceId": "",
     "apiGatewayEndpoint": "",
-    "promptForNameMessage": "",
-    "waitingForAgentMessage": "",
-    "waitingForAgentMessageIntervalSeconds": ""
+    "waitingForAgentMessage": "Thanks for waiting. An agent will be with you when available.",
+    "waitingForAgentMessageIntervalSeconds": 60
+  },
+  "polly": {
+    "voiceId": "Salli"
+  },
+  "recorder": {
+    "preset": "speech_recognition"
+  },
+  "iframe": {
+    "iframeOrigin": "",
+    "shouldLoadIframeMinimized": false,
+    "iframeSrcPath": "/index.html#/?lexWebUiEmbed=true"
   }
 }

@@ -1,53 +1,72 @@
 <template>
-  <v-app id="lex-web"
-    v-bind:ui-minimized="isUiMinimized"
-  >
-    <min-button
-      v-bind:toolbar-color="toolbarColor"
-      v-bind:is-ui-minimized="isUiMinimized"
-      v-on:toggleMinimizeUi="toggleMinimizeUi"
-    ></min-button>
-    <toolbar-container
-      v-if="!isUiMinimized"
-      v-bind:userName="userNameValue"
-      v-bind:toolbar-title="toolbarTitle"
-      v-bind:toolbar-color="toolbarColor"
-      v-bind:toolbar-logo="toolbarLogo"
-      v-bind:is-ui-minimized="isUiMinimized"
-      v-on:toggleMinimizeUi="toggleMinimizeUi"
-      @requestLogin="handleRequestLogin"
-      @requestLogout="handleRequestLogout"
-      @requestLiveChat="handleRequestLiveChat"
-      @endLiveChat="handleEndLiveChat"
-      transition="fade-transition"
-    ></toolbar-container>
-
-    <v-content
-      v-if="!isUiMinimized"
+<div>
+<div v-if="!showChatBot">
+  <v-btn v-on:click="toggleChatBot">
+    Ask DMV
+  </v-btn>
+</div>
+<div v-if="showChatBot">
+  <div v-if="!show">
+    <v-app id="lex-web"
+      v-bind:ui-minimized="isUiMinimized"
     >
-      <v-container
-        class="message-list-container"
-        v-bind:class="`toolbar-height-${toolbarHeightClassSuffix}`"
-        fluid pa-0
-      >
-        <message-list v-if="!isUiMinimized"
-        ></message-list>
-      </v-container>
-    </v-content>
+      <min-button
+        v-bind:toolbar-color="toolbarColor"
+        v-bind:is-ui-minimized="isUiMinimized"
+        v-on:toggleMinimizeUi="toggleMinimizeUi"
+      ></min-button>
+      <toolbar-container
+        v-if="!isUiMinimized"
+        v-bind:userName="userNameValue"
+        v-bind:toolbar-title="toolbarTitle"
+        v-bind:toolbar-color="toolbarColor"
+        v-bind:toolbar-logo="toolbarLogo"
+        v-bind:is-ui-minimized="isUiMinimized"
+        v-on:toggleMinimizeUi="toggleMinimizeUi"
+        @requestLogin="handleRequestLogin"
+        @requestLogout="handleRequestLogout"
+        @requestLiveChat="handleRequestLiveChat"
+        @endLiveChat="handleEndLiveChat"
+        transition="fade-transition"
+      ></toolbar-container>
 
-    <input-container
-      ref="InputContainer"
-      v-if="!isUiMinimized && !hasButtons"
-      v-bind:text-input-placeholder="textInputPlaceholder"
-      v-bind:initial-speech-instruction="initialSpeechInstruction"
-      @endLiveChatClicked="handleEndLiveChat"
-    ></input-container>
-    <div
-      v-if="isSFXOn"
-      id="sound"
-      aria-hidden="true"
-    />
-  </v-app>
+      <v-content
+        v-if="!isUiMinimized"
+      >
+        <v-container
+          class="message-list-container"
+          v-bind:class="`toolbar-height-${toolbarHeightClassSuffix}`"
+          fluid pa-0
+        >
+          <message-list v-if="!isUiMinimized"
+          ></message-list>
+        </v-container>
+      </v-content>
+
+      <input-container
+        ref="InputContainer"
+        v-if="!isUiMinimized && !hasButtons"
+        v-bind:text-input-placeholder="textInputPlaceholder"
+        v-bind:initial-speech-instruction="initialSpeechInstruction"
+        @endLiveChatClicked="handleEndLiveChat"
+      ></input-container>
+
+      <footer-buttons @languageClicked="showLanguage" @saveChatClicked="saveChat" @endChatClicked="endChat"></footer-buttons>
+      
+      <div
+        v-if="isSFXOn"
+        id="sound"
+        aria-hidden="true"
+      />
+    </v-app>
+  </div>
+
+  <div v-if="show">
+    <language-card @clicked="showLexWeb"></language-card>
+  </div>
+  
+  </div>
+  </div>
 </template>
 
 <script>
@@ -72,6 +91,8 @@ import MessageList from '@/components/MessageList';
 import InputContainer from '@/components/InputContainer';
 import LexRuntime from 'aws-sdk/clients/lexruntime';
 import LexRuntimeV2 from 'aws-sdk/clients/lexruntimev2';
+import FooterButtons from '@/components/FooterButtons';
+import LanguageCard from '@/components/LanguageCard';
 
 import { Config as AWSConfig, CognitoIdentityCredentials }
   from 'aws-sdk/global';
@@ -82,6 +103,8 @@ export default {
     return {
       userNameValue: '',
       toolbarHeightClassSuffix: 'md',
+      show: false,
+      showChatBot: false
     };
   },
   components: {
@@ -89,6 +112,8 @@ export default {
     ToolbarContainer,
     MessageList,
     InputContainer,
+    FooterButtons,
+    LanguageCard
   },
   computed: {
     initialSpeechInstruction() {
@@ -341,12 +366,16 @@ export default {
       }
     },
     handleRequestLiveChat() {
-      console.info('handleRequestLiveChat');
+      console.info('LexWeb.vue - handleRequestLiveChat');
       this.$store.dispatch('requestLiveChat');
     },
     handleEndLiveChat() {
       console.info('LexWeb: handleEndLiveChat');
       this.$store.dispatch('requestLiveChatEnd');
+    },
+    handleLanguageSelection() {
+      console.info('LexWeb: handleLanguageSelection');
+      this.$store.dispatch('requestLanguageChange');
     },
     // messages from parent
     messageHandler(evt) {
@@ -508,24 +537,28 @@ export default {
         this.$refs.InputContainer.setInputTextFieldFocus();
       }
     },
+    showLanguage() {
+      // console.info('LexWeb: showLanguage')
+      this.show = true;
+    },
+    saveChat() {
+      console.info('LexWeb: saveChat')
+    },
+    endChat() {
+      console.info('LexWeb: endChat')
+      return this.$store.dispatch('endChat')
+    },
+    showLexWeb() {
+      this.show = false;
+    },
+    toggleChatBot() {
+      this.showChatBot = true;
+    }
   },
 };
 </script>
 
 <style>
-/*
-The Vuetify toolbar height is based on screen width breakpoints
-The toolbar can be 48px, 56px and 64px.
-It is fixed to 48px when using 'dense'
-
-The message list is placed between the toolbar at the top and input
-container on the bottom. Both the toolbar and the input-container
-dynamically change height based on width breakpoints.
-So we duplicate the height and substract it from the total height
-of the message list to make it fit between the toolbar and input container
-
-NOTE: not using var() for different heights due to IE11 compatibility
-*/
 .message-list-container {
   position: fixed;
 }
@@ -542,10 +575,7 @@ NOTE: not using var() for different heights due to IE11 compatibility
   top: 64px;
   height: calc(100% - 2 * 64px);
 }
-
-#lex-web[ui-minimized] {
-  /* make background transparent when running minimized so only
-  the button is shown */
-  background: transparent;
+.content--wrap .message-list {
+  padding-bottom: 6rem !important;
 }
 </style>

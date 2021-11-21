@@ -1,91 +1,211 @@
 /* Example custom css file for lex-web-ui. Entire file is commented out as a default. Uncomment and
- adjust as needed.
+ adjust as needed. */
 
 .toolbar.theme--dark {
-    background-color: #2b2b2b !important;
+  background: linear-gradient(180deg, #084897 0%, #001a72 100%) !important;
 }
 
-.toolbar__title {
-  font-family:"Sans-serif" !important;
-  font-size: 1.875em !important;
-  color: #ffffff !important;
+.language-header {
+  background: linear-gradient(180deg, #FFD457 0%, #FFC107 100%) !important;
+}
+
+.headline-text {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 19.2px;
+  line-height: 23px;
+  margin-bottom: 0;
+  color: #001A72;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.toolbar__content img {
+  height: 90% !important;
+  margin: 50% !important;
 }
 
 .message-list-container {
-  background-color: #dcdbdc !important
-}
-
-.message-bot .message-bubble {
-    background-color: #eeedeb !important;
+  background-color: #ffffff !important;
 }
 
 .message-human .message-bubble {
-    background-color: #afcffa !important;
+  background-color: #ffffff;
 }
 
-.message-bubble p {
-    margin-bottom: 8px;
+.message-human .focusable {
+  padding: 0;
+  box-shadow: none;
 }
 
-.message-bubble p:last-child {
-    margin-bottom: 0px;
+.smicon {
+  visibility: hidden;
+}
+
+.message-human:before {
+  content: "Me:";
+  margin-top: -20px;
+  margin-right: -58px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #084897 0%, #001a72 100%);
+  color: #fff;
+  height: 35%;
+  padding-top: 1px;
+  padding-left: 5px;
+  padding-right: 11px;
+}
+
+.message-bot .focusable {
+  padding: 0;
+  box-shadow: none;
+}
+
+.message-bot:before {
+  display: block;
+  content: "Miles:";
+  margin-top: -20px;
+  margin-right: -59px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #ffd457 0%, #ffc107 100%);
+  color: #203376;
+  height: 22px;
+  padding-top: 1px;
+  padding-left: 5px;
+  padding-right: 11px;
+}
+
+.message-bot .message-bubble {
+  background-color: #ffffff !important;
+}
+
+.message-bot {
+  padding: 0.938em !important;
+}
+
+.message-bot .message-bubble {
+  border-radius: 0 !important;
+  border-left: 0.15em solid #ffc107 !important;
+  padding: 0 !important;
+}
+
+.message-bot .card__actions {
+  margin-left: -24px !important;
+}
+
+.message-agent .focusable {
+  padding: 0;
+  box-shadow: none;
+}
+
+.message-agent:before {
+  display: block;
+  content: "Agent:";
+  margin-top: -20px;
+  margin-right: -59px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #ffd457 0%, #ffc107 100%);
+  color: #203376;
+  height: 22px;
+  padding-top: 1px;
+  padding-left: 5px;
+  padding-right: 11px;
+}
+
+.message-agent .message-bubble {
+  background-color: #ffffff !important;
+}
+
+.message-agent {
+  padding: 0.938em !important;
+}
+
+.message-agent .message-bubble {
+  border-radius: 0 !important;
+  border-left: 0.15em solid #ffc107 !important;
+  padding: 0 !important;
+}
+
+.message-agent .card__actions {
+  margin-left: -24px !important;
 }
 
 .message-bubble .message-text {
-    padding-left:  0;
-    padding-right: 0;
-    line-height: 1.6;
-    font-size: 1rem;
+  background-color: white;
+  border-left: none;
 }
 
-.message-bubble {
-    border-radius: 10px !important;
-    padding: 2px 18px !important;
+.message-bubble .menu {
+  background-color: white;
 }
 
-.message-text {
-  color: #000000;
+.message-text ul {
+  list-style-type: none !important;
+}
+
+.secondary--text .btn__content {
+  background: #fec31b !important;
+  color: #053b8c !important;
+  border-radius: 5px;
+}
+
+.secondary--text .btn__content:hover {
+  background: #001a72 !important;
+  color: #ffffff !important;
+}
+
+.input-container button .btn__content {
+  border-radius: 0.313em;
+  background: #00811e;
+  fill: #fff;
+  margin-left: auto;
+  margin-right: 0;
+  padding: 0.5em 0.5em;
+  height: 2.25em;
+  display: inline-flex;
+  vertical-align: bottom;
   width: 100%;
+  color: white;
 }
 
-.headline {
-    font-size: 1.2rem !important;
-    line-height: 1.4 !important;
+.input-container .toolbar__content {
+  background-color: #f2f2f2 !important;
 }
 
-.card__title {
-    padding: 10px 16px !important;
+#text-input {
+  border-style: solid !important;
+  border-color: #dadada;
+  background: #ffffff;
+  border-radius: 5px;
 }
 
-.card__text {
-    padding: 8px 16px 16px !important;
-    line-height: 1.4;
+.input-group__details:before {
+  height: 0 !important;
+  transition: none !important;
 }
 
-.card__title.card__title--primary {
-    background-color: #eeedeb !important;
+.input-group__details::after {
+  transition: none !important;
+  height: 0 !important;
 }
 
-
-.input-group--text-field input,
-.input-group--text-field textarea,
-.input-group--text-field label {
-    font-size: 14px !important;
+#text-input:focus {
+  border-style: solid !important;
+  border-color: #007bff;
 }
 
-.card__actions .btn {
-  margin: 4px 4px !important;
-  font-size: 1em !important;
-  min-width: 44px !important;
-  background-color: #afcffa !important;
+.input-button {
+  width: 25%;
 }
 
-*/
-
-button.min-button {
-    border-radius: 60px;
+.input-button .btn__content:hover {
+  background-color: rgb(1 98 1) !important;
+  border-radius: 5px;
 }
 
-.message-button {
-    display: none;
+.btn:focus .btn__content:before,
+.btn:hover .btn__content:before {
+  background-color: rgb(1 98 1) !important;
+}
+
+.btn:not(.btn--depressed) {
+  box-shadow: none;
 }

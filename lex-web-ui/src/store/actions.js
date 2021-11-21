@@ -26,10 +26,13 @@ import silentOgg from '@/assets/silent.ogg';
 import silentMp3 from '@/assets/silent.mp3';
 
 import LexClient from '@/lib/lex/client';
+import axios from 'axios';
+// import { startsWith } from 'core-js/core/string';
+import state from './state';
 
 const jwt = require('jsonwebtoken');
 const AWS = require('aws-sdk');
-const liveChatTerms = ['live chat'];
+const liveChatTerms = ['live chat', 'livechat', 'agent'];
 
 // non-state variables that may be mutated outside of store
 // set via initializers at run time
@@ -468,38 +471,65 @@ export default {
   },
   postTextMessage(context, message) {
     if (context.state.isSFXOn && !context.state.lex.isPostTextRetry) {
-      context.dispatch('playSound', context.state.config.ui.messageSentSFX);
+    // RDB  context.dispatch('playSound', context.state.config.ui.messageSentSFX);
     }
 
     return context.dispatch('interruptSpeechConversation')
       .then(() => {
+        console.info('TODO - REMOVE THIS - Got this far - take me out-' + message)
         if (context.state.chatMode === chatMode.BOT) {
           return context.dispatch('pushMessage', message);
         }
         return Promise.resolve();
       })
       .then(() => {
-        if (context.state.config.ui.enableLiveChat && liveChatTerms.find(el => el === message.text.toLowerCase())) {
+        let postToLex = true;
+        /* eslint-disable no-else-return, max-len */
+        if (context.state.config.ui.enableLiveChat && liveChatTerms.find((el) => el === message.text.toLowerCase())) {
+          console.info('Requesting Live Chat')
           return context.dispatch('requestLiveChat');
-        } else if (context.state.liveChat.status === liveChatStatus.REQUEST_USERNAME) {
-          context.commit('setLiveChatUserName', message.text);
+        } else if (context.state.liveChat.status === liveChatStatus.VERIFIED) {
+          if (message.text.toLowerCase() === 'yes' || message.text.toLowerCase() === 'y') {
+            context.commit('setVerifyLiveChat', (message.text.toLowerCase() === 'yes' || message.text.toLowerCase() === 'y'));
+            return context.dispatch('requestLiveChat');
+          } else {
+            postToLex = false;
+            context.dispatch('pushLiveChatMessage', {
+              type: 'bot',
+              text: 'Livechat session initiation aborted, returning you to Miles',
+            });
+            context.dispatch('liveChatSessionEnded');
+          }
+        } else if (context.state.liveChat.status === liveChatStatus.REQUEST_FIRSTNAME) {
+          context.commit('setLiveChatFirstName', message.text);
+          return context.dispatch('requestLiveChat');
+        } else if (context.state.liveChat.status === liveChatStatus.REQUEST_LASTNAME) {
+          context.commit('setLiveChatLastName', message.text);
+          return context.dispatch('requestLiveChat');
+        } else if (context.state.liveChat.status === liveChatStatus.REQUEST_EMAIL) {
+          context.commit('setLiveChatEmail', message.text);
           return context.dispatch('requestLiveChat');
         } else if (context.state.chatMode === chatMode.LIVECHAT) {
           if (context.state.liveChat.status === liveChatStatus.ESTABLISHED) {
             return context.dispatch('sendChatMessage', message.text);
           }
         }
-        return Promise.resolve(context.commit('pushUtterance', message.text))
+        /* eslint-enable */
+        // return Promise.resolve(context.commit('pushUtterance', message.text));
+        context.commit('pushUtterance', message.text);
+        return Promise.resolve(postToLex);
       })
-      .then(() => {
-        if (context.state.chatMode === chatMode.BOT &&
-          context.state.liveChat.status != liveChatStatus.REQUEST_USERNAME) {
-          return context.dispatch('lexPostText', message.text);
+      .then((postToLex) => {
+        console.info(`PostToLex = ${postToLex}`);
+        if (postToLex && context.state.chatMode === chatMode.BOT
+          && context.state.liveChat.status !== liveChatStatus.REQUEST_USERNAME) {
+            
+            return context.dispatch('lexPostText', message.text);
         }
-        return Promise.resolve();
+        return false;
       })
       .then((response) => {
-        if (context.state.chatMode === chatMode.BOT &&
+        if (response !== false && context.state.chatMode === chatMode.BOT &&
           context.state.liveChat.status != liveChatStatus.REQUEST_USERNAME) {
           // check for an array of messages
           if (response.sessionState || (response.message && response.message.includes('{"messages":'))) {
@@ -644,7 +674,9 @@ export default {
       : undefined;
     return context.dispatch('refreshAuthTokens')
       .then(() => context.dispatch('getCredentials'))
-      .then(() => lexClient.postText(text, localeId, session))
+      .then(() => {
+        return lexClient.postText(text, localeId, session)
+      })
       .then((data) => {
         context.commit('setIsLexProcessing', false);
         return context.dispatch('updateLexState', data)
@@ -777,122 +809,145 @@ export default {
    *
    **********************************************************************/
   initLiveChat(context) {
-    require('amazon-connect-chatjs');
-    if (window.connect) {
-      window.connect.ChatSession.setGlobalConfig({
-        region: context.state.config.region,
-      });
-      return Promise.resolve();
-    } else {
-      return Promise.reject(new Error('failed to find Connect Chat JS global variable'));
-    }
+    // This is a holdover from the original implementation that uses AWS Connect
   },
 
   initLiveChatSession(context) {
-    console.info('initLiveChat');
-    console.info('config connect', context.state.config.connect);
     if (!context.state.config.ui.enableLiveChat) {
       console.error('error in initLiveChatSession() enableLiveChat is not true in config');
       return Promise.reject(new Error('error in initLiveChatSession() enableLiveChat is not true in config'));
     }
-    if (!context.state.config.connect.apiGatewayEndpoint) {
-      console.error('error in initLiveChatSession() apiGatewayEndpoint is not set in config');
-      return Promise.reject(new Error('error in initLiveChatSession() apiGatewayEndpoint is not set in config'));
-    }
-    if (!context.state.config.connect.contactFlowId) {
-      console.error('error in initLiveChatSession() contactFlowId is not set in config');
-      return Promise.reject(new Error('error in initLiveChatSession() contactFlowId is not set in config'));
-    }
-    if (!context.state.config.connect.instanceId) {
-      console.error('error in initLiveChatSession() instanceId is not set in config');
-      return Promise.reject(new Error('error in initLiveChatSession() instanceId is not set in config'));
+    if (!context.state.config.live_agent.endpoint) {
+      console.error('error in initLiveChatSession() endpoint is not set in config');
+      return Promise.reject(new Error('error in initLiveChatSession() endpoint is not set in config'));
     }
 
     context.commit('setLiveChatStatus', liveChatStatus.INITIALIZING);
 
-    const initiateChatRequest = {
-      ParticipantDetails: {
-        DisplayName: context.getters.liveChatUserName(),
-      },
-      ContactFlowId: context.state.config.connect.contactFlowId,
-      InstanceId: context.state.config.connect.instanceId,
+    const createCaseConfig = {
+      method: 'post',
+      url: `${context.state.config.live_agent.endpoint}/createCase`,
     };
-
-    const uri = new URL(context.state.config.connect.apiGatewayEndpoint);
-    const endpoint = new AWS.Endpoint(uri.hostname);
-    const req = new AWS.HttpRequest(endpoint, context.state.config.region);
-    req.method = 'POST';
-    req.path = uri.pathname;
-    req.headers['Content-Type'] = 'application/json';
-    req.body = JSON.stringify(initiateChatRequest);
-    req.headers.Host = endpoint.host;
-    req.headers['Content-Length'] = Buffer.byteLength(req.body);
-
-    const signer = new AWS.Signers.V4(req, 'execute-api');
-    signer.addAuthorization(awsCredentials, new Date());
-
-    const reqInit = {
-      method: 'POST',
-      mode: 'cors',
-      headers: req.headers,
-      body: req.body,
-    };
-
-    return fetch(
-      context.state.config.connect.apiGatewayEndpoint,
-      reqInit)
-    .then(response => response.json())
-    .then(json => json.data)
-    .then((result) => {
-      console.info('Live Chat Config Success:', result);
-      context.commit('setLiveChatStatus', liveChatStatus.CONNECTING);
-      function waitMessage(context, type, message) {
-        context.commit('pushLiveChatMessage', {
-          type,
-          text: message,
-        });
-      };
-      if (context.state.config.connect.waitingForAgentMessageIntervalSeconds > 0) {
-        const intervalID = setInterval(waitMessage,
-          1000 * context.state.config.connect.waitingForAgentMessageIntervalSeconds,
-          context,
-          'bot',
-          context.state.config.connect.waitingForAgentMessage);
-        console.info(`interval now set: ${intervalID}`);
-        context.commit('setLiveChatIntervalId', intervalID);
-      }
-      liveChatSession = createLiveChatSession(result);
-      console.info('Live Chat Session Created:', liveChatSession);
-      initLiveChatHandlers(context, liveChatSession);
-      console.info('Live Chat Handlers initialised:');
-      return connectLiveChatSession(liveChatSession);
-    })
-    .then((response) => {
-      console.info('live Chat session connection response', response);
-      console.info('Live Chat Session CONNECTED:', liveChatSession);
-      context.commit('setLiveChatStatus', liveChatStatus.ESTABLISHED);
-      // context.commit('setLiveChatbotSession', liveChatSession);
-      return Promise.resolve();
-    })
-    .catch((error) => {
-      console.error("Error esablishing live chat");
-      context.commit('setLiveChatStatus', liveChatStatus.ENDED);
-      return Promise.resolve();
-    });
+    return axios(createCaseConfig)
+      .then((result) => {
+        console.info('Live Chat Config Success:', result);
+        context.commit('setLiveChatStatus', liveChatStatus.CONNECTING);
+        function waitMessage(context, type, message) {
+          context.commit('pushLiveChatMessage', {
+            type,
+            text: message,
+          });
+        };
+        if (context.state.config.live_agent.waitingForAgentMessageIntervalSeconds > 0) {
+          const intervalID = setInterval(waitMessage,
+            1000 * context.state.config.live_agent.waitingForAgentMessageIntervalSeconds,
+            context,
+            'bot',
+            context.state.config.live_agent.waitingForAgentMessage);
+          console.info(`interval now set: ${intervalID}`);
+          context.commit('setLiveChatIntervalId', intervalID);
+        }
+        return createLiveChatSession(context);
+      }).then((liveChatSessionResponse) => {
+        liveChatSession = liveChatSessionResponse;
+        console.info('Live Chat Session Created:', liveChatSession);
+        initLiveChatHandlers(context, liveChatSession);
+        console.info('Live Chat Handlers initialised:');
+        return connectLiveChatSession(liveChatSession, context);
+      })
+      .then((response) => {
+        console.info('live Chat session connection response', response);
+        console.info('Live Chat Session CONNECTED');
+        context.commit('setLiveChatStatus', liveChatStatus.ESTABLISHED);
+        // RDB TODO
+        // context.commit('setLiveChatbotSession', liveChatSession);
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        console.error('Error esablishing live chat');
+        console.error(error);
+        context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
+        return Promise.resolve();
+      });
   },
 
-  requestLiveChat(context) {
-    console.info('requestLiveChat');
-    if (!context.getters.liveChatUserName()) {
-      context.commit('setLiveChatStatus', liveChatStatus.REQUEST_USERNAME);
+  async requestLiveChat(context) {
+    console.info(`actions.requestLiveChat with status=${context.state.liveChat.status}`);
+    if (context.state.liveChat.status === liveChatStatus.DISCONNECTED) {
+      console.info('actions.requestingLiveChat - verifying live chat');
+      const agentWaitConfig = {
+        method: 'post',
+        url: `${context.state.config.live_agent.endpoint}/agentWaitTime`,
+      };
+      context.commit('setChatMode', chatMode.LIVECHAT);
+      await axios(agentWaitConfig)
+        .then((response) => {
+          // RDB - TODO - what do I do with these?
+          // const liveAgentAvailable = response.data[0].outputValues.liveAgentAvailable;
+          context.commit('setLiveChatStatus', liveChatStatus.VERIFIED);
+          const { waitTime } = response.data[0].outputValues;
+          return context.dispatch('translate', { targetLanguage: context.state.lex.targetLanguage, message: `The wait time is currently ${waitTime}, would you like to wait?` })
+        })
+        .then((message)=> {
+          context.commit(
+            'pushMessage',
+            {
+              text: message,
+              type: 'bot',
+            },
+          );
+        })
+        .catch((error) => {
+          console.error('Error determining live chat wait times');
+          console.error(error);
+          // context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+          context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
+        });
+    } else if (context.state.liveChat.status === liveChatStatus.VERIFIED) {
+      if (context.state.liveChat.verifyLiveChat === true) {
+        console.info('actions.requestLiveChat - requesting firstname');
+        context.commit('setLiveChatStatus', liveChatStatus.REQUEST_FIRSTNAME);
+        context.commit(
+          'pushMessage',
+          {
+            text: await context.dispatch('translate', {targetLanguage: context.state.lex.targetLanguage, message: context.state.config.live_agent.promptForFirstNameMessage}),
+            type: 'bot',
+          },
+        );
+      } else {
+        console.info('actions.requestingLiveChat - disconnecting live chat');
+        context.commit(
+          'pushMessage',
+          {
+            text: await context.dispatch('translate', {targetLanguage: context.state.lex.targetLanguage, message: context.state.config.live_agent.disconnectingMessage}),
+            type: 'bot',
+          },
+        );
+        context.dispatch('liveChatSessionEnded');
+      }
+    } else if (context.state.liveChat.status === liveChatStatus.REQUEST_FIRSTNAME) {
+      console.info('actions.requestLiveChat - requesting lastname');
+      context.commit('setLiveChatStatus', liveChatStatus.REQUEST_LASTNAME);
       context.commit(
         'pushMessage',
         {
-          text: context.state.config.connect.promptForNameMessage,
+          text: await context.dispatch('translate', {targetLanguage: context.state.lex.targetLanguage, message: context.state.config.live_agent.promptForLastNameMessage}),
           type: 'bot',
         },
       );
-    } else {
+    } else if (context.state.liveChat.status === liveChatStatus.REQUEST_LASTNAME) {
+      console.info('actions.requestLiveChat - requesting email');
+      context.commit('setLiveChatStatus', liveChatStatus.REQUEST_EMAIL);
+      context.commit(
+        'pushMessage',
+        {
+          text: await context.dispatch('translate', {targetLanguage: context.state.lex.targetLanguage, message: context.state.config.live_agent.promptForEmailAddressMessage}),
+          type: 'bot',
+        },
+      );
+    } else if (context.state.liveChat.status === liveChatStatus.REQUEST_EMAIL) {
+      console.info('actions.requestLiveChat - initiating livechat');
+      console.info(`Username: ${context.getters.liveChatUserName()}`);
       context.commit('setLiveChatStatus', liveChatStatus.REQUESTED);
       context.commit('setChatMode', chatMode.LIVECHAT);
       context.commit('setIsLiveChatProcessing', true);
@@ -900,42 +955,117 @@ export default {
     }
   },
   sendTypingEvent(context) {
-    console.info('actions: sendTypingEvent');
+    console.info('actions.sendTypingEvent');
     if (context.state.chatMode === chatMode.LIVECHAT && liveChatSession) {
       sendTypingEvent(liveChatSession);
     }
   },
   sendChatMessage(context, message) {
-    console.info('actions: sendChatMessage');
+    console.info('actions.sendChatMessage');
     if (context.state.chatMode === chatMode.LIVECHAT && liveChatSession) {
-      sendChatMessage(liveChatSession, message);
+      sendChatMessage(context, liveChatSession, message);
     }
   },
   requestLiveChatEnd(context) {
-    console.info('actions: endLiveChat');
+    console.info('actions.endLiveChat');
     context.commit('clearLiveChatIntervalId');
     if (context.state.chatMode === chatMode.LIVECHAT && liveChatSession) {
-      requestLiveChatEnd(liveChatSession);
-      context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+      console.info('actions - requesting live chat end');
+      requestLiveChatEnd(context, liveChatSession);
+      // context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+      context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
     }
   },
+  requestLanguageChange(context, language) {
+    console.log('*******')
+    context.commit('setTargetLanguage', language);
+
+    let languageCooked;
+    switch(language) {
+      case 'ar':
+        languageCooked = 'Armenian';
+        break;
+      case 'hy':
+        languageCooked = 'Arabic';
+        break;
+      case 'zh-TW':
+        languageCooked = 'Chinese';
+        break;
+      case 'en':
+        languageCooked = 'English';
+        break;
+      case 'hi':
+        languageCooked = 'Hindi';
+        break;
+      case 'ja':
+        languageCooked = 'Japanese'; 
+        break;
+      case 'ko':
+        languageCooked = 'Korean';
+        break;
+      case 'per':
+        languageCooked = 'Persian';
+        break;
+      case 'ru':
+        languageCooked = 'Russian';
+        break;
+      case 'es':
+        languageCooked = 'Spanish';
+        break;
+      case 'vi':
+        languageCooked = 'Vietnamese';
+        break;
+      case 'tl':
+        languageCooked = 'Tagalog';
+        break;
+      default:
+        console.error(`Unknown language code ${language}`)
+        return
+    }
+
+    // context.commit(
+    //       'pushMessage',
+    //       {
+    //         text: languageCooked,
+    //         type: 'human',
+    //       },
+    // );
+
+    const messageWrapper = {
+      type: 'human',
+      text: languageCooked,
+    };
+
+    return context.dispatch('postTextMessage', messageWrapper)
+        .then(() => {
+          console.info('changing the language')
+          return
+        });
+   
+  },
   agentIsTyping(context) {
-    console.info('actions: agentIsTyping');
+    console.info('actions.agentIsTyping');
     context.commit('setIsLiveChatProcessing', true);
   },
+  agentIsNotTyping(context) {
+    console.info('actions.agentIsNotTyping');
+    context.commit('setIsLiveChatProcessing', false);
+  },
   liveChatSessionReconnectRequest(context) {
-    console.info('actions: liveChatSessionReconnectRequest');
+    console.info('actions.liveChatSessionReconnectRequest');
     context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
     // TODO try re-establish connection
   },
   liveChatSessionEnded(context) {
-    console.info('actions: liveChatSessionEnded');
+    console.info('actions.liveChatSessionEnded');
     liveChatSession = null;
-    context.commit('setLiveChatStatus', liveChatStatus.ENDED);
+    context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
+    // context.commit('setLiveChatStatus', liveChatStatus.ENDED);
     context.commit('setChatMode', chatMode.BOT);
     context.commit('clearLiveChatIntervalId');
   },
   liveChatAgentJoined(context) {
+    console.info('actions.liveChatAgentJoined');
     context.commit('clearLiveChatIntervalId');
   },
   /***********************************************************************
@@ -1131,4 +1261,29 @@ export default {
   changeLocaleIds(context, data) {
     context.commit('updateLocaleIds', data);
   },
+  endChat(context) {
+    console.log('actions: endChat')
+    context.dispatch('resetHistory');
+    context.dispatch('toggleIsUiMinimized');
+    context.dispatch('deleteSession');
+  },
+  translate(context, data) {
+
+    const config = {
+      method: 'post',
+      url: `${context.state.config.live_agent.endpoint}/translate`,
+      data,
+    };
+    return axios(config)
+      .then((response) => {
+        return Promise.resolve(response['data']['translation'])
+      })
+      .then((translation) => {
+        console.info(`successful translate: ${JSON.stringify(translation)}`);
+        return Promise.resolve(translation);
+      }).catch((error) => {
+        console.info(`unsuccessful translate ${JSON.stringify(error)}`);
+        return Promise.reject(error);
+      });
+  }
 };
