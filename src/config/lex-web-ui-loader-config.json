@@ -24,16 +24,17 @@
   },
   "ui": {
     "parentOrigin": "",
-    "toolbarTitle": "DEV - MILES",
-    "toolbarLogo": "DEV",
+    "toolbarTitle": "",
+    "toolbarLogo": "chatbot-icon-circle.png",
     "positiveFeedbackIntent": "",
     "negativeFeedbackIntent": "Thumbs down",
-    "helpIntent": "Help",
+    "helpIntent": "",
     "enableLogin": false,
     "forceLogin": false,
     "AllowSuperDangerousHTMLInMessage": true,
     "shouldDisplayResponseCardTitle": false,
     "saveHistory": false,
+    "shouldRenderSfxButton": false,
     "minButtonContent": "",
     "hideInputFieldsForButtonResponse": false,
     "pushInitialTextOnRestart": false,
@@ -42,8 +43,11 @@
     "backButton": false,
     "messageMenu": true,
     "hideButtonMessageBubble": true,
-    "enableLiveChat": true,
-    "enableSFX": true
+    "enableLiveChat": false,
+    "enableSFX": true,
+    "urlQueryParams": {
+      "lexWebUiEmbed": "false"
+    }
   },
   "live_agent": {
     "endpoint": "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",

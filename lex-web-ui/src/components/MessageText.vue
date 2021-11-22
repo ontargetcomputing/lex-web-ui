@@ -1,6 +1,8 @@
 <template>
   <div
-    v-if="message.text && (message.type === 'human' || message.type === 'feedback')"
+    v-if="
+      message.text && (message.type === 'human' || message.type === 'feedback')
+    "
     class="message-text"
   >
     <span class="sr-only">I say: </span>{{ message.text }}
@@ -16,10 +18,13 @@
     class="message-text"
   ></div>
   <div
-    v-else-if="message.text && (message.type === 'bot' || message.type === 'agent')"
+    v-else-if="
+      message.text && (message.type === 'bot' || message.type === 'agent')
+    "
     class="message-text bot-message-plain"
   >
-    <span class="sr-only">{{ message.type }} says: </span>{{ (shouldStripTags) ? stripTagsFromMessage(message.text) : message.text }}
+    <span class="sr-only">{{ message.type }} says: </span
+    >{{ shouldStripTags ? stripTagsFromMessage(message.text) : message.text }}
   </div>
 </template>
 
@@ -36,7 +41,7 @@ or in the "license" file accompanying this file. This file is distributed on an 
 BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or implied. See the
 License for the specific language governing permissions and limitations under the License.
 */
-const marked = require('marked');
+const marked = require("marked");
 
 const renderer = new marked.Renderer();
 
@@ -45,8 +50,8 @@ renderer.link = function link(href, title, text) {
 };
 
 export default {
-  name: 'message-text',
-  props: ['message'],
+  name: "message-text",
+  props: ["message"],
   computed: {
     shouldConvertUrlToLinks() {
       return this.$store.state.config.ui.convertUrlToLinksInBotMessages;
@@ -70,7 +75,7 @@ export default {
       return out;
     },
     shouldRenderAsHtml() {
-      return (this.message.type === 'bot' && this.shouldConvertUrlToLinks);
+      return this.message.type === "bot" && this.shouldConvertUrlToLinks;
     },
     botMessageAsHtml() {
       // Security Note: Make sure that the content is escaped according
@@ -79,16 +84,16 @@ export default {
       const messageWithLinks = this.botMessageWithLinks(messageText);
       const messageWithSR = this.prependBotScreenReader(messageWithLinks);
       return messageWithSR;
-    },
+    }
   },
   methods: {
     encodeAsHtml(value) {
       return value
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
     },
     botMessageWithLinks(messageText) {
       const linkReplacers = [
@@ -97,70 +102,71 @@ export default {
         // The replace function takes a matched url and returns the
         // hyperlink that will be replaced in the message
         {
-          type: 'web',
+          type: "web",
           regex: new RegExp(
-            '\\b((?:https?://\\w{1}|www\\.)(?:[\\w-.]){2,256}' +
-            '(?:[\\w._~:/?#@!$&()*+,;=[\'\\]-]){0,256})',
-            'im',
+            "\\b((?:https?://\\w{1}|www\\.)(?:[\\w-.]){2,256}" +
+              "(?:[\\w._~:/?#@!$&()*+,;=['\\]-]){0,256})",
+            "im"
           ),
-          replace: (item) => {
-            const url = (!/^https?:\/\//.test(item)) ? `http://${item}` : item;
-            return '<a target="_blank" ' +
-              `href="${encodeURI(url)}">${this.encodeAsHtml(item)}</a>`;
-          },
-        },
+          replace: item => {
+            const url = !/^https?:\/\//.test(item) ? `http://${item}` : item;
+            return (
+              '<a target="_blank" ' +
+              `href="${encodeURI(url)}">${this.encodeAsHtml(item)}</a>`
+            );
+          }
+        }
       ];
       // TODO avoid double HTML encoding when there's more than 1 linkReplacer
-      return linkReplacers
-        .reduce(
-          (message, replacer) =>
-            // splits the message into an array containing content chunks
-            // and links. Content chunks will be the even indexed items in the
-            // array (or empty string when applicable).
-            // Links (if any) will be the odd members of the array since the
-            // regex keeps references.
-            message.split(replacer.regex)
-              .reduce(
-                (messageAccum, item, index, array) => {
-                  let messageResult = '';
-                  if ((index % 2) === 0) {
-                    const urlItem = ((index + 1) === array.length) ?
-                      '' : replacer.replace(array[index + 1]);
-                    messageResult = `${this.encodeAsHtml(item)}${urlItem}`;
-                  }
-                  return messageAccum + messageResult;
-                },
-                '',
-              ),
-          messageText,
-        );
+      return linkReplacers.reduce(
+        (message, replacer) =>
+          // splits the message into an array containing content chunks
+          // and links. Content chunks will be the even indexed items in the
+          // array (or empty string when applicable).
+          // Links (if any) will be the odd members of the array since the
+          // regex keeps references.
+          message
+            .split(replacer.regex)
+            .reduce((messageAccum, item, index, array) => {
+              let messageResult = "";
+              if (index % 2 === 0) {
+                const urlItem =
+                  index + 1 === array.length
+                    ? ""
+                    : replacer.replace(array[index + 1]);
+                messageResult = `${this.encodeAsHtml(item)}${urlItem}`;
+              }
+              return messageAccum + messageResult;
+            }, ""),
+        messageText
+      );
     },
     // used for stripping SSML (and other) tags from bot responses
     stripTagsFromMessage(messageText) {
-      const doc = document.implementation.createHTMLDocument('').body;
+      const doc = document.implementation.createHTMLDocument("").body;
       doc.innerHTML = messageText;
-      return doc.textContent || doc.innerText || '';
+      return doc.textContent || doc.innerText || "";
     },
     prependBotScreenReader(messageText) {
       return `<span class="sr-only">bot says: </span>${messageText}`;
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped>
-.message-text {
+/* .message-text {
   hyphens: auto;
   overflow-wrap: break-word;
   padding: 0.8em;
   white-space: normal;
   word-break: break-word;
   width: 100%;
-}
+} */
 </style>
 
 <style>
-.sr-only {
+/* .sr-only {
   position: absolute !important;
   width: 1px !important;
   height: 1px !important;
@@ -171,5 +177,11 @@ export default {
   clip-path: inset(50%) !important;
   white-space: nowrap !important;
   border: 0 !important;
+} */
+.sr-only {
+  display: none;
+}
+.message-text ul {
+  list-style-type: none;
 }
 </style>
