@@ -9,44 +9,37 @@
     >
       <span id="min-button-tooltip">{{minButtonToolTipContent}}</span>
     </v-tooltip> -->
+    <!-- v-show="isUiMinimized" -->
     <v-fab-transition>
       <v-btn
         bottom
-        dark
         depressed
         fixed
         right
         v-if="minButtonContent"
-        v-show="isUiMinimized"
-        v-bind:color="toolbarColor"
         v-on:click.stop="toggleMinimize"
         v-on="tooltipEventHandlers"
         aria-label="show chat window"
         class="min-button min-button-content"
       >
-        <v-icon left>
-          {{'chat'}}
-        </v-icon>
-        {{minButtonContent}}   
+        {{ minButtonContent }}
       </v-btn>
       <!-- seperate button for button with text vs w/o -->
+      <!-- v-show="isUiMinimized" -->
       <v-btn
         bottom
-        dark
         depressed
         fab
         fixed
         right
         v-else
-        v-show="isUiMinimized"
-        v-bind:color="toolbarColor"
         v-on:click.stop="toggleMinimize"
         v-on="tooltipEventHandlers"
         aria-label="show chat window"
         class="min-button"
       >
         <v-icon>
-          {{'chat'}}
+          {{ "chat" }}
         </v-icon>
       </v-btn>
     </v-fab-transition>
@@ -67,7 +60,7 @@ BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or implied. See the
 License for the specific language governing permissions and limitations under the License.
 */
 export default {
-  name: 'min-button',
+  name: "min-button",
   data() {
     return {
       shouldShowTooltip: false,
@@ -76,19 +69,20 @@ export default {
         mouseleave: this.onInputButtonHoverLeave,
         touchstart: this.onInputButtonHoverEnter,
         touchend: this.onInputButtonHoverLeave,
-        touchcancel: this.onInputButtonHoverLeave,
-      },
+        touchcancel: this.onInputButtonHoverLeave
+      }
     };
   },
-  props: ['toolbarColor', 'isUiMinimized'],
+  // "isUiMinimized"
+  props: ["toolbarColor"],
   computed: {
     toolTipMinimize() {
-      return (this.isUiMinimized) ? 'maximize' : 'minimize';
+      return this.isUiMinimized ? "maximize" : "minimize";
     },
     minButtonContent() {
       const n = this.$store.state.config.ui.minButtonContent.length;
-      return (n > 1) ? this.$store.state.config.ui.minButtonContent : false;
-    },
+      return n > 1 ? this.$store.state.config.ui.minButtonContent : false;
+    }
   },
   methods: {
     onInputButtonHoverEnter() {
@@ -98,16 +92,22 @@ export default {
       this.shouldShowTooltip = false;
     },
     toggleMinimize() {
+      this.$emit("toggleMinimizeUi");
       if (this.$store.state.isRunningEmbedded) {
         this.onInputButtonHoverLeave();
-        this.$emit('toggleMinimizeUi');
       }
-    },
-  },
+    }
+  }
 };
 </script>
 <style>
-  .min-button-content {
-    border-radius: 60px;
-  }
+.min-button {
+  background-color: #0b669e;
+  color: #ffffff;
+  border-radius: 0px !important;
+  height: 50px !important;
+}
+.min-button-content {
+  border-radius: 60px;
+}
 </style>

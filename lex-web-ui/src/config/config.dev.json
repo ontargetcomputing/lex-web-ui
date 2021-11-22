@@ -24,17 +24,18 @@
   },
   "ui": {
     "parentOrigin": "",
-    "toolbarTitle": "DEV - MILES",
-    "toolbarLogo": "DEV",
+    "toolbarTitle": "",
+    "toolbarLogo": "chatbot-icon-circle.png",
     "positiveFeedbackIntent": "",
     "negativeFeedbackIntent": "Thumbs down",
-    "helpIntent": "Help",
+    "helpIntent": "",
     "enableLogin": false,
     "forceLogin": false,
     "AllowSuperDangerousHTMLInMessage": true,
     "shouldDisplayResponseCardTitle": false,
     "saveHistory": false,
-    "minButtonContent": "",
+    "shouldRenderSfxButton": false,
+    "minButtonContent": "Ask DMV",
     "hideInputFieldsForButtonResponse": false,
     "pushInitialTextOnRestart": false,
     "directFocusToBotInput": false,
@@ -42,24 +43,35 @@
     "backButton": false,
     "messageMenu": true,
     "hideButtonMessageBubble": true,
-    "enableLiveChat": true,
-    "enableSFX": true
+    "enableLiveChat": false,
+    "enableSFX": true,
+    "urlQueryParams": {
+      "lexWebUiEmbed": "false"
+    },
+
+    "iframe": {
+      "iframeOrigin": "http://localhost:8080/#/",
+
+      "iframeSrcPath": "/index.html#/?lexWebUiEmbed=true",
+
+      "shouldLoadIframeMinimized": true
+    }
   },
   "live_agent": {
-      "endpoint": "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
-      "promptForFirstNameMessage": "What is your first name?",
-      "promptForLastNameMessage": "What is your last name?",
-      "promptForEmailAddressMessage": "What is your email address?",
-      "disconnectingMessage": "Thank you, you are being returned to the chatbot",
-      "waitingForAgentMessage": "Thank you for waiting. An agent will be with you when available.",
-      "waitingForAgentMessageIntervalSeconds": 30,
-      "salesforcePollingInterval": 5000,
-      "apiCallTimeout": 500
+    "endpoint": "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
+    "promptForFirstNameMessage": "What is your first name?",
+    "promptForLastNameMessage": "What is your last name?",
+    "promptForEmailAddressMessage": "What is your email address?",
+    "disconnectingMessage": "Thank you, you are being returned to the chatbot",
+    "waitingForAgentMessage": "Thank you for waiting. An agent will be with you when available.",
+    "waitingForAgentMessageIntervalSeconds": 30,
+    "salesforcePollingInterval": 5000,
+    "apiCallTimeout": 500
   },
   "connect": {
-    "contactFlowId" : "",
-    "instanceId" : "",
-    "apiGatewayEndpoint" : "",
+    "contactFlowId": "",
+    "instanceId": "",
+    "apiGatewayEndpoint": "",
     "waitingForAgentMessage": "Thanks for waiting. An agent will be with you when available.",
     "waitingForAgentMessageIntervalSeconds": 60
   },

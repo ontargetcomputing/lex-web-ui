@@ -14,78 +14,79 @@ License for the specific language governing permissions and limitations under th
 /**
  * Sets up the initial state of the store
  */
-import { config } from '@/config';
+import { config } from "@/config";
 
 export const chatMode = {
-  BOT: 'bot',
-  LIVECHAT: 'livechat',
+  BOT: "bot",
+  LIVECHAT: "livechat"
 };
 
 export const liveChatStatus = {
-  REQUESTED: 'requested',
-  VERIFIED: 'verified',
-  REQUEST_USERNAME: 'request_username',
-  REQUEST_FIRSTNAME: 'request_firstname',
-  REQUEST_LASTNAME: 'request_lastname',
-  REQUEST_EMAIL: 'request_email',
-  INITIALIZING: 'initializing',
-  CONNECTING: 'connecting',
-  ESTABLISHED: 'established',
-  DISCONNECTED: 'disconnected',
-  ENDED: 'ended',
+  REQUESTED: "requested",
+  VERIFIED: "verified",
+  REQUEST_USERNAME: "request_username",
+  REQUEST_FIRSTNAME: "request_firstname",
+  REQUEST_LASTNAME: "request_lastname",
+  REQUEST_EMAIL: "request_email",
+  INITIALIZING: "initializing",
+  CONNECTING: "connecting",
+  ESTABLISHED: "established",
+  DISCONNECTED: "disconnected",
+  ENDED: "ended"
 };
 
 export default {
-  version: (process.env.PACKAGE_VERSION) ?
-    process.env.PACKAGE_VERSION : '0.0.0',
+  version: process.env.PACKAGE_VERSION ? process.env.PACKAGE_VERSION : "0.0.0",
   chatMode: chatMode.BOT,
   lex: {
-    acceptFormat: 'audio/ogg',
-    dialogState: '',
+    acceptFormat: "audio/ogg",
+    dialogState: "",
     isInterrupting: false,
     isProcessing: false,
     isPostTextRetry: false,
     retryCountPostTextTimeout: 0,
-    inputTranscript: '',
-    intentName: '',
-    message: '',
+    inputTranscript: "",
+    intentName: "",
+    message: "",
     responseCard: null,
-    sessionAttributes: (
+    sessionAttributes:
       config.lex &&
       config.lex.sessionAttributes &&
-      typeof config.lex.sessionAttributes === 'object'
-    ) ? { ...config.lex.sessionAttributes } : {},
-    slotToElicit: '',
+      typeof config.lex.sessionAttributes === "object"
+        ? { ...config.lex.sessionAttributes }
+        : {},
+    slotToElicit: "",
     slots: {},
-    targetLanguage: 'en',
+    targetLanguage: "en"
   },
   liveChat: {
-    username: '',
-    firstname: '',
-    lastname: '',
-    email: '',
+    username: "",
+    firstname: "",
+    lastname: "",
+    email: "",
     verifyLiveChat: false,
     isProcessing: false,
     status: liveChatStatus.DISCONNECTED,
-    message: '',
+    message: ""
   },
   messages: [],
   utteranceStack: [],
   isBackProcessing: false,
   polly: {
-    outputFormat: 'ogg_vorbis',
-    voiceId: (
+    outputFormat: "ogg_vorbis",
+    voiceId:
       config.polly &&
       config.polly.voiceId &&
-      typeof config.polly.voiceId === 'string'
-    ) ? `${config.polly.voiceId}` : 'Joanna',
+      typeof config.polly.voiceId === "string"
+        ? `${config.polly.voiceId}`
+        : "Joanna"
   },
   botAudio: {
     canInterrupt: false,
     interruptIntervalId: null,
     autoPlay: false,
     isInterrupting: false,
-    isSpeaking: false,
+    isSpeaking: false
   },
   recState: {
     isConversationGoing: false,
@@ -93,14 +94,17 @@ export default {
     isMicMuted: false,
     isMicQuiet: true,
     isRecorderSupported: false,
-    isRecorderEnabled: (config.recorder) ? !!config.recorder.enable : true,
+    isRecorderEnabled: config.recorder ? !!config.recorder.enable : true,
     isRecording: false,
-    silentRecordingCount: 0,
+    silentRecordingCount: 0
   },
 
-  isRunningEmbedded: false, // am I running in an iframe?
-  isSFXOn: (config.ui) ? (!!config.ui.enableSFX &&
-    !!config.ui.messageSentSFX && !!config.ui.messageReceivedSFX) : false,
+  isRunningEmbedded: true, // am I running in an iframe?
+  isSFXOn: config.ui
+    ? !!config.ui.enableSFX &&
+      !!config.ui.messageSentSFX &&
+      !!config.ui.messageReceivedSFX
+    : false,
   isUiMinimized: false, // when running embedded, is the iframe minimized?
   isEnableLogin: false, // true when a login/logout menu should be displayed
   isForceLogin: false, // true when a login/logout menu should be displayed
@@ -111,6 +115,6 @@ export default {
   tokens: {},
   config,
   awsCreds: {
-    provider: 'cognito', // cognito|parentWindow
-  },
+    provider: "cognito" // cognito|parentWindow
+  }
 };

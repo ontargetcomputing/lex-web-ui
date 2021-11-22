@@ -1,12 +1,16 @@
 <template>
   <v-card>
-    <div v-if=shouldDisplayResponseCardTitle>
-      <v-card-title v-if="responseCard.title && responseCard.title.trim()" primary-title class="red lighten-5">
-        <span class="headline">{{responseCard.title}}</span>
+    <div v-if="shouldDisplayResponseCardTitle">
+      <v-card-title
+        v-if="responseCard.title && responseCard.title.trim()"
+        primary-title
+        class="red lighten-5"
+      >
+        <span class="headline">{{ responseCard.title }}</span>
       </v-card-title>
     </div>
     <v-card-text v-if="responseCard.subTitle">
-      <span>{{responseCard.subTitle}}</span>
+      <span>{{ responseCard.subTitle }}</span>
     </v-card-text>
     <v-card-media
       v-if="responseCard.imageUrl"
@@ -16,17 +20,16 @@
     ></v-card-media>
     <v-card-actions v-if="responseCard.buttons" class="button-row">
       <v-btn
-        v-for="(button) in responseCard.buttons"
+        v-for="button in responseCard.buttons"
         v-show="button.text && button.value"
         v-bind:key="button.id"
         v-on:click.once.native="onButtonClick(button.value)"
         v-bind:disabled="shouldDisableClickedResponseCardButtons"
-        round
         default
         v-bind:color="button.text.toLowerCase() === 'more' ? '' : 'accent'"
-        class="secondary--text"
+        class="action_buttons"
       >
-        {{button.text}}
+        {{ button.text }}
       </v-btn>
     </v-card-actions>
     <v-card-actions v-if="responseCard.attachmentLinkUrl">
@@ -57,11 +60,11 @@ BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or implied. See the
 License for the specific language governing permissions and limitations under the License.
 */
 export default {
-  name: 'response-card',
-  props: ['response-card'],
+  name: "response-card",
+  props: ["response-card"],
   data() {
     return {
-      hasButtonBeenClicked: false,
+      hasButtonBeenClicked: false
     };
   },
   computed: {
@@ -73,27 +76,29 @@ export default {
         this.$store.state.config.ui.shouldDisableClickedResponseCardButtons &&
         this.hasButtonBeenClicked
       );
-    },
+    }
   },
   methods: {
     onButtonClick(value) {
       this.hasButtonBeenClicked = true;
 
-      const messageType = this.$store.state.config.ui.hideButtonMessageBubble ? 'button' : 'human';
+      const messageType = this.$store.state.config.ui.hideButtonMessageBubble
+        ? "button"
+        : "human";
       const message = {
         type: messageType,
-        text: value,
+        text: value
       };
 
-      this.$store.dispatch('postTextMessage', message);
-    },
-  },
+      this.$store.dispatch("postTextMessage", message);
+    }
+  }
 };
 </script>
 
 <style scoped>
 .card {
-  width: 75vw;
+  width: 100%;
   position: inherit; /* workaround to card being displayed on top of toolbar shadow */
   padding-bottom: 0.5em;
   box-shadow: none !important;
@@ -120,5 +125,15 @@ export default {
 .card__actions.button-row {
   justify-content: center;
   padding-bottom: 0.15em;
+}
+.action_buttons {
+  background: #fec31b !important;
+  color: #053b8c !important;
+  border-radius: 5px;
+}
+
+.action_buttons:hover {
+  background: #001a72 !important;
+  color: #ffffff !important;
 }
 </style>

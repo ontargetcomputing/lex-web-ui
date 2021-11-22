@@ -1,8 +1,5 @@
 <template>
-  <div
-    aria-live="polite"
-    class="layout message-list column fill-height"
-  >
+  <div aria-live="polite" class="layout message-list column">
     <message
       ref="messages"
       v-for="message in messages"
@@ -11,9 +8,7 @@
       v-bind:class="`message-${message.type}`"
       v-on:scrollDown="scrollDown"
     ></message>
-    <MessageLoading
-      v-if="loading"
-    ></MessageLoading>
+    <MessageLoading v-if="loading"></MessageLoading>
   </div>
 </template>
 
@@ -30,22 +25,25 @@ or in the "license" file accompanying this file. This file is distributed on an 
 BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or implied. See the
 License for the specific language governing permissions and limitations under the License.
 */
-import Message from './Message';
-import MessageLoading from './MessageLoading';
+import Message from "./Message";
+import MessageLoading from "./MessageLoading";
 
 export default {
-  name: 'message-list',
+  name: "message-list",
   components: {
     Message,
-    MessageLoading,
+    MessageLoading
   },
   computed: {
     messages() {
       return this.$store.state.messages;
     },
     loading() {
-      return this.$store.state.lex.isProcessing || this.$store.state.liveChat.isProcessing;
-    },
+      return (
+        this.$store.state.lex.isProcessing ||
+        this.$store.state.liveChat.isProcessing
+      );
+    }
   },
   watch: {
     // autoscroll message list to the bottom when messages change
@@ -54,7 +52,7 @@ export default {
     },
     loading() {
       this.scrollDown();
-    },
+    }
   },
   mounted() {
     setTimeout(() => {
@@ -65,8 +63,11 @@ export default {
     scrollDown() {
       return this.$nextTick(() => {
         if (this.$el.lastElementChild) {
-          const lastMessageHeight = this.$el.lastElementChild.getBoundingClientRect().height;
-          const isLastMessageLoading = this.$el.lastElementChild.classList.contains('messsge-loading');
+          const lastMessageHeight = this.$el.lastElementChild.getBoundingClientRect()
+            .height;
+          const isLastMessageLoading = this.$el.lastElementChild.classList.contains(
+            "messsge-loading"
+          );
           if (isLastMessageLoading) {
             this.$el.scrollTop = this.$el.scrollHeight;
           } else {
@@ -74,31 +75,44 @@ export default {
           }
         }
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped>
+.message-bot {
+  flex: none;
+}
+.message-human {
+  flex: none;
+  align-self: end;
+}
+.message-bot:before {
+  content: "Miles:";
+  border-radius: 5px;
+  background: linear-gradient(180deg, #ffd457 0%, #ffc107 100%);
+  color: #203376;
+  height: 24px;
+  padding: 3px 9px;
+}
+.message-human:before {
+  content: "Me:";
+  border-radius: 5px;
+  background: linear-gradient(180deg, #084897 0%, #001a72 100%);
+  color: #fff;
+  padding: 3px 12px;
+  margin-left: 28px;
+}
 .message-list {
-  padding-top: 1rem;
+  padding: 2rem;
   overflow-y: auto;
   overflow-x: hidden;
+  height: 95%;
 }
-
-.message-bot {
-  align-self: flex-start;
-}
-
-.message-agent {
-  align-self: flex-start;
-}
-
-.message-human {
-  align-self: flex-end;
-}
-
-.message-feedback {
-  align-self: flex-end;
+.message-bot .message-text {
+  border-radius: 0 !important;
+  border-left: 0.15em solid #ffc107 !important;
+  padding: 0 !important;
 }
 </style>

@@ -6,7 +6,7 @@
 }
 
 .language-header {
-  background: linear-gradient(180deg, #FFD457 0%, #FFC107 100%) !important;
+  background: linear-gradient(180deg, #ffd457 0%, #ffc107 100%) !important;
 }
 
 .headline-text {
@@ -15,7 +15,7 @@
   font-size: 19.2px;
   line-height: 23px;
   margin-bottom: 0;
-  color: #001A72;
+  color: #001a72;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -23,6 +23,11 @@
   height: 90% !important;
   margin: 50% !important;
 }
+
+/* .toolbar__content img {
+  height: 90% !important;
+  margin: 50% !important;
+} */
 
 .message-list-container {
   background-color: #ffffff !important;
@@ -42,7 +47,7 @@
 }
 
 .message-human:before {
-  content: "Me:";
+  content: 'Me:';
   margin-top: -20px;
   margin-right: -58px;
   border-radius: 5px;
@@ -61,7 +66,7 @@
 
 .message-bot:before {
   display: block;
-  content: "Miles:";
+  content: 'Miles:';
   margin-top: -20px;
   margin-right: -59px;
   border-radius: 5px;
@@ -98,7 +103,7 @@
 
 .message-agent:before {
   display: block;
-  content: "Agent:";
+  content: 'Agent:';
   margin-top: -20px;
   margin-right: -59px;
   border-radius: 5px;
