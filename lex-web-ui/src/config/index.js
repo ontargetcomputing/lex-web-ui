@@ -179,10 +179,12 @@ const configDefault = {
     parentOrigin: null,
 
     // mp3 audio file url for message send sound FX
-    messageSentSFX: "https://neel-main-site.s3.us-west-2.amazonaws.com/pristine-609.mp3",
+    messageSentSFX:
+      "https://neel-main-site.s3.us-west-2.amazonaws.com/pristine-609.mp3",
 
     // mp3 audio file url for message received sound FX
-    messageReceivedSFX: "https://neel-main-site.s3.us-west-2.amazonaws.com/succeeded-message-tone.mp3",
+    messageReceivedSFX:
+      "https://neel-main-site.s3.us-west-2.amazonaws.com/succeeded-message-tone.mp3",
 
     // chat window text placeholder
     textInputPlaceholder: "Type here",

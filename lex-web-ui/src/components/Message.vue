@@ -1,7 +1,11 @@
 <template>
   <v-flex
     class="message"
-    v-if="message.type === 'bot' || message.type === 'human'"
+    v-if="
+      message.type === 'botEnded' ||
+        message.type === 'human' ||
+        message.type === 'bot'
+    "
   >
     <!-- contains message and response card -->
     <v-layout column ma-2 class="message-layout">
@@ -10,7 +14,12 @@
         <v-layout column class="message-bubble-column">
           <!-- contains message bubble and avatar -->
           <v-flex class="message-bubble-avatar-container">
-            <v-layout row class="message-bubble-row">
+            <v-layout
+              row
+              v-bind:class="
+                `message-bubble-row message-bubble-row-${message.type}`
+              "
+            >
               <div
                 v-if="shouldShowAvatarImage"
                 v-bind:style="avatarBackground"
@@ -130,13 +139,7 @@
           </v-flex>
         </v-layout>
       </v-flex>
-      <v-flex
-        v-if="shouldDisplayResponseCard"
-        class="response-card"
-        mt-2
-        mr-2
-        ml-3
-      >
+      <v-flex v-if="shouldDisplayResponseCard" class="response-card" mt-2>
         <response-card
           v-for="(card, index) in message.responseCard.genericAttachments"
           v-bind:response-card="card"
@@ -355,15 +358,14 @@ export default {
   border-left: 0.15em solid #ffc107;
   padding: 15px;
 }
+.message-bubble-row-botEnded {
+  justify-content: center;
+}
 
 .message-human .message-layout .message-bubble-date-container {
   border-radius: 0;
   border-right: 0.15em solid #203376;
   padding: 15px;
-}
-.message,
-.message-bubble-row {
-  max-width: 80vw;
 }
 
 /* .smicon {

@@ -884,7 +884,6 @@ export default {
         method: 'post',
         url: `${context.state.config.live_agent.endpoint}/agentWaitTime`,
       };
-      context.commit('setChatMode', chatMode.LIVECHAT);
       await axios(agentWaitConfig)
         .then((response) => {
           // RDB - TODO - what do I do with these?
@@ -1254,12 +1253,13 @@ export default {
     });
   },
   resetHistory(context) {
-    context.commit('clearMessages');
+    console.log("🚀 ~ file: actions.js ~ line 1256 ~ resetHistory ~ context", context)
+    context.commit('clearSessionAttributes');
     context.commit('pushMessage', {
-      type: 'bot',
-      text: context.state.config.lex.initialText,
+      type: 'botEnded',
+      text: context.state.config.lex.endText,
       alts: {
-        markdown: context.state.config.lex.initialText,
+        markdown: context.state.config.lex.endText,
       },
     });
   },

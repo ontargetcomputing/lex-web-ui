@@ -20,7 +20,8 @@
     "reInitSessionAttributesOnRestart": false,
     "region": "us-west-2",
     "retryOnLexPostTextTimeout": "false",
-    "retryCountPostTextTimeout": "1"
+    "retryCountPostTextTimeout": "1",
+    "endText": "You've ended the Chat."
   },
   "ui": {
     "parentOrigin": "",
