@@ -884,7 +884,7 @@ export default {
         method: 'post',
         url: `${context.state.config.live_agent.endpoint}/agentWaitTime`,
       };
-      context.commit('setChatMode', chatMode.LIVECHAT);
+      
       await axios(agentWaitConfig)
         .then((response) => {
           // RDB - TODO - what do I do with these?
