@@ -789,13 +789,18 @@ export default {
 
   pushMessage(context, message) {
     if (context.state.lex.isPostTextRetry === false) {
+      if(message.type === 'bot' || message.type === 'button'){
+        context.dispatch('playSound', context.state.config.ui.messageReceivedSFX);
+      }
       context.commit('pushMessage', message);
     }
   },
   pushLiveChatMessage(context, message) {
+    context.dispatch('playSound', context.state.config.ui.messageReceivedSFX);
     context.commit('pushLiveChatMessage', message);
   },
   pushErrorMessage(context, text, dialogState = 'Failed') {
+    context.dispatch('playSound', context.state.config.ui.messageReceivedSFX);
     context.commit('pushMessage', {
       type: 'bot',
       text,

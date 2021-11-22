@@ -43,7 +43,7 @@
     "backButton": false,
     "messageMenu": true,
     "hideButtonMessageBubble": true,
-    "enableLiveChat": false,
+    "enableLiveChat": true,
     "enableSFX": true,
     "urlQueryParams": {
       "lexWebUiEmbed": "false"
