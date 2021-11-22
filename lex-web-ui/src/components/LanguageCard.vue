@@ -29,19 +29,19 @@
                 name="languages"
                 id="languages"
               >
+
                 <option value="ar">Arabic</option>
                 <option value="hy">Armenian</option>
                 <option value="zh-TW">Chinese (Traditional)</option>
-                <option disabled value="en">English</option>
+                <option selected disabled value="en">English</option>
                 <option value="hi">Hindi</option>
                 <option value="ja">Japanese</option>
                 <option value="ko">Korean</option>
-                <option value="per">Persian</option>
+                <option value="fa">Persian</option>
                 <option value="ru">Russian</option>
                 <option value="es">Spanish</option>
                 <option value="vi">Vietnamese</option>
                 <option value="tl">Tagalog</option>
-                <option selected value="">Please select language</option>
               </select>
             </div>
             <div class="languages" v-else>
@@ -51,19 +51,40 @@
                 name="languages"
                 id="languages"
               >
-                <option disabled value="ar">Arabic</option>
-                <option disabled value="hy">Armenian</option>
-                <option disabled value="zh-TW">Chinese (Traditional)</option>
+                <option v-if="language == 'ar'" selected disabled value="ar">Arabic</option>
+                <option v-else disabled value="ar">Arabic</option>
+
+                <option v-if="language == 'hy'" selected disabled value="hy">Armenian</option>
+                <option v-else disabled value="hy">Armenian</option>
+
+                <option v-if="language == 'zh-TW'" selected disabled value="zh-TW">Chinese (Traditional)</option>
+                <option v-else disabled value="zh-TW">Chinese (Traditional)</option>
+
                 <option value="en">English</option>
-                <option disabled value="hi">Hindi</option>
-                <option disabled value="ja">Japanese</option>
-                <option disabled value="ko">Korean</option>
-                <option disabled value="per">Persian</option>
-                <option disabled value="ru">Russian</option>
-                <option disabled value="es">Spanish</option>
-                <option disabled value="vi">Vietnamese</option>
-                <option disabled value="tl">Tagalog</option>
-                <option selected value="">Please select language</option>
+
+                <option v-if="language == 'hi'" selected disabled value="hi">Hindi</option>
+                <option v-else disabled value="hi">Hindi</option>
+
+                <option v-if="language == 'ja'" selected disabled value="ja">Japanese</option>
+                <option v-else disabled value="ja">Japanese</option>
+
+                <option v-if="language == 'ko'" selected disabled value="ko">Korean</option>
+                <option v-else v-else disabled value="ko">Korean</option>
+
+                <option v-if="language == 'fa'" selected disabled value="fa">Persian</option>
+                <option disabled value="fa">Persian</option>
+
+                <option v-if="language == 'ru'" selected disabled value="ru">Russian</option>
+                <option v-else disabled value="ru">Russian</option>
+                
+                <option v-if="language == 'es'" selected disabled value="es">Spanish</option>
+                <option v-else disabled value="es">Spanish</option>
+
+                <option v-if="language == 'vi'" selected disabled value="vi">Vietnamese</option>
+                <option v-else disabled value="vi">Vietnamese</option>
+
+                <option v-if="language == 'tl'" selected disabled value="tl">Tagalog</option>
+                <option v-else disabled value="tl">Tagalog</option>
               </select>
             </div>
           </v-flex>
@@ -99,7 +120,11 @@ export default {
   computed: {
     isEnglishSelected() {
       return this.$store.state.lex.targetLanguage === "en";
+    },
+    language() {
+      return this.$store.state.lex.targetLanguage;
     }
+
   },
   methods: {
     handleBack() {

@@ -471,14 +471,16 @@ export default {
   },
   postTextMessage(context, message) {
     if (context.state.isSFXOn && !context.state.lex.isPostTextRetry && message.type === 'human') {
-    context.dispatch('playSound', context.state.config.ui.messageSentSFX);
+      //context.dispatch('playSound', context.state.config.ui.messageSentSFX);
     }
 
     return context.dispatch('interruptSpeechConversation')
       .then(() => {
-        console.info('TODO - REMOVE THIS - Got this far - take me out-' + message)
+        console.info(`${JSON.stringify(message)} - mode=${context.state.chatMode}`)
         if (context.state.chatMode === chatMode.BOT) {
-          return context.dispatch('pushMessage', message);
+          if (message.text.startsWith('QID::') === false) {
+            return context.dispatch('pushMessage', message);
+          } 
         }
         return Promise.resolve();
       })
@@ -516,7 +518,10 @@ export default {
         }
         /* eslint-enable */
         // return Promise.resolve(context.commit('pushUtterance', message.text));
-        context.commit('pushUtterance', message.text);
+        if (message.text.startsWith('QID::') === false) {
+          context.commit('pushUtterance', message.text);  
+        } 
+        
         return Promise.resolve(postToLex);
       })
       .then((postToLex) => {
@@ -832,6 +837,7 @@ export default {
     const createCaseConfig = {
       method: 'post',
       url: `${context.state.config.live_agent.endpoint}/createCase`,
+      data: {firstname: context.state.liveChat.firstname, lastname: context.state.liveChat.lastname, email: context.state.liveChat.email, language: context.state.lex.targetLanguage }
     };
     return axios(createCaseConfig)
       .then((result) => {
@@ -864,7 +870,6 @@ export default {
         console.info('live Chat session connection response', response);
         console.info('Live Chat Session CONNECTED');
         context.commit('setLiveChatStatus', liveChatStatus.ESTABLISHED);
-        // RDB TODO
         // context.commit('setLiveChatbotSession', liveChatSession);
         return Promise.resolve();
       })
@@ -877,14 +882,12 @@ export default {
   },
 
   async requestLiveChat(context) {
-    console.info(`actions.requestLiveChat with status=${context.state.liveChat.status}`);
     if (context.state.liveChat.status === liveChatStatus.DISCONNECTED) {
-      console.info('actions.requestingLiveChat - verifying live chat');
+      console.info('requestingLiveChat - status = disconnected');
       const agentWaitConfig = {
         method: 'post',
         url: `${context.state.config.live_agent.endpoint}/agentWaitTime`,
       };
-      context.commit('setChatMode', chatMode.LIVECHAT);
       await axios(agentWaitConfig)
         .then((response) => {
           // RDB - TODO - what do I do with these?
@@ -987,14 +990,14 @@ export default {
 
     let languageCooked;
     switch(language) {
-      case 'ar':
+      case 'hy':
         languageCooked = 'Armenian';
         break;
-      case 'hy':
+      case 'ar':
         languageCooked = 'Arabic';
         break;
       case 'zh-TW':
-        languageCooked = 'Chinese';
+        languageCooked = 'Chinese (Traditional)';
         break;
       case 'en':
         languageCooked = 'English';
@@ -1008,7 +1011,7 @@ export default {
       case 'ko':
         languageCooked = 'Korean';
         break;
-      case 'per':
+      case 'fa':
         languageCooked = 'Persian';
         break;
       case 'ru':
@@ -1028,14 +1031,6 @@ export default {
         return
     }
 
-    // context.commit(
-    //       'pushMessage',
-    //       {
-    //         text: languageCooked,
-    //         type: 'human',
-    //       },
-    // );
-
     const messageWrapper = {
       type: 'human',
       text: languageCooked,
@@ -1043,8 +1038,13 @@ export default {
 
     return context.dispatch('postTextMessage', messageWrapper)
         .then(() => {
-          console.info('changing the language')
-          return
+          console.info(`changing the language ${JSON.stringify(messageWrapper)}`)
+          const welcomeWrapper = {
+            type: 'human',
+            text: 'QID::Welcome',
+          };
+
+          return context.dispatch('postTextMessage', welcomeWrapper)
         });
    
   },
