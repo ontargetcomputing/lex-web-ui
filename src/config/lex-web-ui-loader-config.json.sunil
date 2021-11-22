@@ -24,18 +24,17 @@
   },
   "ui": {
     "parentOrigin": "",
-    "toolbarTitle": "",
-    "toolbarLogo": "chatbot-icon-circle.png",
+    "toolbarTitle": "DEV - MILES",
+    "toolbarLogo": "DEV",
     "positiveFeedbackIntent": "",
     "negativeFeedbackIntent": "Thumbs down",
-    "helpIntent": "",
+    "helpIntent": "Help",
     "enableLogin": false,
     "forceLogin": false,
     "AllowSuperDangerousHTMLInMessage": true,
     "shouldDisplayResponseCardTitle": false,
     "saveHistory": false,
-    "shouldRenderSfxButton": false,
-    "minButtonContent": "Ask DMV",
+    "minButtonContent": "",
     "hideInputFieldsForButtonResponse": false,
     "pushInitialTextOnRestart": false,
     "directFocusToBotInput": false,
@@ -44,18 +43,7 @@
     "messageMenu": true,
     "hideButtonMessageBubble": true,
     "enableLiveChat": true,
-    "enableSFX": true,
-    "urlQueryParams": {
-      "lexWebUiEmbed": "false"
-    },
-
-    "iframe": {
-      "iframeOrigin": "http://localhost:8080/#/",
-
-      "iframeSrcPath": "/index.html#/?lexWebUiEmbed=true",
-
-      "shouldLoadIframeMinimized": true
-    }
+    "enableSFX": true
   },
   "live_agent": {
     "endpoint": "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
