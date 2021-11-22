@@ -85,8 +85,9 @@ export default {
   flex: none;
 }
 .message-human {
-  flex: none;
-  align-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
 }
 .message-bot:before {
   content: "Miles:";
@@ -102,7 +103,8 @@ export default {
   background: linear-gradient(180deg, #084897 0%, #001a72 100%);
   color: #fff;
   padding: 3px 12px;
-  margin-left: 28px;
+  margin-right: 7px;
+  width: 48px;
 }
 .message-list {
   padding: 2rem;

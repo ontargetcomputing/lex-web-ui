@@ -8,7 +8,9 @@
         <!--
           using v-show instead of v-if to make recorder-status transition work
         -->
+
         <v-text-field
+          v-if="showInputAndSendButton"
           v-bind:label="textInputPlaceholder"
           v-show="shouldShowTextInput"
           v-bind:disabled="isLexProcessing"
@@ -47,18 +49,21 @@
           <span id="input-button-tooltip">End Live Chat</span>
         </v-tooltip>
 
-        <v-btn
-          v-if="shouldShowSendButton"
-          v-on:click="postTextMessage"
-          v-on="tooltipEventHandlers"
-          v-bind:disabled="isLexProcessing"
-          ref="send"
-          class="icon-color input-button"
-          icon
-          aria-label="Send Message"
-        >
-          <v-icon medium>send</v-icon>
-        </v-btn>
+        <span v-if="showInputAndSendButton" class="input-button-wrapper">
+          <v-btn
+            v-if="shouldShowSendButton"
+            v-on:click="postTextMessage"
+            v-on="tooltipEventHandlers"
+            v-bind:disabled="isLexProcessing"
+            ref="send"
+            class="icon-color input-button"
+            icon
+            aria-label="Send Message"
+          >
+            <v-icon medium>send</v-icon>
+          </v-btn>
+        </span>
+
         <!-- <v-btn
           v-if="!shouldShowSendButton && !isModeLiveChat"
           v-on:click="onMicClick"
@@ -186,6 +191,9 @@ export default {
         !this.isRecorderSupported ||
         !this.isRecorderEnabled
       );
+    },
+    showInputAndSendButton() {
+      return !this.$store.state.lex.sessionEnded;
     },
     shouldShowTextInput() {
       return !(this.isBotSpeaking || this.isSpeechConversationGoing);
@@ -357,7 +365,11 @@ export default {
 .input-group {
   width: 75% !important;
 }
-.input-button {
+.input-button-wrapper {
   width: 25% !important;
+}
+
+.input-button {
+  width: 100% !important;
 }
 </style>

@@ -1,6 +1,12 @@
 <template>
   <div
-    v-if="
+    v-if="message.text && message.type === 'botEnded'"
+    class="message-text bot-message-ended"
+  >
+    {{ message.text }}
+  </div>
+  <div
+    v-else-if="
       message.text && (message.type === 'human' || message.type === 'feedback')
     "
     class="message-text"
@@ -183,5 +189,11 @@ export default {
 }
 .message-text ul {
   list-style-type: none;
+}
+.bot-message-ended {
+  font-size: 0.75em;
+  text-align: center;
+  color: #a9a9a9;
+  font-style: italic;
 }
 </style>

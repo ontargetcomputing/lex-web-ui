@@ -57,7 +57,8 @@ export default {
         : {},
     slotToElicit: "",
     slots: {},
-    targetLanguage: "en"
+    targetLanguage: "en",
+    sessionEnded: false
   },
   liveChat: {
     username: "",

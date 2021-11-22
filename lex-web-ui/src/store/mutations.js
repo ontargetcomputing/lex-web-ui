@@ -530,9 +530,9 @@ export default {
   toggleBackProcessing(state) {
     state.isBackProcessing = !state.isBackProcessing;
   },
-  clearMessages(state) {
-    state.messages = [];
+  clearSessionAttributes(state) {
     state.lex.sessionAttributes = {};
+    state.lex.sessionEnded = true;
   },
   setPostTextRetry(state, bool) {
     if (typeof bool !== 'boolean') {
