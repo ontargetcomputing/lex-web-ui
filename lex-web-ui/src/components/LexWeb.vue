@@ -576,7 +576,22 @@ export default {
       this.show = true;
     },
     saveChat() {
-      console.info("LexWeb: saveChat");
+      const input = this.$store.state.messages;
+
+      let myFinalText = "";
+
+      input.map(i => {
+        if (i.type === "bot") {
+          myFinalText = myFinalText + "\r\n" + " " + "\r" + "Miles (" + i.date  + "):" + i.text;
+        } else if (i.type === "human") {
+          myFinalText = myFinalText + "\r\n" + " " + "\r" + "Me (" + i.date  + "):" + i.text;
+        }
+      });
+
+      var link = document.createElement("a");
+      link.href = "data:text/plain;charset=UTF-8," + escape(myFinalText);
+      link.download = "transcript.txt";
+      link.click();
     },
     endChat() {
       console.info("LexWeb: endChat");
