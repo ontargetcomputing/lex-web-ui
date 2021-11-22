@@ -1,23 +1,64 @@
 {
+  "region": "us-west-2",
   "cognito": {
-    "poolId": ""
+    "poolId": "us-west-2:1845a3f1-6925-47ba-b2df-abfba9c4a6cc",
+    "appUserPoolClientId": "5bnfu6p7n1ah0jhd00913aoa7c",
+    "appUserPoolName": "us-west-2_XEFuWJqJW",
+    "appDomainName": "lexkwebkuikidentitypoolconfigkngurcghkhvhz032802432428.auth.us-west-2.amazoncognito.com",
+    "aws_cognito_region": "us-west-2",
+    "region": "us-west-2"
   },
   "lex": {
-    "botName": "WebUiOrderFlowers",
-    "initialText": "You can ask me for help ordering flowers. Just type \"order flowers\" or click on the mic and say it.",
-    "initialSpeechInstruction": "Say 'Order Flowers' to get started."
-  },
-  "polly": {
-    "voiceId": "Salli"
+    "v2BotId": "",
+    "v2BotAliasId": "",
+    "v2BotLocaleId": "en_US",
+    "botName": "miles_dev_dev_dev_master_one_BotKeXvR",
+    "botAlias": "live",
+    "initialText": "",
+    "initialSpeechInstruction": "",
+    "initialUtterance": "QID::Welcome",
+    "reInitSessionAttributesOnRestart": false,
+    "region": "us-west-2",
+    "retryOnLexPostTextTimeout": "false",
+    "retryCountPostTextTimeout": "1"
   },
   "ui": {
     "parentOrigin": "",
-    "pageTitle": "PROD - Order Flowers Bot",
-    "toolbarTitle": "PROD - Order Flowers",
-    "enableLiveChat": false
+    "toolbarTitle": "",
+    "toolbarLogo": "chatbot-icon-circle.png",
+    "positiveFeedbackIntent": "",
+    "negativeFeedbackIntent": "Thumbs down",
+    "helpIntent": "",
+    "enableLogin": false,
+    "forceLogin": false,
+    "AllowSuperDangerousHTMLInMessage": true,
+    "shouldDisplayResponseCardTitle": false,
+    "saveHistory": false,
+    "shouldRenderSfxButton": false,
+    "minButtonContent": "Ask DMV",
+    "hideInputFieldsForButtonResponse": false,
+    "pushInitialTextOnRestart": false,
+    "directFocusToBotInput": false,
+    "showDialogStateIcon": false,
+    "backButton": false,
+    "messageMenu": true,
+    "hideButtonMessageBubble": true,
+    "enableLiveChat": true,
+    "enableSFX": true,
+    "urlQueryParams": {
+      "lexWebUiEmbed": "false"
+    },
+
+    "iframe": {
+      "iframeOrigin": "http://localhost:8080/#/",
+
+      "iframeSrcPath": "/index.html#/?lexWebUiEmbed=true",
+
+      "shouldLoadIframeMinimized": true
+    }
   },
   "live_agent": {
-    "endpoint": "http://localhost:3000",
+    "endpoint": "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
     "promptForFirstNameMessage": "What is your first name?",
     "promptForLastNameMessage": "What is your last name?",
     "promptForEmailAddressMessage": "What is your email address?",
@@ -27,12 +68,22 @@
     "salesforcePollingInterval": 5000,
     "apiCallTimeout": 500
   },
-    "connect": {
-    "contactFlowId" : "",
-    "instanceId" : "",
-    "apiGatewayEndpoint" : ""
+  "connect": {
+    "contactFlowId": "",
+    "instanceId": "",
+    "apiGatewayEndpoint": "",
+    "waitingForAgentMessage": "Thanks for waiting. An agent will be with you when available.",
+    "waitingForAgentMessageIntervalSeconds": 60
+  },
+  "polly": {
+    "voiceId": "Salli"
   },
   "recorder": {
     "preset": "speech_recognition"
+  },
+  "iframe": {
+    "iframeOrigin": "",
+    "shouldLoadIframeMinimized": false,
+    "iframeSrcPath": "/index.html#/?lexWebUiEmbed=true"
   }
 }
