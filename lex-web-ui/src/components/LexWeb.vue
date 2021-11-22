@@ -392,6 +392,10 @@ export default {
       console.info("LexWeb: handleLanguageSelection");
       this.$store.dispatch("requestLanguageChange");
     },
+    handleLanguageSelection() {
+      console.info("LexWeb: handleLanguageSelection");
+      this.$store.dispatch("requestLanguageChange");
+    },
     // messages from parent
     messageHandler(evt) {
       const messageType = this.$store.state.config.ui.hideButtonMessageBubble

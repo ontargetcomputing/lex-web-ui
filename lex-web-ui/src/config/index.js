@@ -70,6 +70,18 @@ const configDefault = {
     salesforcePollingInterval: 5000,
     apiCallTimeout: 500
   },
+  live_agent: {
+    endpoint: "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
+    promptForFirstNameMessage: "What is your first name?",
+    promptForLastNameMessage: "What is your last name?",
+    promptForEmailAddressMessage: "What is your email address?",
+    disconnectingMessage: "Thank you, you are being returned to the chatbot",
+    waitingForAgentMessage:
+      "Thank you for waiting. An agent will be with you when available.",
+    waitingForAgentMessageIntervalSeconds: 30,
+    salesforcePollingInterval: 5000,
+    apiCallTimeout: 500
+  },
   connect: {
     // The Connect contact flow id - user configured via CF template
     contactFlowId: "",
