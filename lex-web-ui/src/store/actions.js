@@ -670,6 +670,8 @@ export default {
       });
   },
   lexPostText(context, text) {
+    // HACK
+    text = text.replace('QID: :', 'QID::')
     context.commit('setIsLexProcessing', true);
     context.commit('reapplyTokensToSessionAttributes');
     const session = context.state.lex.sessionAttributes;
