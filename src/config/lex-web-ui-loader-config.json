@@ -43,8 +43,10 @@
     "backButton": false,
     "messageMenu": true,
     "hideButtonMessageBubble": true,
-    "enableLiveChat": false,
+    "enableLiveChat": true,
     "enableSFX": true,
+    "messageSentSFX": "https://neel-main-site.s3.us-west-2.amazonaws.com/pristine-609.mp3",
+    "messageReceivedSFX": "https://neel-main-site.s3.us-west-2.amazonaws.com/succeeded-message-tone.mp3",
     "urlQueryParams": {
       "lexWebUiEmbed": "false"
     }
