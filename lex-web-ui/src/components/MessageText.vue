@@ -1,6 +1,12 @@
 <template>
   <div
-    v-if="message.text && message.type === 'botEnded'"
+    v-if="message.buttonText && message.type === 'humanClickedButton'"
+    class="message-text"
+  >
+    {{ message.buttonText }}
+  </div>
+  <div
+    v-else-if="message.text && message.type === 'botEnded'"
     class="message-text bot-message-ended"
   >
     {{ message.text }}

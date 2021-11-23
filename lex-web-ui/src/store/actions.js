@@ -528,6 +528,10 @@ export default {
         console.info(`PostToLex = ${postToLex}`);
         if (postToLex && context.state.chatMode === chatMode.BOT
           && context.state.liveChat.status !== liveChatStatus.REQUEST_USERNAME) {
+            if(message.type === 'humanClickedButton'){
+              context.dispatch('pushMessage', {type: message.type, buttonText: message.buttonText, text: message.text});
+            }
+            
             
             return context.dispatch('lexPostText', message.text);
         }
@@ -1256,7 +1260,6 @@ export default {
     });
   },
   resetHistory(context) {
-    console.log("🚀 ~ file: actions.js ~ line 1256 ~ resetHistory ~ context", context)
     context.commit('clearSessionAttributes');
     context.commit('pushMessage', {
       type: 'botEnded',

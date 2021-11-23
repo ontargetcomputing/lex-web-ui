@@ -4,7 +4,9 @@
     v-if="
       message.type === 'botEnded' ||
         message.type === 'human' ||
-        message.type === 'bot'
+        message.type === 'bot' ||
+        message.type === 'feedback' ||
+        message.type === 'humanClickedButton'
     "
   >
     <!-- contains message and response card -->
@@ -36,9 +38,12 @@
                 <message-text
                   v-bind:message="message"
                   v-if="
-                    'text' in message &&
+                    ('text' in message &&
                       message.text !== null &&
-                      message.text.length
+                      message.text.length) ||
+                      ('buttonText' in message &&
+                        message.buttonText !== null &&
+                        message.buttonText.length)
                   "
                 ></message-text>
                 <div
@@ -362,10 +367,42 @@ export default {
   justify-content: center;
 }
 
-.message-human .message-layout .message-bubble-date-container {
+.message-human .message-layout .message-bubble-date-container,
+.message-feedback .message-layout .message-bubble-date-container,
+.message-humanClickedButton .message-layout .message-bubble-date-container {
   border-radius: 0;
   border-right: 0.15em solid #203376;
   padding: 15px;
+}
+
+.feedback-state {
+  margin-top: 10px;
+}
+.icon.feedback-icons-positive:hover {
+  color: green;
+}
+.icon.feedback-icons-positive {
+  color: grey;
+  padding: 0.125em;
+}
+
+.icon.feedback-icons-negative {
+  color: grey;
+  padding: 0.125em;
+}
+
+.icon.feedback-icons-negative:hover {
+  color: red;
+}
+
+.icon.positiveClick {
+  color: green;
+  padding: 0.125em;
+}
+
+.icon.negativeClick {
+  color: red;
+  padding: 0.125em;
 }
 
 /* .smicon {
@@ -437,41 +474,13 @@ export default {
   font-size: 2em;
 }
 
-.feedback-state {
-  display: inline-flex;
-  align-self: center;
-}
 
-.icon.feedback-icons-positive{
-  color: grey;
-  /* color: #E8EAF6; */
-/* color: green; */
-/* padding: .125em;
-}
 
-.positiveClick{
-  color: green;
-  padding: .125em;
-}
 
-.negativeClick{
-  color: red;
-  padding: .125em;
-}
 
-.icon.feedback-icons-positive:hover{
-  color:green;
-}
 
-.icon.feedback-icons-negative{
-  /* color: #E8EAF6; */
-/* color: grey;
-  padding: .125em;
-}
 
-.icon.feedback-icons-negative:hover{
-  color: red;
-}
+
 
 .response-card {
   justify-content: center;

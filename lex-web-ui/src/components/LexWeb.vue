@@ -583,8 +583,10 @@ export default {
       input.map(i => {
         if (i.type === "bot") {
           myFinalText = myFinalText + "\r\n" + " " + "\r" + "Miles (" + i.date  + "):" + i.text;
-        } else if (i.type === "human") {
+        } else if (i.type === "human" || i.type === "feedback") {
           myFinalText = myFinalText + "\r\n" + " " + "\r" + "Me (" + i.date  + "):" + i.text;
+        } else if( i.type === "humanClickedButton"){
+          myFinalText = myFinalText + "\r\n" + " " + "\r" + "Me (" + i.date  + "):" + i.buttonText;
         }
       });
 
