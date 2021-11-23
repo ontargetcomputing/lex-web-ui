@@ -102,7 +102,7 @@ export default {
 }
 .message-human:before,
 .message-feedback:before,
-.message-humanClickeButton:before {
+.message-humanClickedButton:before {
   content: "Me:";
   border-radius: 5px;
   background: linear-gradient(180deg, #084897 0%, #001a72 100%);

@@ -193,6 +193,14 @@ export default {
 .sr-only {
   display: none;
 }
+.message-text ul li {
+ font-size: 16px;
+ padding-top: 5px;
+}
+.message-text {
+ font-size: 16px;
+ padding-top: 5px;
+}
 .message-text ul {
   list-style-type: none;
 }
