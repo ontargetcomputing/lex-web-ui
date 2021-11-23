@@ -27,7 +27,7 @@
     "parentOrigin": "",
     "toolbarTitle": "",
     "toolbarLogo": "chatbot-icon-circle.png",
-    "positiveFeedbackIntent": "",
+    "positiveFeedbackIntent": "Thumbs up",
     "negativeFeedbackIntent": "Thumbs down",
     "helpIntent": "",
     "enableLogin": false,

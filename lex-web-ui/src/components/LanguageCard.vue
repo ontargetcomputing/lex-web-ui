@@ -5,22 +5,21 @@
     </v-toolbar>
     <v-content>
       <v-container class="language-body">
-        <v-layout>
+        <v-layout class="language-content">
           <img
             class="logo"
             src="https://realid.dmv.ca.gov/wp-content/themes/dmv/assets/images/chatbot-icon-circle.png"
-            width="200"
           />
         </v-layout>
-        <v-layout>
+        <v-layout class="language-content">
           <h2 class="welcome-text">WELCOME</h2>
         </v-layout>
-        <v-layout>
+        <v-layout class="language-content">
           <h5 class="body-text">
             SELECT YOUR PREFERRED LANGUAGE FROM THE LIST BELOW TO GET STARTED.
           </h5>
         </v-layout>
-        <v-layout>
+        <v-layout class="language-content">
           <v-flex>
             <div v-if="isEnglishSelected" class="languages">
               <select
@@ -29,7 +28,6 @@
                 name="languages"
                 id="languages"
               >
-
                 <option value="ar">Arabic</option>
                 <option value="hy">Armenian</option>
                 <option value="zh-TW">Chinese (Traditional)</option>
@@ -51,45 +49,73 @@
                 name="languages"
                 id="languages"
               >
-                <option v-if="language == 'ar'" selected disabled value="ar">Arabic</option>
+                <option v-if="language == 'ar'" selected disabled value="ar"
+                  >Arabic</option
+                >
                 <option v-else disabled value="ar">Arabic</option>
 
-                <option v-if="language == 'hy'" selected disabled value="hy">Armenian</option>
+                <option v-if="language == 'hy'" selected disabled value="hy"
+                  >Armenian</option
+                >
                 <option v-else disabled value="hy">Armenian</option>
 
-                <option v-if="language == 'zh-TW'" selected disabled value="zh-TW">Chinese (Traditional)</option>
-                <option v-else disabled value="zh-TW">Chinese (Traditional)</option>
+                <option
+                  v-if="language == 'zh-TW'"
+                  selected
+                  disabled
+                  value="zh-TW"
+                  >Chinese (Traditional)</option
+                >
+                <option v-else disabled value="zh-TW"
+                  >Chinese (Traditional)</option
+                >
 
                 <option value="en">English</option>
 
-                <option v-if="language == 'hi'" selected disabled value="hi">Hindi</option>
+                <option v-if="language == 'hi'" selected disabled value="hi"
+                  >Hindi</option
+                >
                 <option v-else disabled value="hi">Hindi</option>
 
-                <option v-if="language == 'ja'" selected disabled value="ja">Japanese</option>
+                <option v-if="language == 'ja'" selected disabled value="ja"
+                  >Japanese</option
+                >
                 <option v-else disabled value="ja">Japanese</option>
 
-                <option v-if="language == 'ko'" selected disabled value="ko">Korean</option>
-                <option v-else v-else disabled value="ko">Korean</option>
+                <option v-if="language == 'ko'" selected disabled value="ko"
+                  >Korean</option
+                >
+                <option v-else disabled value="ko">Korean</option>
 
-                <option v-if="language == 'fa'" selected disabled value="fa">Persian</option>
+                <option v-if="language == 'fa'" selected disabled value="fa"
+                  >Persian</option
+                >
                 <option disabled value="fa">Persian</option>
 
-                <option v-if="language == 'ru'" selected disabled value="ru">Russian</option>
+                <option v-if="language == 'ru'" selected disabled value="ru"
+                  >Russian</option
+                >
                 <option v-else disabled value="ru">Russian</option>
-                
-                <option v-if="language == 'es'" selected disabled value="es">Spanish</option>
+
+                <option v-if="language == 'es'" selected disabled value="es"
+                  >Spanish</option
+                >
                 <option v-else disabled value="es">Spanish</option>
 
-                <option v-if="language == 'vi'" selected disabled value="vi">Vietnamese</option>
+                <option v-if="language == 'vi'" selected disabled value="vi"
+                  >Vietnamese</option
+                >
                 <option v-else disabled value="vi">Vietnamese</option>
 
-                <option v-if="language == 'tl'" selected disabled value="tl">Tagalog</option>
+                <option v-if="language == 'tl'" selected disabled value="tl"
+                  >Tagalog</option
+                >
                 <option v-else disabled value="tl">Tagalog</option>
               </select>
             </div>
           </v-flex>
         </v-layout>
-        <v-layout class="black-arrow-wrapper">
+        <v-layout class="black-arrow-wrapper language-content">
           <div v-on:click="handleBack" class="back-arrow">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -101,7 +127,7 @@
             >
               <path
                 stroke="currentColor"
-                stroke-width="2"
+                stroke-width="1"
                 fill-rule="evenodd"
                 d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
               />
@@ -142,6 +168,10 @@ export default {
 <style>
 .language-header {
   background: linear-gradient(180deg, #ffd457 0%, #ffc107 100%);
+  
+}
+.language-header .toolbar__content{
+height: 45px !important;
 }
 
 .headline-text {
@@ -157,12 +187,18 @@ export default {
 .language-body {
   background: linear-gradient(180deg, #084897 0%, #001a72 100%);
   max-width: 100% !important;
-  height: 1200px !important;
-  padding-top: 15em !important;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  padding: 0px;
+  min-height: 100vh !important;
+}
+.language-content {
+  flex: unset !important;
 }
 
 .logo {
-  width: 15%;
+  width: 83px;
   height: auto;
   margin-left: auto;
   margin-right: auto;
@@ -178,6 +214,7 @@ export default {
   padding: 30px 0;
   text-transform: uppercase;
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 27.648px;
 }
 
 .body-text {
@@ -189,6 +226,7 @@ export default {
   color: #ffffff;
   font-family: Arial, Helvetica, sans-serif;
   width: 100%;
+  line-height: 20px;
 }
 .languages {
   display: flex;

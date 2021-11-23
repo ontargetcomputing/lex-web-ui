@@ -238,8 +238,8 @@ const configDefault = {
     hideButtonMessageBubble: true,
 
     // shows a thumbs up and thumbs down button which can be clicked
-    positiveFeedbackIntent: "",
-    negativeFeedbackIntent: "",
+    positiveFeedbackIntent: "Thumbs up",
+    negativeFeedbackIntent: "Thumbs down",
 
     // shows a help button on the toolbar when true
     helpIntent: "",

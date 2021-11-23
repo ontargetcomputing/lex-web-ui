@@ -84,10 +84,13 @@ export default {
 .message-bot {
   flex: none;
 }
-.message-human {
+.message-human,
+.message-feedback,
+.message-humanClickedButton {
   display: flex;
   flex-direction: column;
   align-items: end;
+  flex: none;
 }
 .message-bot:before {
   content: "Miles:";
@@ -97,7 +100,9 @@ export default {
   height: 24px;
   padding: 3px 9px;
 }
-.message-human:before {
+.message-human:before,
+.message-feedback:before,
+.message-humanClickeButton:before {
   content: "Me:";
   border-radius: 5px;
   background: linear-gradient(180deg, #084897 0%, #001a72 100%);

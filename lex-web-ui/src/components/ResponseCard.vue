@@ -23,7 +23,7 @@
         v-for="button in responseCard.buttons"
         v-show="button.text && button.value"
         v-bind:key="button.id"
-        v-on:click.once.native="onButtonClick(button.value)"
+        v-on:click.once.native="onButtonClick(button)"
         v-bind:disabled="shouldDisableClickedResponseCardButtons"
         default
         v-bind:color="button.text.toLowerCase() === 'more' ? '' : 'accent'"
@@ -79,15 +79,13 @@ export default {
     }
   },
   methods: {
-    onButtonClick(value) {
+    onButtonClick(button) {
       this.hasButtonBeenClicked = true;
 
-      const messageType = this.$store.state.config.ui.hideButtonMessageBubble
-        ? "button"
-        : "human";
       const message = {
-        type: messageType,
-        text: value
+        type: 'humanClickedButton',
+        buttonText: button.text,
+        text: button.value
       };
 
       this.$store.dispatch("postTextMessage", message);

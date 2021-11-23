@@ -10,7 +10,7 @@
     <v-btn v-on:click="handleLanguage" class="footer-btn">
       Language
     </v-btn>
-    <v-btn v-on:click="handleEndChat" class="footer-btn">
+    <v-btn v-if="!this.$store.state.lex.sessionEnded" v-on:click="handleEndChat" class="footer-btn">
       End Chat
     </v-btn>
   </v-layout>
