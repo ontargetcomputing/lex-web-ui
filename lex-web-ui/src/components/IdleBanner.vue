@@ -16,24 +16,25 @@ export default {
   name: "idle-banner",
   data() {
     return {
-      countTimer: 60
+      countTimer: this.$store.state.idleTimeOut/1000
     };
   },
   created() {
-    if (this.$store.state.idleVue.isIdle) {
-    console.log("🚀 ~ file: IdleBanner.vue ~ line 24 ~ created ~ this.$store.state.idleVue", this.$store.state)
-      
-      let timerId = setInterval(() => {
-        this.countTimer -= 1;
-        if (!this.$store.state.idleVue.isIdle) clearInterval(timerId);
-        
-        if (this.countTimer < 1) {
-          clearInterval(timerId);
-          // Your logout function should be over here
-          console.log("logout user....");
+    let timerId = setInterval(() => {
+      this.countTimer -= 1;
+      if(this.$store.state.idleTimeOut > 60000) clearInterval(timerId);
+      if (this.countTimer < 1) {
+        clearInterval(timerId);
+        // Your logout function should be over here
+        if(!this.$store.state.lex.sessionEnded){
+          this.$store.dispatch(
+          "endChat",
+          "Your chat timed out because you didn't respond to the agent. If you'd like more help, please start a new chat."
+        );
         }
-      }, 1000);
-    }
+        
+      }
+    }, 1000);
   }
 };
 </script>

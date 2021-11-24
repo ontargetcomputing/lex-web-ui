@@ -471,8 +471,26 @@ export default {
     document.getElementById('sound').innerHTML = `<audio autoplay="autoplay"><source src=${fileUrl} type="audio/mpeg" /><embed hidden="true" autostart="true" loop="false" src=${fileUrl} /></audio>`;
   },
   postTextMessage(context, message) {
-    if (context.state.isSFXOn && !context.state.lex.isPostTextRetry && message.type === 'human') {
+    // if (context.state.isSFXOn && !context.state.lex.isPostTextRetry && message.type === 'human') {
       //context.dispatch('playSound', context.state.config.ui.messageSentSFX);
+    // }
+
+    let timerId 
+    context.commit('runIdleTimer', 600000)
+    if(message.type === 'human' || message.type === 'feedback' || message.type === 'humanClickedButton' || message.text === "QID::Welcome"){
+      
+      let countDownTimer = 600000
+       timerId = setInterval(() => {
+        countDownTimer -= 1000;
+        
+        if(countDownTimer === 60000){
+          context.commit('resetSessionFlag')
+          context.commit('runIdleTimer', 60000)
+          clearInterval(timerId);
+        }
+      }, 1000);
+    } else if(message.type === 'botEnded') {
+      clearInterval(timerId);
     }
 
     return context.dispatch('interruptSpeechConversation')
@@ -1237,11 +1255,12 @@ export default {
       );
     });
   },
-  resetHistory(context) {
+  resetHistory(context, message) {
+    context.commit('runIdleTimer', 600000)
     context.commit('clearSessionAttributes');
     context.commit('pushMessage', {
       type: 'botEnded',
-      text: context.state.config.lex.endText,
+      text: message ? message :  context.state.config.lex.endText,
       alts: {
         markdown: context.state.config.lex.endText,
       },
@@ -1250,9 +1269,9 @@ export default {
   changeLocaleIds(context, data) {
     context.commit('updateLocaleIds', data);
   },
-  endChat(context) {
+  endChat(context, message) {
     console.log('actions: endChat')
-    context.dispatch('resetHistory');
+    context.dispatch('resetHistory', message);
     context.dispatch('toggleIsUiMinimized');
     context.dispatch('deleteSession');
   },

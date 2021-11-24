@@ -491,6 +491,13 @@ export default {
       ...message,
     });
   },
+
+  /**
+   * Start idle Timer when inactive
+   */
+  runIdleTimer(state, time){
+    state.idleTimeOut = time
+  },
   /**
    * Push new liveChat message into messages array
    */
@@ -533,6 +540,9 @@ export default {
   clearSessionAttributes(state) {
     state.lex.sessionAttributes = {};
     state.lex.sessionEnded = true;
+  },
+  resetSessionFlag(state){
+    state.lex.sessionEnded = false;
   },
   setPostTextRetry(state, bool) {
     if (typeof bool !== 'boolean') {

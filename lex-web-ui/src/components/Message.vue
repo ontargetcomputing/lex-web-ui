@@ -368,6 +368,11 @@ export default {
 .message-bubble-row-botEnded {
   justify-content: center;
 }
+.message-bubble-row-botEnded .message-bubble {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
 
 .message-human .message-layout .message-bubble-date-container,
 .message-feedback .message-layout .message-bubble-date-container,
