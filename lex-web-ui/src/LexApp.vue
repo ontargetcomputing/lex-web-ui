@@ -29,10 +29,14 @@ import 'vuetify/dist/vuetify.min.css';
 
 import { Loader as LexWebUi } from '@/lex-web-ui';
 
+
 Vue.use(Vuex);
 Vue.use(Vuetify);
 
 const lexWebUi = new LexWebUi();
+
+
+
 
 export default {
   name: 'lex-app',
