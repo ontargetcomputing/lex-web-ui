@@ -486,11 +486,14 @@ export default {
         return Promise.resolve();
       })
       .then(() => {
-        let postToLex = true;
+        let postToLex = true;        
         // console.log('TOPIC is = ' +context.state.config.lex.sessionAttributes.topic)
         if (context.state.config.lex.sessionAttributes.topic === 'live_chat_initiated') {
           return context.dispatch('requestLiveChat');
+        } else if (context.state.chatMode === chatMode.LIVECHAT && context.state.liveChat.status === liveChatStatus.ESTABLISHED) {
+          return context.dispatch('sendChatMessage', message.text);
         }
+
         context.commit('pushUtterance', {type: message.type, buttonText: message.buttonText, text: message.text});
         
         return Promise.resolve(postToLex);
