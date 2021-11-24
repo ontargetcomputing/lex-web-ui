@@ -22,7 +22,6 @@ License for the specific language governing permissions and limitations under th
 import Vue from 'vue';
 import Vuex from 'vuex';
 import Vuetify from 'vuetify';
-import IdleVue from "idle-vue";
 
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import 'material-design-icons/iconfont/material-icons.css';
@@ -30,19 +29,12 @@ import 'vuetify/dist/vuetify.min.css';
 
 import { Loader as LexWebUi } from '@/lex-web-ui';
 
-const eventsHub = new Vue();
 
 Vue.use(Vuex);
+Vue.use(Vuetify);
 
 const lexWebUi = new LexWebUi();
-Vue.use(Vuetify);
-Vue.use(IdleVue, {
-  eventEmitter: eventsHub,
-  store: lexWebUi.store,
-  idleTime: 5000, // 3 seconds
-  startAtIdle: false,
-  events: []
-});
+
 
 
 
