@@ -59,7 +59,7 @@
     }
   },
   "live_agent": {
-    "endpoint": "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
+    "endpoint": "https://o01h88jsdl.execute-api.us-west-2.amazonaws.com",
     "promptForFirstNameMessage": "What is your first name?",
     "promptForLastNameMessage": "What is your last name?",
     "promptForEmailAddressMessage": "What is your email address?",

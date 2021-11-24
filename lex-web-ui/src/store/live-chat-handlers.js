@@ -75,7 +75,7 @@ export const initLiveChatHandlers = async (context, session) => {
     const chatRequestSuccess = (data) => {
       console.info('chatRequestSuccess!', data);
       context.dispatch('pushLiveChatMessage', {
-        type: 'agent',
+        type: 'bot',
         text: 'Live Chat Connection Established',
       });      
     }
@@ -85,7 +85,7 @@ export const initLiveChatHandlers = async (context, session) => {
       context.dispatch('liveChatAgentJoined');
       context.commit('setIsLiveChatProcessing', false);      
       context.dispatch('pushLiveChatMessage', {
-        type: 'agent',
+        type: 'bot',
         text: `${data.message.name} has joined`,
       });
     }
@@ -120,7 +120,7 @@ export const initLiveChatHandlers = async (context, session) => {
     const agentEndedChat = (element) => {
       console.info('Agent ended chat');
       context.dispatch('pushLiveChatMessage', {
-        type: 'agent',
+        type: 'bot',
         text: 'Agent has ended the session',
       });      
       context.dispatch('liveChatSessionEnded');
@@ -129,6 +129,7 @@ export const initLiveChatHandlers = async (context, session) => {
     const config = {
       method: 'post',
       url: `${context.state.config.live_agent.endpoint}/getMessage`,
+      timeout: 1000,
       data: {
         session,
         targetLanguage: context.state.lex.targetLanguage
@@ -232,7 +233,7 @@ export const requestLiveChatEnd = async (context, liveChatSession) => {
       console.info(response);
       context.dispatch('pushLiveChatMessage', {
         type: 'bot',
-        text: 'TODO: Livechat session ended, returning you to Miles',
+        text: 'Livechat session ended, returning you to Miles',
       });
       return Promise.resolve();
     }).catch((error) => {
