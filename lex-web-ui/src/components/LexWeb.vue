@@ -11,7 +11,7 @@
         <v-app id="lex-web">
           <!-- v-if="!isUiMinimized" -->
           <!-- v-bind:is-ui-minimized="isUiMinimized" -->
-          <idle-banner v-if="isIdle"></idle-banner>
+          <idle-banner v-if="isIdle && !this.$store.state.lex.sessionEnded"></idle-banner>
           <toolbar-container
             v-bind:userName="userNameValue"
             v-bind:toolbar-title="toolbarTitle"
@@ -122,12 +122,7 @@ export default {
   },
   computed: {
     isIdle() {
-      return false;
-      // if (this.$store.state.idleVue.isIdle) {
-      //   return "idleBar";
-      // } else {
-      //   return "";
-      // }
+      return this.$store.state.idleTimeOut === 60000  ? "idleBar" : '';
     },
     initialSpeechInstruction() {
       return this.$store.state.config.lex.initialSpeechInstruction;
