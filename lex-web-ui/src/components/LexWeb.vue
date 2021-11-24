@@ -11,6 +11,7 @@
         <v-app id="lex-web">
           <!-- v-if="!isUiMinimized" -->
           <!-- v-bind:is-ui-minimized="isUiMinimized" -->
+          <idle-banner v-if="isIdle"></idle-banner>
           <toolbar-container
             v-bind:userName="userNameValue"
             v-bind:toolbar-title="toolbarTitle"
@@ -22,12 +23,15 @@
             @requestLiveChat="handleRequestLiveChat"
             @endLiveChat="handleEndLiveChat"
             transition="fade-transition"
+            v-bind:class="`main-toolbar-wrapper-with-${isIdle}`"
           ></toolbar-container>
           <!-- v-if="!isUiMinimized" -->
           <v-content>
             <v-container
               class="message-list-container"
-              v-bind:class="`toolbar-height-${toolbarHeightClassSuffix}`"
+              v-bind:class="
+                `toolbar-height-${toolbarHeightClassSuffix} message-list-contianer-${isIdle}`
+              "
               fluid
               pa-0
             >
@@ -90,6 +94,7 @@ import LexRuntime from "aws-sdk/clients/lexruntime";
 import LexRuntimeV2 from "aws-sdk/clients/lexruntimev2";
 import FooterButtons from "@/components/FooterButtons";
 import LanguageCard from "@/components/LanguageCard";
+import IdleBanner from "@/components/IdleBanner";
 
 import {
   Config as AWSConfig,
@@ -112,9 +117,18 @@ export default {
     MessageList,
     InputContainer,
     FooterButtons,
-    LanguageCard
+    LanguageCard,
+    IdleBanner
   },
   computed: {
+    isIdle() {
+      return false;
+      // if (this.$store.state.idleVue.isIdle) {
+      //   return "idleBar";
+      // } else {
+      //   return "";
+      // }
+    },
     initialSpeechInstruction() {
       return this.$store.state.config.lex.initialSpeechInstruction;
     },
@@ -582,11 +596,28 @@ export default {
 
       input.map(i => {
         if (i.type === "bot") {
-          myFinalText = myFinalText + "\r\n" + " " + "\r" + "Miles (" + i.date  + "):" + i.text;
+          myFinalText =
+            myFinalText +
+            "\r\n" +
+            " " +
+            "\r" +
+            "Miles (" +
+            i.date +
+            "):" +
+            i.text;
         } else if (i.type === "human" || i.type === "feedback") {
-          myFinalText = myFinalText + "\r\n" + " " + "\r" + "Me (" + i.date  + "):" + i.text;
-        } else if( i.type === "humanClickedButton"){
-          myFinalText = myFinalText + "\r\n" + " " + "\r" + "Me (" + i.date  + "):" + i.buttonText;
+          myFinalText =
+            myFinalText + "\r\n" + " " + "\r" + "Me (" + i.date + "):" + i.text;
+        } else if (i.type === "humanClickedButton") {
+          myFinalText =
+            myFinalText +
+            "\r\n" +
+            " " +
+            "\r" +
+            "Me (" +
+            i.date +
+            "):" +
+            i.buttonText;
         }
       });
 
@@ -610,8 +641,14 @@ export default {
 </script>
 
 <style>
+.main-toolbar-wrapper-with-idleBar {
+  top: 5em !important;
+}
 .message-list-container {
   position: fixed;
+}
+.message-list-contianer-idleBar {
+  top: 10em !important;
 }
 .message-list-container.toolbar-height-sm {
   top: 56px;

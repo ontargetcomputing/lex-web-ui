@@ -81,7 +81,8 @@ export default {
 </script>
 
 <style scoped>
-.message-bot {
+.message-bot,
+.message-agent {
   flex: none;
 }
 .message-human,
@@ -94,12 +95,19 @@ export default {
 }
 .message-bot:before {
   content: "Miles:";
+}
+.message-agent:before {
+  content: "Agent:";
+}
+.message-bot:before,
+.message-agent:before {
   border-radius: 5px;
   background: linear-gradient(180deg, #ffd457 0%, #ffc107 100%);
   color: #203376;
   height: 24px;
   padding: 3px 9px;
 }
+
 .message-human:before,
 .message-feedback:before,
 .message-humanClickedButton:before {
@@ -118,6 +126,12 @@ export default {
   height: 95%;
 }
 .message-bot .message-text {
+  border-radius: 0 !important;
+  border-left: 0.15em solid #ffc107 !important;
+  padding: 0 !important;
+}
+
+.message-agent .message-text {
   border-radius: 0 !important;
   border-left: 0.15em solid #ffc107 !important;
   padding: 0 !important;

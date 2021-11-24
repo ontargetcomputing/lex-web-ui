@@ -6,7 +6,8 @@
         message.type === 'human' ||
         message.type === 'bot' ||
         message.type === 'feedback' ||
-        message.type === 'humanClickedButton'
+        message.type === 'humanClickedButton' ||
+        message.type === 'agent'
     "
   >
     <!-- contains message and response card -->
@@ -358,7 +359,8 @@ export default {
 </script>
 
 <style scoped>
-.message-bot .message-layout .message-bubble-date-container {
+.message-bot .message-layout .message-bubble-date-container,
+.message-agent .message-layout .message-bubble-date-container {
   border-radius: 0;
   border-left: 0.15em solid #ffc107;
   padding: 15px;

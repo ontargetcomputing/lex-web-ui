@@ -27,7 +27,7 @@
         v-bind:disabled="shouldDisableClickedResponseCardButtons"
         default
         v-bind:color="button.text.toLowerCase() === 'more' ? '' : 'accent'"
-        class="action_buttons"
+        class="action_buttons no-transform"
       >
         {{ button.text }}
       </v-btn>
@@ -35,7 +35,7 @@
     <v-card-actions v-if="responseCard.attachmentLinkUrl">
       <v-btn
         flat
-        class="red lighten-5"
+        class="red lighten-5 no-transform"
         tag="a"
         v-bind:href="responseCard.attachmentLinkUrl"
         target="_blank"
@@ -129,7 +129,9 @@ export default {
   color: #053b8c !important;
   border-radius: 5px;
 }
-
+.no-transform{
+  text-transform: unset !important;
+}
 .action_buttons:hover {
   background: #001a72 !important;
   color: #ffffff !important;
