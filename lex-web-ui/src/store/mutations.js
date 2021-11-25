@@ -393,45 +393,21 @@ export default {
     state.liveChat.isProcessing = bool;
   },
 
-  // setLiveChatUserName(state, name) {
-  //   if (typeof name !== 'string') {
-  //     console.error('setLiveChatUserName is not vaild', name);
-  //     return;
-  //   }
-  //   state.liveChat.username = name;
-  // },
-
-  setLiveChatFirstName(state, name) {
-    if (typeof name !== 'string') {
-      console.error('setLiveChatFirstName is not vaild', name);
+  setLiveChatSubject(state, subject) {
+    if (typeof subject !== 'string') {
+      console.error('setLiveChatSubject is not vaild', subject);
       return;
     }
-    state.liveChat.firstname = name;
-  },
-
-  setLiveChatLastName(state, name) {
-    if (typeof name !== 'string') {
-      console.error('setLiveChatLastName is not vaild', name);
-      return;
-    }
-    state.liveChat.lastname = name;
-  },
-
-  setLiveChatEmail(state, email) {
-    if (typeof email !== 'string') {
-      console.error('setLiveChatEmail is not vaild', email);
-      return;
-    }
-    state.liveChat.email = email;
+    state.lex.sessionAttributes.livechat.subject = subject
   },
   
-  setVerifyLiveChat(state, bool) {
-    if (typeof bool !== 'boolean') {
-      console.error('setVerifyLiveChat is not vaild', bool);
-      return;
-    }
-    state.liveChat.verifyLiveChat = bool;
-  },
+  // setVerifyLiveChat(state, bool) {
+  //   if (typeof bool !== 'boolean') {
+  //     console.error('setVerifyLiveChat is not vaild', bool);
+  //     return;
+  //   }
+  //   state.liveChat.verifyLiveChat = bool;
+  // },
 
   reset(state) {
     const s = {

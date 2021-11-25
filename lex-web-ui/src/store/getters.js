@@ -46,7 +46,7 @@ export default {
     return v;
   },
   liveChatUserName: state => () => {
-    const liveagent = JSON.parse(state.lex.sessionAttributes.liveagent)
+    const livechat = JSON.parse(state.lex.sessionAttributes.livechat)
     let v = '';
     if (state.tokens && state.tokens.idtokenjwt) {
       const decoded = jwt.decode(state.tokens.idtokenjwt, { complete: true });
@@ -58,8 +58,8 @@ export default {
         }
       }
       return `[${v}]`;
-    } else if (liveagent.name.FirstName && liveagent.name.LastName && liveagent.emailaddress.EmailAddress) {
-      return `${liveagent.name.FirstName} ${liveagent.name.LastName} - ${liveagent.emailaddress.EmailAddress}`;
+    } else if (livechat.name.FirstName && livechat.name.LastName && livechat.emailaddress.EmailAddress) {
+      return `${livechat.name.FirstName} ${livechat.name.LastName} - ${livechat.emailaddress.EmailAddress}`;
     }
     return v;
   },
