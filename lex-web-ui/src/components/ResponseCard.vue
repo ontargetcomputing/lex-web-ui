@@ -73,8 +73,9 @@ export default {
     },
     shouldDisableClickedResponseCardButtons() {
       return (
-        this.$store.state.config.ui.shouldDisableClickedResponseCardButtons &&
-        this.hasButtonBeenClicked
+        (this.$store.state.config.ui.shouldDisableClickedResponseCardButtons &&
+          this.hasButtonBeenClicked) ||
+        this.$store.state.lex.sessionEnded
       );
     }
   },
@@ -83,7 +84,7 @@ export default {
       this.hasButtonBeenClicked = true;
 
       const message = {
-        type: 'humanClickedButton',
+        type: "humanClickedButton",
         buttonText: button.text,
         text: button.value
       };
@@ -129,7 +130,7 @@ export default {
   color: #053b8c !important;
   border-radius: 5px;
 }
-.no-transform{
+.no-transform {
   text-transform: unset !important;
 }
 .action_buttons:hover {

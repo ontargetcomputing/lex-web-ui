@@ -475,29 +475,56 @@ export default {
       //context.dispatch('playSound', context.state.config.ui.messageSentSFX);
     // }
 
-    let timerId 
-    context.commit('runIdleTimer', 600000)
-    if(message.type === 'human' || message.type === 'feedback' || message.type === 'humanClickedButton' || message.text === "QID::Welcome"){
+    if (
+      message.type === "human" ||
+      message.type === "feedback" ||
+      message.type === "humanClickedButton" ||
+      message.text === "QID::Welcome"
+    ) {
       
-      let countDownTimer = 600000
-       timerId = setInterval(() => {
-        countDownTimer -= 1000;
+      let counterTimer = 600000;
+      let timerId;
+      timerId = setInterval(() => {
+        counterTimer -= 1000;
+
         
-        if(countDownTimer === 60000){
-          context.commit('resetSessionFlag')
-          context.commit('runIdleTimer', 60000)
+        context.commit("runIdleTimer", counterTimer);
+
+        if (counterTimer < 1000) {
           clearInterval(timerId);
+          context.commit("resetIdleTimerId", "");
+          timerId = "";
+          context.commit("runIdleTimer", 600000);
+
+          if (!context.state.lex.sessionEnded) {
+            context.dispatch(
+              "endChat",
+              "Your chat timed out because you didn't respond to the agent. If you'd like more help, please start a new chat."
+            );
+          }
         }
+        console.log(
+          "timer-->",
+          counterTimer,
+          "storeTimerId ->",
+          context.state.idleTimerId,
+          "temp timer ID-->",
+          timerId
+        );
       }, 1000);
-    } else if(message.type === 'botEnded') {
-      clearInterval(timerId);
+
+      //clear interval and empty idleTimerId in store, if there is already an interval running
+      if (context.state.idleTimerId !== timerId) {
+        clearInterval(context.state.idleTimerId);
+        context.commit("resetIdleTimerId", timerId);
+      }
     }
 
     return context.dispatch('interruptSpeechConversation')
       .then(() => {
         console.info(`${JSON.stringify(message)} - mode=${context.state.chatMode}`)
         if (context.state.chatMode === chatMode.BOT) {
-          if(message.type !== 'humanClickedButton'){
+          if(message.type !== 'humanClickedButton' || !message.text.includes("QID::")){
             context.dispatch('pushMessage', message);
           }
         }
@@ -1042,7 +1069,7 @@ export default {
         .then(() => {
           console.info(`changing the language ${JSON.stringify(messageWrapper)}`)
           const welcomeWrapper = {
-            type: 'human',
+            type: 'button',
             text: 'QID::Welcome',
           };
 
@@ -1256,7 +1283,7 @@ export default {
     });
   },
   resetHistory(context, message) {
-    context.commit('runIdleTimer', 600000)
+    clearInterval(context.state.idleTimerId);
     context.commit('clearSessionAttributes');
     context.commit('pushMessage', {
       type: 'botEnded',

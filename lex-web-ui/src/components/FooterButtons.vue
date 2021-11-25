@@ -7,7 +7,7 @@
     <v-btn v-on:click="handleSaveChat" class="footer-btn">
       Save Chat
     </v-btn>
-    <v-btn v-on:click="handleLanguage" class="footer-btn">
+    <v-btn v-on:click="handleLanguage" class="footer-btn" v-bind:disabled="shouldDisableLanguageButton">
       Language
     </v-btn>
     <v-btn v-if="!this.$store.state.lex.sessionEnded" v-on:click="handleEndChat" class="footer-btn">
@@ -19,6 +19,11 @@
 <script>
   export default {
     data: () => ({}),
+    computed: {
+      shouldDisableLanguageButton(){
+        return this.$store.state.lex.sessionEnded
+      }
+    },
     methods: {
       handleLanguage() {
          this.$emit('languageClicked')
