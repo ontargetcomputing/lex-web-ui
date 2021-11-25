@@ -495,9 +495,8 @@ export default {
 
     return context.dispatch('interruptSpeechConversation')
       .then(() => {
-        console.info(`${JSON.stringify(message)} - mode=${context.state.chatMode}`)
         if (context.state.chatMode === chatMode.BOT) {
-          if(message.type !== 'humanClickedButton'){
+          if (message.type !== 'humanClickedButton' && !message.text.startsWith('QID::')) {
             context.dispatch('pushMessage', message);
           }
         }
@@ -875,94 +874,11 @@ export default {
   },
 
   async requestLiveChat(context) {
-
-
     console.info('actions.requestLiveChat - initiating livechat');
-    console.info(`Username: ${context.getters.liveChatUserName()}`);
     context.commit('setLiveChatStatus', liveChatStatus.REQUESTED);
     context.commit('setChatMode', chatMode.LIVECHAT);
     context.commit('setIsLiveChatProcessing', true);
     context.dispatch('initLiveChatSession');
-
-    // if (context.state.liveChat.status === liveChatStatus.DISCONNECTED) {
-    //   console.info('requestingLiveChat - status = disconnected');
-    //   const agentWaitConfig = {
-    //     method: 'post',
-    //     url: `${context.state.config.live_agent.endpoint}/agentWaitTime`,
-    //   };
-    //   await axios(agentWaitConfig)
-    //     .then((response) => {
-    //       // RDB - TODO - what do I do with these?
-    //       // const liveAgentAvailable = response.data[0].outputValues.liveAgentAvailable;
-    //       context.commit('setLiveChatStatus', liveChatStatus.VERIFIED);
-    //       const { waitTime } = response.data[0].outputValues;
-    //       return context.dispatch('translate', { targetLanguage: context.state.lex.targetLanguage, message: `The wait time is currently ${waitTime}, would you like to wait?` })
-    //     })
-    //     .then((message)=> {
-    //       context.commit(
-    //         'pushMessage',
-    //         {
-    //           text: message,
-    //           type: 'bot',
-    //         },
-    //       );
-    //     })
-    //     .catch((error) => {
-    //       console.error('Error determining live chat wait times');
-    //       console.error(error);
-    //       // context.commit('setLiveChatStatus', liveChatStatus.ENDED);
-    //       context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
-    //     });
-    // } else if (context.state.liveChat.status === liveChatStatus.VERIFIED) {
-    //   if (context.state.liveChat.verifyLiveChat === true) {
-    //     console.info('actions.requestLiveChat - requesting firstname');
-    //     context.commit('setLiveChatStatus', liveChatStatus.REQUEST_FIRSTNAME);
-    //     context.commit(
-    //       'pushMessage',
-    //       {
-    //         text: await context.dispatch('translate', {targetLanguage: context.state.lex.targetLanguage, message: context.state.config.live_agent.promptForFirstNameMessage}),
-    //         type: 'bot',
-    //       },
-    //     );
-    //   } else {
-    //     console.info('actions.requestingLiveChat - disconnecting live chat');
-    //     context.commit(
-    //       'pushMessage',
-    //       {
-    //         text: await context.dispatch('translate', {targetLanguage: context.state.lex.targetLanguage, message: context.state.config.live_agent.disconnectingMessage}),
-    //         type: 'bot',
-    //       },
-    //     );
-    //     context.dispatch('liveChatSessionEnded');
-    //   }
-    // } else if (context.state.liveChat.status === liveChatStatus.REQUEST_FIRSTNAME) {
-    //   console.info('actions.requestLiveChat - requesting lastname');
-    //   context.commit('setLiveChatStatus', liveChatStatus.REQUEST_LASTNAME);
-    //   context.commit(
-    //     'pushMessage',
-    //     {
-    //       text: await context.dispatch('translate', {targetLanguage: context.state.lex.targetLanguage, message: context.state.config.live_agent.promptForLastNameMessage}),
-    //       type: 'bot',
-    //     },
-    //   );
-    // } else if (context.state.liveChat.status === liveChatStatus.REQUEST_LASTNAME) {
-    //   console.info('actions.requestLiveChat - requesting email');
-    //   context.commit('setLiveChatStatus', liveChatStatus.REQUEST_EMAIL);
-    //   context.commit(
-    //     'pushMessage',
-    //     {
-    //       text: await context.dispatch('translate', {targetLanguage: context.state.lex.targetLanguage, message: context.state.config.live_agent.promptForEmailAddressMessage}),
-    //       type: 'bot',
-    //     },
-    //   );
-    // } else if (context.state.liveChat.status === liveChatStatus.REQUEST_EMAIL) {
-    //   console.info('actions.requestLiveChat - initiating livechat');
-    //   console.info(`Username: ${context.getters.liveChatUserName()}`);
-    //   context.commit('setLiveChatStatus', liveChatStatus.REQUESTED);
-    //   context.commit('setChatMode', chatMode.LIVECHAT);
-    //   context.commit('setIsLiveChatProcessing', true);
-    //   context.dispatch('initLiveChatSession');
-    // }
   },
   sendTypingEvent(context) {
     console.info('actions.sendTypingEvent');
@@ -987,9 +903,7 @@ export default {
     }
   },
   requestLanguageChange(context, language) {
-    console.log('*******')
     context.commit('setTargetLanguage', language);
-
     let languageCooked;
     switch(language) {
       case 'hy':
