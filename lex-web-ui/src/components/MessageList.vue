@@ -92,6 +92,7 @@ export default {
   flex-direction: column;
   align-items: end;
   flex: none;
+  align-self: flex-end;
 }
 .message-bot:before {
   content: "Miles:";
@@ -118,12 +119,16 @@ export default {
   padding: 3px 12px;
   margin-right: 7px;
   width: 48px;
+  align-self: flex-end;
 }
 .message-list {
   padding: 2rem;
   overflow-y: auto;
   overflow-x: hidden;
   height: 95%;
+}
+.message-list-contianer-idleBar .message-list{
+  height: 85%;
 }
 .message-bot .message-text {
   border-radius: 0 !important;

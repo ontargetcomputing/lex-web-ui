@@ -72,6 +72,7 @@ export default {
   },
   messages: [],
   idleTimeOut: 600000,
+  idleTimerId: '',
   utteranceStack: [],
   isBackProcessing: false,
   polly: {

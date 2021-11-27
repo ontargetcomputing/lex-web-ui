@@ -7,35 +7,18 @@
   >
     <p class="idle-toolbar-text">
       Are you still there? Please responde within
-      <b>{{ countTimer }}s</b> or this chat will timeout.
+      <b>{{ counterTimer }}s</b> or this chat will timeout.
     </p>
   </v-toolbar>
 </template>
 <script>
 export default {
   name: "idle-banner",
-  data() {
-    return {
-      countTimer: this.$store.state.idleTimeOut/1000
-    };
+  computed: {
+    counterTimer(){
+      return this.$store.state.idleTimeOut/1000
+    }
   },
-  created() {
-    let timerId = setInterval(() => {
-      this.countTimer -= 1;
-      if(this.$store.state.idleTimeOut > 60000) clearInterval(timerId);
-      if (this.countTimer < 1) {
-        clearInterval(timerId);
-        // Your logout function should be over here
-        if(!this.$store.state.lex.sessionEnded){
-          this.$store.dispatch(
-          "endChat",
-          "Your chat timed out because you didn't respond to the agent. If you'd like more help, please start a new chat."
-        );
-        }
-        
-      }
-    }, 1000);
-  }
 };
 </script>
 <style>

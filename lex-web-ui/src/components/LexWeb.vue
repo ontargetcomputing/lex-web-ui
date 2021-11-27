@@ -122,7 +122,7 @@ export default {
   },
   computed: {
     isIdle() {
-      return this.$store.state.idleTimeOut === 60000  ? "idleBar" : '';
+      return this.$store.state.idleTimeOut < 60000  ? "idleBar" : '';
     },
     initialSpeechInstruction() {
       return this.$store.state.config.lex.initialSpeechInstruction;
