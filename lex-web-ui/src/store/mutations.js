@@ -392,14 +392,6 @@ export default {
     }
     state.liveChat.isProcessing = bool;
   },
-
-  setLiveChatSubject(state, subject) {
-    if (typeof subject !== 'string') {
-      console.error('setLiveChatSubject is not vaild', subject);
-      return;
-    }
-    state.lex.sessionAttributes.livechat.subject = subject
-  },
   
   // setVerifyLiveChat(state, bool) {
   //   if (typeof bool !== 'boolean') {

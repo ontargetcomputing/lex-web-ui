@@ -507,9 +507,6 @@ export default {
         let postToLex = true;        
         if (context.state.liveChat.status === liveChatStatus.REQUESTING_SUBJECT) {
           postToLex = false
-          // context.commit('setLiveChatSubject', message.text);
-          console.info('*********requesting subject and the value is ' + message.text)
-
           context.dispatch('requestLiveChat', message.text);
         }
         
