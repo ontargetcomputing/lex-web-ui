@@ -467,6 +467,12 @@ export default {
     state.idleTimeOut = time
   },
   /**
+   * Reset idle timer Id
+   */
+  resetIdleTimerId(state, value){
+    state.idleTimerId = value
+  },
+  /**
    * Push new liveChat message into messages array
    */
   pushLiveChatMessage(state, message) {

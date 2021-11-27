@@ -231,6 +231,7 @@ height: 45px !important;
 .languages {
   display: flex;
   justify-content: center;
+  height: 20px;
 }
 
 .lang-select {
