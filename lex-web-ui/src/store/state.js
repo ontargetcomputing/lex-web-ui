@@ -23,12 +23,9 @@ export const chatMode = {
 
 export const liveChatStatus = {
   REQUESTED: "requested",
-  VERIFIED: "verified",
-  REQUEST_USERNAME: "request_username",
-  REQUEST_FIRSTNAME: "request_firstname",
-  REQUEST_LASTNAME: "request_lastname",
-  REQUEST_EMAIL: "request_email",
   INITIALIZING: "initializing",
+  REQUESTING_SUBJECT: "requesting_subject",
+  CREATING_CASE: "creating_case",
   CONNECTING: "connecting",
   ESTABLISHED: "established",
   DISCONNECTED: "disconnected",
