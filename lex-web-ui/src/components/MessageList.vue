@@ -127,7 +127,7 @@ export default {
   overflow-x: hidden;
   height: 95%;
 }
-.message-list-contianer-idleBar .message-list{
+.message-list-container-idleBar .message-list{
   height: 85%;
 }
 .message-bot .message-text {

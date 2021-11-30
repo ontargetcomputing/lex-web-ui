@@ -11,7 +11,9 @@
         <v-app id="lex-web">
           <!-- v-if="!isUiMinimized" -->
           <!-- v-bind:is-ui-minimized="isUiMinimized" -->
-          <idle-banner v-if="isIdle && !this.$store.state.lex.sessionEnded"></idle-banner>
+          <idle-banner
+            v-if="isIdle && !this.$store.state.lex.sessionEnded"
+          ></idle-banner>
           <toolbar-container
             v-bind:userName="userNameValue"
             v-bind:toolbar-title="toolbarTitle"
@@ -25,12 +27,21 @@
             transition="fade-transition"
             v-bind:class="`main-toolbar-wrapper-with-${isIdle}`"
           ></toolbar-container>
+          <v-toolbar
+            v-if="isBannerLoading === 'welcome-miles-banner'"
+            class="banner-miles-starting-engine"
+          >
+            <span class="hello-meet-miles"><p>Hello, meet Miles...</p></span>
+            <span class="please-wait-wrapper"
+              ><p>Please wait while Miles starts his engines.</p></span
+            ></v-toolbar
+          >
           <!-- v-if="!isUiMinimized" -->
           <v-content>
             <v-container
               class="message-list-container"
               v-bind:class="
-                `toolbar-height-${toolbarHeightClassSuffix} message-list-contianer-${isIdle}`
+                `toolbar-height-${toolbarHeightClassSuffix} message-list-container-${isIdle} message-list-container-${isBannerLoading}`
               "
               fluid
               pa-0
@@ -122,7 +133,7 @@ export default {
   },
   computed: {
     isIdle() {
-      return this.$store.state.idleTimeOut < 60000  ? "idleBar" : '';
+      return this.$store.state.idleTimeOut < 60000 ? "idleBar" : "";
     },
     initialSpeechInstruction() {
       return this.$store.state.config.lex.initialSpeechInstruction;
@@ -161,6 +172,13 @@ export default {
         (window.screen.height < mobileResolution ||
           window.screen.width < mobileResolution)
       );
+    },
+    isBannerLoading() {
+      if(this.$store.state.idleTimerId && !this.$store.state.lex.sessionAttributes.appContext){
+        return 'welcome-miles-banner'
+      } else {
+        return ''
+      }
     }
   },
   watch: {
@@ -639,12 +657,45 @@ export default {
 .main-toolbar-wrapper-with-idleBar {
   top: 5em !important;
 }
+.banner-miles-starting-engine {
+  top: 4.5em;
+  box-shadow: unset !important;
+}
+.banner-miles-starting-engine .toolbar__content {
+  display: flex;
+  flex-direction: column;
+}
+.banner-miles-starting-engine .toolbar__content p {
+  margin: 5px 5px 5px 22px !important;
+}
+.hello-meet-miles p {
+  font-size: 17px;
+  color: #fff;
+  font-weight: 500;
+}
+.please-wait-wrapper p {
+  font-size: 12px;
+  font-weight: 600;
+}
+.hello-meet-miles {
+  background-color: #094898;
+  width: 100%;
+  margin: 0px !important;
+}
+.please-wait-wrapper {
+  background-color: #ffc104;
+  width: 100%;
+  margin: 0px !important;
+}
 .message-list-container {
   position: fixed;
 }
-.message-list-contianer-idleBar {
+.message-list-container-idleBar {
   top: 10em !important;
 }
+.message-list-container-welcome-miles-banner {
+  top: 8em !important;
+} 
 .message-list-container.toolbar-height-sm {
   top: 56px;
   height: calc(100% - 2 * 56px);

@@ -504,14 +504,6 @@ export default {
             );
           }
         }
-        console.log(
-          "timer-->",
-          counterTimer,
-          "storeTimerId ->",
-          context.state.idleTimerId,
-          "temp timer ID-->",
-          timerId
-        );
       }, 1000);
 
       //clear interval and empty idleTimerId in store, if there is already an interval running
@@ -1284,6 +1276,7 @@ export default {
   },
   resetHistory(context, message) {
     clearInterval(context.state.idleTimerId);
+    context.commit("resetIdleTimerId", "");
     context.commit('clearSessionAttributes');
     context.commit('pushMessage', {
       type: 'botEnded',
