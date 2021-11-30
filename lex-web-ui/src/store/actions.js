@@ -504,14 +504,14 @@ export default {
             );
           }
         }
-        console.log(
-          "timer-->",
-          counterTimer,
-          "storeTimerId ->",
-          context.state.idleTimerId,
-          "temp timer ID-->",
-          timerId
-        );
+        // console.log(
+        //   "timer-->",
+        //   counterTimer,
+        //   "storeTimerId ->",
+        //   context.state.idleTimerId,
+        //   "temp timer ID-->",
+        //   timerId
+        // );
       }, 1000);
 
       //clear interval and empty idleTimerId in store, if there is already an interval running
@@ -551,9 +551,10 @@ export default {
             if(message.type === 'humanClickedButton'){
               context.dispatch('pushMessage', {type: message.type, buttonText: message.buttonText, text: message.text});
             }
-            
-            
-            return context.dispatch('lexPostText', message.text);
+             console.log(`****************the text is ${message.text}`)
+             const text = message.text.replaceAll(' ', '').replaceAll('።', '::')
+          
+            return context.dispatch('lexPostText', text);
         }
         return false;
       })
@@ -694,7 +695,9 @@ export default {
   },
   lexPostText(context, text) {
     // HACK
-    text = text.replace('QID: :', 'QID::')
+    //console.log('the text is ' + text)
+    //text = text.replace('QID: :', 'QID::')
+
     context.commit('setIsLexProcessing', true);
     context.commit('reapplyTokensToSessionAttributes');
     const session = context.state.lex.sessionAttributes;

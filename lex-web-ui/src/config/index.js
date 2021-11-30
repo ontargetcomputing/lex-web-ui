@@ -59,7 +59,7 @@ const configDefault = {
     poolId: ""
   },
   live_agent: {
-    endpoint: "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
+    endpoint: "https://34bdqgokej.execute-api.us-west-2.amazonaws.com",
     promptForFirstNameMessage: "What is your first name?",
     promptForLastNameMessage: "What is your last name?",
     promptForEmailAddressMessage: "What is your email address?",
@@ -71,7 +71,7 @@ const configDefault = {
     apiCallTimeout: 500
   },
   live_agent: {
-    endpoint: "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
+    endpoint: "https://34bdqgokej.execute-api.us-west-2.amazonaws.com",
     promptForFirstNameMessage: "What is your first name?",
     promptForLastNameMessage: "What is your last name?",
     promptForEmailAddressMessage: "What is your email address?",
