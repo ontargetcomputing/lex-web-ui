@@ -551,10 +551,7 @@ export default {
             if(message.type === 'humanClickedButton'){
               context.dispatch('pushMessage', {type: message.type, buttonText: message.buttonText, text: message.text});
             }
-             console.log(`****************the text is ${message.text}`)
-             const text = message.text.replaceAll(' ', '').replaceAll('።', '::')
-          
-            return context.dispatch('lexPostText', text);
+            return context.dispatch('lexPostText', message.text);
         }
         return false;
       })
@@ -695,9 +692,9 @@ export default {
   },
   lexPostText(context, text) {
     // HACK
-    //console.log('the text is ' + text)
-    //text = text.replace('QID: :', 'QID::')
+    text = text.replace('QID: :', 'QID::')
 
+    console.log(`*************The text is ${text}`)
     context.commit('setIsLexProcessing', true);
     context.commit('reapplyTokensToSessionAttributes');
     const session = context.state.lex.sessionAttributes;
