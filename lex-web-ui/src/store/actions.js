@@ -1055,6 +1055,9 @@ export default {
       case 'tl':
         languageCooked = 'Tagalog';
         break;
+      case 'th':
+        languageCooked = 'Thai';
+        break;      
       default:
         console.error(`Unknown language code ${language}`)
         return
