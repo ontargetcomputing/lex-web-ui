@@ -127,8 +127,12 @@ export default {
   overflow-x: hidden;
   height: 95%;
 }
-.message-list-contianer-idleBar .message-list{
+.message-list-container-idleBar .message-list,
+.message-list-container-connection-disconnected .message-list {
   height: 85%;
+}
+.message-list-container-connection-lost-banner .message-list {
+  height: 80%;
 }
 .message-bot .message-text {
   border-radius: 0 !important;

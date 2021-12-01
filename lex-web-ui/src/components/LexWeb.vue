@@ -11,7 +11,27 @@
         <v-app id="lex-web">
           <!-- v-if="!isUiMinimized" -->
           <!-- v-bind:is-ui-minimized="isUiMinimized" -->
-          <idle-banner v-if="isIdle && !this.$store.state.lex.sessionEnded"></idle-banner>
+          <idle-banner
+            v-if="isIdle && !this.$store.state.lex.sessionEnded"
+          ></idle-banner>
+          <v-toolbar
+            v-if="connectionLostBanner === 'connection-disconnected'"
+            v-bind:class="`${connectionLostBanner}`"
+          >
+            <p>
+              You've been disconnected from the agent. Please wait while we
+              attempt to re-establish the connection...
+            </p>
+          </v-toolbar>
+          <v-toolbar
+            v-if="connectionLostBanner === 'connection-lost-banner'"
+            v-bind:class="`${connectionLostBanner}`"
+          >
+            <p>Connection Lost: Please check your local connection.</p>
+            <v-btn v-on:click="handleCloseConnectionLost" class="footer-btn">
+              Close
+            </v-btn>
+          </v-toolbar>
           <toolbar-container
             v-bind:userName="userNameValue"
             v-bind:toolbar-title="toolbarTitle"
@@ -23,14 +43,25 @@
             @requestLiveChat="handleRequestLiveChat"
             @endLiveChat="handleEndLiveChat"
             transition="fade-transition"
-            v-bind:class="`main-toolbar-wrapper-with-${isIdle}`"
+            v-bind:class="
+              `main-toolbar-wrapper-with-${isIdle} main-toolbar-wrapper-with-${connectionLostBanner}`
+            "
           ></toolbar-container>
+          <v-toolbar
+            v-if="isBannerLoading === 'welcome-miles-banner'"
+            class="banner-miles-starting-engine"
+          >
+            <span class="hello-meet-miles"><p>Hello, meet Miles...</p></span>
+            <span class="please-wait-wrapper"
+              ><p>Please wait while Miles starts his engines.</p></span
+            ></v-toolbar
+          >
           <!-- v-if="!isUiMinimized" -->
           <v-content>
             <v-container
               class="message-list-container"
               v-bind:class="
-                `toolbar-height-${toolbarHeightClassSuffix} message-list-contianer-${isIdle}`
+                `toolbar-height-${toolbarHeightClassSuffix} message-list-container-${isIdle} message-list-container-${isBannerLoading} message-list-container-${connectionLostBanner}`
               "
               fluid
               pa-0
@@ -108,7 +139,8 @@ export default {
       userNameValue: "",
       toolbarHeightClassSuffix: "md",
       show: false,
-      showChatBot: false
+      showChatBot: false,
+      print: 0
     };
   },
   components: {
@@ -122,7 +154,10 @@ export default {
   },
   computed: {
     isIdle() {
-      return this.$store.state.idleTimeOut < 60000  ? "idleBar" : '';
+      return this.$store.state.idleTimeOut < 60000 ? "idleBar" : "";
+    },
+    connectionLostBanner() {
+      return this.$store.state.connectionStatus;
     },
     initialSpeechInstruction() {
       return this.$store.state.config.lex.initialSpeechInstruction;
@@ -161,6 +196,16 @@ export default {
         (window.screen.height < mobileResolution ||
           window.screen.width < mobileResolution)
       );
+    },
+    isBannerLoading() {
+      if (
+        this.$store.state.idleTimerId &&
+        !this.$store.state.lex.sessionAttributes.appContext
+      ) {
+        return "welcome-miles-banner";
+      } else {
+        return "";
+      }
     }
   },
   watch: {
@@ -324,6 +369,9 @@ export default {
     window.addEventListener("resize", this.onResize, { passive: true });
   },
   methods: {
+    handleCloseConnectionLost() {
+      this.$store.dispatch("closeConnectionLostBanner", "");
+    },
     onResize() {
       const { innerWidth } = window;
       this.setToolbarHeigthClassSuffix(innerWidth);
@@ -639,11 +687,80 @@ export default {
 .main-toolbar-wrapper-with-idleBar {
   top: 5em !important;
 }
+.main-toolbar-wrapper-with-connection-disconnected {
+  top: 5em !important;
+}
+.main-toolbar-wrapper-with-connection-lost-banner {
+  top: 15em !important;
+}
+.banner-miles-starting-engine {
+  top: 4.5em;
+  box-shadow: unset !important;
+}
+.toolbar__content {
+  height: 100% !important;
+}
+.banner-miles-starting-engine .toolbar__content {
+  display: flex;
+  flex-direction: column;
+}
+.banner-miles-starting-engine .toolbar__content p {
+  margin: 5px 5px 5px 22px !important;
+}
+.hello-meet-miles p {
+  font-size: 17px;
+  color: #fff;
+  font-weight: 500;
+}
+.please-wait-wrapper p {
+  font-size: 12px;
+  font-weight: 600;
+}
+.hello-meet-miles {
+  background-color: #094898;
+  width: 100%;
+  margin: 0px !important;
+}
+.please-wait-wrapper {
+  background-color: #ffc104;
+  width: 100%;
+  margin: 0px !important;
+}
+.connection-lost-banner {
+  height: 15em;
+  background-color: #ffc104 !important;
+}
+.connection-lost-banner .toolbar__content {
+  flex-direction: column;
+  justify-content: center;
+}
+.connection-lost-banner .toolbar__content p {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 19.2px;
+  line-height: 28px;
+  color: #001a72;
+  width: 60%;
+  text-align: center;
+}
+.connection-disconnected {
+  height: 70px;
+  background-color: #ffc104 !important;
+}
 .message-list-container {
   position: fixed;
 }
-.message-list-contianer-idleBar {
+.message-list-container-idleBar {
   top: 10em !important;
+}
+.message-list-container-welcome-miles-banner {
+  top: 8em !important;
+}
+.message-list-container-connection-disconnected {
+  top: 10em !important;
+}
+.message-list-container-connection-lost-banner {
+  top: 18em !important;
 }
 .message-list-container.toolbar-height-sm {
   top: 56px;

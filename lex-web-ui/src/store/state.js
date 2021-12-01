@@ -70,6 +70,8 @@ export default {
   messages: [],
   idleTimeOut: 600000,
   idleTimerId: '',
+  connectionStatus: '',
+  connectionDisconnectedTimerId: '',
   utteranceStack: [],
   isBackProcessing: false,
   polly: {

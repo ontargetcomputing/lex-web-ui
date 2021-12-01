@@ -473,6 +473,18 @@ export default {
     state.idleTimerId = value
   },
   /**
+   * Reset connection lost timer Id
+   */
+   resetConnectionLostTimerId(state, value){
+    state.connectionDisconnectedTimerId = value
+  },
+  /**
+   * Set connection status
+   */
+   setConnectionStatus(state, value){
+    state.connectionStatus = value
+  },
+  /**
    * Push new liveChat message into messages array
    */
   pushLiveChatMessage(state, message) {
