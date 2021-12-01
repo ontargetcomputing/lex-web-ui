@@ -694,7 +694,7 @@ export default {
     // HACK
     text = text.replace('QID: :', 'QID::')
 
-    console.log(`*************The text is ${text}`)
+    // console.log(`*************The text is ${text}`)
     context.commit('setIsLexProcessing', true);
     context.commit('reapplyTokensToSessionAttributes');
     const session = context.state.lex.sessionAttributes;
@@ -719,8 +719,13 @@ export default {
           context.commit('setLiveChatStatus', liveChatStatus.REQUESTING_SUBJECT);
         } else if (data.sessionAttributes.topic === 'liveChatStatus.disconnected') {
           context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
+        } else if (data.sessionAttributes.topic === 'language.changed') {
+          //console.log('*******the data is ' + JSON.stringify(data))
+          let qnabotcontext = JSON.parse(data.sessionAttributes.qnabotcontext)
+          const languageCode = qnabotcontext.userPreferredLocale
+          console.log('Changing langauge to ' + languageCode)      
+          context.dispatch('changeLanguage', languageCode);
         }
-        // console.log('-------the data is ' + JSON.stringify(data))
         context.commit('setIsLexProcessing', false);
         return context.dispatch('updateLexState', data)
           .then(() => Promise.resolve(data));
@@ -860,57 +865,6 @@ export default {
     // This is a holdover from the original implementation that uses AWS Connect
   },
 
-  // initLiveChatSession(context) {
-  //   if (!context.state.config.ui.enableLiveChat) {
-  //     console.error('error in initLiveChatSession() enableLiveChat is not true in config');
-  //     return Promise.reject(new Error('error in initLiveChatSession() enableLiveChat is not true in config'));
-  //   }
-  //   if (!context.state.config.live_agent.endpoint) {
-  //     console.error('error in initLiveChatSession() endpoint is not set in config');
-  //     return Promise.reject(new Error('error in initLiveChatSession() endpoint is not set in config'));
-  //   }
-
-  //   console.info('Live Chat Config Success');
-  //   context.commit('setLiveChatStatus', liveChatStatus.CONNECTING);
-  //   function waitMessage(context, type, message) {
-  //     context.commit('pushLiveChatMessage', {
-  //       type,
-  //       text: message,
-  //     });
-  //   };
-  //   if (context.state.config.live_agent.waitingForAgentMessageIntervalSeconds > 0) {
-  //     const intervalID = setInterval(waitMessage,
-  //       1000 * context.state.config.live_agent.waitingForAgentMessageIntervalSeconds,
-  //       context,
-  //       'bot',
-  //       context.state.config.live_agent.waitingForAgentMessage);
-  //     console.info(`interval now set: ${intervalID}`);
-  //     context.commit('setLiveChatIntervalId', intervalID);
-  //   }
-  //   return createLiveChatSession(context)
-  //     .then((liveChatSessionResponse) => {
-  //       //RDB 
-  //       liveChatSession = liveChatSessionResponse;
-  //       console.info('Live Chat Session Created:', liveChatSession);
-  //       initLiveChatHandlers(context, liveChatSession);
-  //       console.info('Live Chat Handlers initialised:');
-  //       return connectLiveChatSession(liveChatSession, context);
-  //     })
-  //     .then((response) => {
-  //       console.info('live Chat session connection response', response);
-  //       console.info('Live Chat Session CONNECTED');
-  //       context.commit('setLiveChatStatus', liveChatStatus.ESTABLISHED);
-  //       // context.commit('setLiveChatbotSession', liveChatSession);
-  //       return Promise.resolve();
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error esablishing live chat');
-  //       console.error(error);
-  //       context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
-  //       return Promise.resolve();
-  //     });
-  // },
-
   async requestLiveChat(context, subject) {
     context.commit('setChatMode', chatMode.LIVECHAT);
     context.commit('setIsLiveChatProcessing', true);
@@ -1015,8 +969,16 @@ export default {
       context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
     }
   },
-  requestLanguageChange(context, language) {
+  changeLanguage(context, language) {
     context.commit('setTargetLanguage', language);
+    const welcomeWrapper = {
+      type: 'button',
+      text: 'QID::Welcome',
+    };
+
+    return context.dispatch('postTextMessage', welcomeWrapper)    
+  },
+  requestLanguageChange(context, language) {
     let languageCooked;
     switch(language) {
       case 'hy':
@@ -1068,17 +1030,7 @@ export default {
       text: languageCooked,
     };
 
-    return context.dispatch('postTextMessage', messageWrapper)
-        .then(() => {
-          console.info(`changing the language ${JSON.stringify(messageWrapper)}`)
-          const welcomeWrapper = {
-            type: 'button',
-            text: 'QID::Welcome',
-          };
-
-          return context.dispatch('postTextMessage', welcomeWrapper)
-        });
-   
+    return context.dispatch('postTextMessage', messageWrapper);
   },
   agentIsTyping(context) {
     console.info('actions.agentIsTyping');
