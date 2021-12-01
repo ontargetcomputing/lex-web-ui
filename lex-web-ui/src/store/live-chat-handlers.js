@@ -90,12 +90,29 @@ export const initLiveChatHandlers = async (context, session) => {
       });
     }
 
+    const convertLinks = (text) => {
+      const regex = new RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/, 'sg');
+      let cookedText = text.replace(/~!/g, '[').replace(/!~/g, ']')
+      let m;
+      while ((m = regex.exec(cookedText)) !== null) {
+        console.log(`Matched ${m[0]}`)
+        cookedText = cookedText.replace(m[0], `(${m[0]})`)
+      }
+      return cookedText
+    }
+
     const chatMessage = (data) => {
       console.info(`Received message: ${JSON.stringify(data.message.text)}`);
       context.commit('setIsLiveChatProcessing', false);
+
+      const cookedText = convertLinks(data.message.text)
+
       context.dispatch('pushLiveChatMessage', {
         type: 'agent',
-        text: data.message.text,
+        text: cookedText,
+        alts: {
+          markdown: cookedText,
+        },        
       });
     }
 
