@@ -40,6 +40,7 @@
                 <option value="es">Spanish</option>
                 <option value="vi">Vietnamese</option>
                 <option value="tl">Tagalog</option>
+                <option value="th">Thai</option>
               </select>
             </div>
             <div class="languages" v-else>
@@ -111,6 +112,11 @@
                   >Tagalog</option
                 >
                 <option v-else disabled value="tl">Tagalog</option>
+
+                <option v-if="language == 'th'" selected disabled value="th"
+                  >Thai</option
+                >
+                <option v-else disabled value="th">Thai</option>                
               </select>
             </div>
           </v-flex>
