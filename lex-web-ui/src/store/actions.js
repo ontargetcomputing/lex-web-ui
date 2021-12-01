@@ -471,17 +471,55 @@ export default {
   playSound(context, fileUrl) {
     document.getElementById('sound').innerHTML = `<audio autoplay="autoplay"><source src=${fileUrl} type="audio/mpeg" /><embed hidden="true" autostart="true" loop="false" src=${fileUrl} /></audio>`;
   },
+  closeConnectionLostBanner(context, value){
+    context.commit('setConnectionStatus', value)
+  },
   postTextMessage(context, message) {
     // if (context.state.isSFXOn && !context.state.lex.isPostTextRetry && message.type === 'human') {
       //context.dispatch('playSound', context.state.config.ui.messageSentSFX);
     // }
 
-    if (
-      message.type === "human" ||
-      message.type === "feedback" ||
-      message.type === "humanClickedButton" ||
-      message.text === "QID::Welcome"
-    ) {
+    if (!window.navigator.onLine) {
+      context.commit("setConnectionStatus", "connection-disconnected");
+
+      let counterTimer = 40000;
+      let timerId;
+      timerId = setInterval(() => {
+        if (window.navigator.onLine) {
+          clearInterval(context.state.connectionDisconnectedTimerId);
+          context.commit("resetConnectionLostTimerId", "");
+          clearInterval(context.state.idleTimerId);
+          context.commit("resetIdleTimerId", "");
+          context.dispatch("postTextMessage", message);
+          context.commit("setConnectionStatus", "");
+        } else {
+          counterTimer -= 1000;
+
+          if (counterTimer < 1000) {
+            clearInterval(timerId);
+            context.commit("resetConnectionLostTimerId", "");
+            timerId = "";
+            context.commit("setConnectionStatus", "connection-lost-banner");
+
+            if (!context.state.lex.sessionEnded) {
+              context.dispatch("endChat", ".");
+            }
+          }
+        }
+      }, 1000);
+
+      //clear interval, if there is already an interval running
+      if (context.state.connectionDisconnectedTimerId !== timerId) {
+        clearInterval(context.state.connectionDisconnectedTimerId);
+        context.commit("resetConnectionLostTimerId", timerId);
+      }
+    } else {
+      if (
+        message.type === "human" ||
+        message.type === "feedback" ||
+        message.type === "humanClickedButton" ||
+        message.text === "QID::Welcome"
+      ) {
       
       let counterTimer = 600000;
       let timerId;
@@ -653,6 +691,8 @@ export default {
           context.dispatch('postTextMessage', message);
         }
       });
+    }
+    
   },
   deleteSession(context) {
     context.commit('setIsLexProcessing', true);
