@@ -88,7 +88,7 @@ export default {
   },
   sendInitialLocale(context) {
     const message = {
-      type: context.state.config.ui.hideButtonMessageBubble ? 'button' : 'human',
+      type: 'initialLocal',
       text: 'English',
     };
     return context.dispatch('postTextMessage', message);
@@ -594,7 +594,7 @@ export default {
         return false;
       })
       .then((response) => {
-        if (response !== false && context.state.chatMode === chatMode.BOT ) {
+        if (response !== false && context.state.chatMode === chatMode.BOT && message.type !== 'initialLocal') {
           // check for an array of messages
           if (response.sessionState || (response.message && response.message.includes('{"messages":'))) {
             if (response.message && response.message.includes('{"messages":')) {

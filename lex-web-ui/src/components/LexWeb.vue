@@ -344,14 +344,6 @@ export default {
         );
         return this.$store.dispatch("sendInitialLocale")
       })
-      .then(() => {
-        console.info(
-          "successfully set initial locale to 'en'"
-        );
-        // after slight delay, send in initial utterance if it is defined.
-        // waiting for credentials to settle down a bit.
-        setTimeout(() => this.$store.dispatch("sendInitialUtterance"), 500);
-      })
       .catch(error => {
         console.error(
           "could not initialize application while mounting:",
