@@ -342,6 +342,12 @@ export default {
           "successfully initialized lex web ui version: ",
           this.$store.state.version
         );
+        return this.$store.dispatch("sendInitialLocale")
+      })
+      .then(() => {
+        console.info(
+          "successfully set initial locale to 'en'"
+        );
         // after slight delay, send in initial utterance if it is defined.
         // waiting for credentials to settle down a bit.
         setTimeout(() => this.$store.dispatch("sendInitialUtterance"), 500);

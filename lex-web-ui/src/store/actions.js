@@ -86,6 +86,13 @@ export default {
   initConfig(context, configObj) {
     context.commit('mergeConfig', configObj);
   },
+  sendInitialLocale(context) {
+    const message = {
+      type: context.state.config.ui.hideButtonMessageBubble ? 'button' : 'human',
+      text: 'English',
+    };
+    return context.dispatch('postTextMessage', message);
+  },
   sendInitialUtterance(context) {
     if (context.state.config.lex.initialUtterance) {
       const message = {
@@ -561,8 +568,9 @@ export default {
         return Promise.resolve();
       })
       .then(() => {
+        // RDB 
         let postToLex = true;        
-        if (context.state.liveChat.status === liveChatStatus.REQUESTING_SUBJECT) {
+        if (context.state.liveChat.status === liveChatStatus.TOPIC_ENTERED) {
           postToLex = false
           context.dispatch('requestLiveChat', message.text);
         }
@@ -609,6 +617,7 @@ export default {
                   if (responseCardObject === undefined) { // prefer appContext over lex.responseCard
                     responseCardObject = context.state.lex.responseCard;
                   }
+                  
                   if ((mes.value && mes.value.length > 0) ||
                     (mes.content && mes.content.length > 0)) {
                     context.dispatch(
@@ -746,9 +755,9 @@ export default {
         } else if (data.sessionAttributes.topic === 'liveChatStatus.initializing') {
           console.info('liveChat initializing')
           context.commit('setLiveChatStatus', liveChatStatus.INITIALIZING);
-        } else if (data.sessionAttributes.topic === 'liveChatStatus.requestingSubject') {
-          console.info('subject requested')
-          context.commit('setLiveChatStatus', liveChatStatus.REQUESTING_SUBJECT);
+        } else if (data.sessionAttributes.topic === 'liveChatStatus.topicEntered') {
+          console.info('liveChat topic entered')
+          context.commit('setLiveChatStatus', liveChatStatus.TOPIC_ENTERED);
         } else if (data.sessionAttributes.topic === 'liveChatStatus.disconnected') {
           context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
         } else if (data.sessionAttributes.topic === 'language.changed') {
@@ -918,12 +927,12 @@ export default {
       method: 'post',
       url: `${context.state.config.live_agent.endpoint}/createCase`,
       data: {
-        firstname: livechat.name.FirstName,
-        lastname: livechat.name.LastName,
-        email: livechat.emailaddress.EmailAddress,
+        firstname: livechat.firstname.FreeText,
+        lastname: livechat.lastname.FreeText,
+        email: livechat.emailaddress.FreeText,
         language: context.state.lex.targetLanguage,
-        phonenumber: livechat.phonenumber.PhoneNumber,
-        casedescription: subject,
+        phonenumber: livechat.phonenumber.FreeText,
+        casedescription: livechat.topic.FreeText,
         casesubject: 'Chatbot Inquiry'
       }
     };
