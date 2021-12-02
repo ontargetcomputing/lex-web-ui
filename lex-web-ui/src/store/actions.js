@@ -1286,6 +1286,7 @@ export default {
   },
   endChat(context, message) {
     console.log('actions: endChat')
+    context.dispatch('requestLiveChatEnd')
     context.dispatch('resetHistory', message);
     context.dispatch('toggleIsUiMinimized');
     context.dispatch('deleteSession');
