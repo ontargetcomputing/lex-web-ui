@@ -58,7 +58,7 @@
     data: () => ({}),
     computed: {
       shouldDisableLanguageButton(){
-        return this.$store.state.lex.sessionEnded
+        return this.$store.state.liveChat.status === 'established' || this.$store.state.lex.sessionEnded
       },
       language() {
         return this.$store.state.lex.targetLanguage;
