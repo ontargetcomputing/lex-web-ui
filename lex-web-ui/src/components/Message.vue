@@ -53,7 +53,8 @@
                       isLastMessageFeedback &&
                       message.type === 'bot' &&
                       botDialogState &&
-                      showDialogFeedback
+                      showDialogFeedback &&
+                      notConnectedToLiveChat
                   "
                   class="feedback-state"
                 >
@@ -238,6 +239,12 @@ export default {
         return true;
       }
       return false;
+    },
+    notConnectedToLiveChat() {
+      return this.$store.state.liveChat.status &&
+        this.$store.state.liveChat.status === "disconnected"
+        ? true
+        : false;
     },
     showErrorIcon() {
       return this.$store.state.config.ui.showErrorIcon;

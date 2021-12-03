@@ -200,7 +200,8 @@ export default {
     isBannerLoading() {
       if (
         this.$store.state.idleTimerId &&
-        !this.$store.state.lex.sessionAttributes.appContext
+        !this.$store.state.lex.sessionAttributes.appContext &&
+        this.$store.state.liveChat.status === "disconnected"
       ) {
         return "welcome-miles-banner";
       } else {
