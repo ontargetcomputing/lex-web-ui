@@ -568,11 +568,16 @@ export default {
         return Promise.resolve();
       })
       .then(() => {
-        // RDB 
         let postToLex = true;
         if (context.state.liveChat.status === liveChatStatus.ENTERING_TOPIC) {
-          postToLex = false
-          context.dispatch('requestLiveChat', message.text);
+          // RDB
+          if (message.text.toLowerCase().includes('start over') !== true) {
+            postToLex = false
+            context.dispatch('requestLiveChat', message.text);
+          } else {
+            context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
+            context.commit('clearLiveChat')
+          }
         }
         
         if (context.state.chatMode === chatMode.LIVECHAT && context.state.liveChat.status === liveChatStatus.ESTABLISHED) {
@@ -769,7 +774,6 @@ export default {
         return lexClient.postText(text, localeId, session)
       })
       .then((data) => {
-        console.log('************the data is ' + JSON.stringify(data))
         if (data.sessionAttributes.topic === 'liveChatStatus.requested') {
           console.info('liveChat requested')
           context.commit('setLiveChatStatus', liveChatStatus.REQUESTED);
@@ -782,18 +786,10 @@ export default {
         } else if (data.sessionAttributes.topic === 'liveChatStatus.disconnected') {
           context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
         } else if (data.sessionAttributes.topic === 'language.changed') {
-          //console.log('*******the data is ' + JSON.stringify(data))
           let qnabotcontext = JSON.parse(data.sessionAttributes.qnabotcontext)
           const languageCode = qnabotcontext.userPreferredLocale
           console.log('Changing langauge to ' + languageCode)      
           context.dispatch('changeLanguage', languageCode);
-        } else if (data.sessionAttributes.livechat !== undefined && JSON.parse(data.sessionAttributes.livechat).start_over === true) {
-          console.log('************we need to start over ' + JSON.stringify(data))
-          // RDB
-          //let livechat = JSON.parse(data.sessionAttributes.livechat)
-          //livechat.start_over = false
-          //data.sessionAttributes.livechat = JSON.stringify(livechat)
-          //context.dispatch('lexPostText', 'QID::Welcome');
         } 
         context.commit('setIsLexProcessing', false);
         return context.dispatch('updateLexState', data)
