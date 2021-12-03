@@ -88,7 +88,7 @@ export default {
   },
   sendInitialLocale(context) {
     const message = {
-      type: 'initialLocal',
+      type: 'initialLocale',
       text: 'English',
     };
     return context.dispatch('postTextMessage', message);
@@ -570,7 +570,7 @@ export default {
       .then(() => {
         // RDB 
         let postToLex = true;        
-        if (context.state.liveChat.status === liveChatStatus.TOPIC_ENTERED) {
+        if (context.state.liveChat.status === liveChatStatus.ENTERING_TOPIC) {
           postToLex = false
           context.dispatch('requestLiveChat', message.text);
         }
@@ -594,7 +594,7 @@ export default {
         return false;
       })
       .then((response) => {
-        if (response !== false && context.state.chatMode === chatMode.BOT && message.type !== 'initialLocal') {
+        if (response !== false && context.state.chatMode === chatMode.BOT && message.type !== 'initialLocale') {
           // check for an array of messages
           if (response.sessionState || (response.message && response.message.includes('{"messages":'))) {
             if (response.message && response.message.includes('{"messages":')) {
@@ -755,9 +755,9 @@ export default {
         } else if (data.sessionAttributes.topic === 'liveChatStatus.initializing') {
           console.info('liveChat initializing')
           context.commit('setLiveChatStatus', liveChatStatus.INITIALIZING);
-        } else if (data.sessionAttributes.topic === 'liveChatStatus.topicEntered') {
-          console.info('liveChat topic entered')
-          context.commit('setLiveChatStatus', liveChatStatus.TOPIC_ENTERED);
+        } else if (data.sessionAttributes.topic === 'liveChatStatus.enteringTopic') {
+          console.info('liveChat entering topic')
+          context.commit('setLiveChatStatus', liveChatStatus.ENTERING_TOPIC);
         } else if (data.sessionAttributes.topic === 'liveChatStatus.disconnected') {
           context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
         } else if (data.sessionAttributes.topic === 'language.changed') {
@@ -932,7 +932,7 @@ export default {
         email: livechat.emailaddress.FreeText,
         language: context.state.lex.targetLanguage,
         phonenumber: livechat.phonenumber.FreeText,
-        casedescription: livechat.topic.FreeText,
+        casedescription: subject,
         casesubject: 'Chatbot Inquiry'
       }
     };

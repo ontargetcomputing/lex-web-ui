@@ -24,7 +24,7 @@ export const chatMode = {
 export const liveChatStatus = {
   REQUESTED: "requested",
   INITIALIZING: "initializing",
-  TOPIC_ENTERED: "topic_entered",
+  ENTERING_TOPIC: "entering_topic",
   CREATING_CASE: "creating_case",
   CONNECTING: "connecting",
   ESTABLISHED: "established",

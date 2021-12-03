@@ -16,7 +16,7 @@
     "botAlias": "live",
     "initialText": "",
     "initialSpeechInstruction": "",
-    "initialUtterance": "QID::Welcome",
+
     "reInitSessionAttributesOnRestart": false,
     "region": "us-west-2",
     "retryOnLexPostTextTimeout": "false",
