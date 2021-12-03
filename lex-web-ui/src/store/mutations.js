@@ -545,4 +545,13 @@ export default {
   updateLocaleIds(state, data) {
     state.config.lex.v2BotLocaleId = data;
   },
+  clearLiveChat(state) {
+    state.lex.sessionAttributes.livechat = undefined;
+  },
+  turnOnIgnoreStartOver(state) {
+    let livechat = JSON.parse(state.lex.sessionAttributes.livechat)
+    livechat.ignoreStartOver = true;
+    state.lex.sessionAttributes.livechat = JSON.stringify(livechat)
+
+  },
 };

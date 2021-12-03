@@ -569,7 +569,7 @@ export default {
       })
       .then(() => {
         // RDB 
-        let postToLex = true;        
+        let postToLex = true;
         if (context.state.liveChat.status === liveChatStatus.ENTERING_TOPIC) {
           postToLex = false
           context.dispatch('requestLiveChat', message.text);
@@ -594,7 +594,28 @@ export default {
         return false;
       })
       .then((response) => {
-        if (response !== false && context.state.chatMode === chatMode.BOT && message.type !== 'initialLocale') {
+        console.log('***********************reponse = ' + JSON.stringify(response))
+        let ignoreStartOver = false
+        let startOver = false
+        if (response.sessionAttributes.livechat !== undefined ) {
+          ignoreStartOver = JSON.parse(response.sessionAttributes.livechat).ignoreStartOver
+          startOver = JSON.parse(response.sessionAttributes.livechat).start_over
+        }
+        if (ignoreStartOver === true) {
+          console.log('***************** clearning live chat')
+          context.commit('clearLiveChat');
+          startOver = false
+        } else if (startOver === true) {
+          context.commit('turnOnIgnoreStartOver');
+          const message = {
+            type: 'button',
+            text: 'Dummy value',
+          };
+
+          return context.dispatch('postTextMessage', message)  
+        } 
+
+        if (response !== false && context.state.chatMode === chatMode.BOT && message.type !== 'initialLocale' && startOver !== true) {
           // check for an array of messages
           if (response.sessionState || (response.message && response.message.includes('{"messages":'))) {
             if (response.message && response.message.includes('{"messages":')) {
@@ -659,6 +680,7 @@ export default {
             );
           }
         }
+
         return Promise.resolve();
       })
       .then(() => {
@@ -749,6 +771,7 @@ export default {
         return lexClient.postText(text, localeId, session)
       })
       .then((data) => {
+        console.log('************the data is ' + JSON.stringify(data))
         if (data.sessionAttributes.topic === 'liveChatStatus.requested') {
           console.info('liveChat requested')
           context.commit('setLiveChatStatus', liveChatStatus.REQUESTED);
@@ -766,7 +789,14 @@ export default {
           const languageCode = qnabotcontext.userPreferredLocale
           console.log('Changing langauge to ' + languageCode)      
           context.dispatch('changeLanguage', languageCode);
-        }
+        } else if (data.sessionAttributes.livechat !== undefined && JSON.parse(data.sessionAttributes.livechat).start_over === true) {
+          console.log('************we need to start over ' + JSON.stringify(data))
+          // RDB
+          //let livechat = JSON.parse(data.sessionAttributes.livechat)
+          //livechat.start_over = false
+          //data.sessionAttributes.livechat = JSON.stringify(livechat)
+          //context.dispatch('lexPostText', 'QID::Welcome');
+        } 
         context.commit('setIsLexProcessing', false);
         return context.dispatch('updateLexState', data)
           .then(() => Promise.resolve(data));
