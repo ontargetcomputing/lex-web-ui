@@ -601,7 +601,7 @@ export default {
       .then((response) => {
         let ignoreStartOver = false
         let startOver = false
-        if (response.sessionAttributes.livechat !== undefined ) {
+        if (response.sessionAttributes !== undefined && response.sessionAttributes.livechat !== undefined ) {
           ignoreStartOver = JSON.parse(response.sessionAttributes.livechat).ignoreStartOver
           startOver = JSON.parse(response.sessionAttributes.livechat).start_over
         }
