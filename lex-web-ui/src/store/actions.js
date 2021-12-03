@@ -570,7 +570,6 @@ export default {
       .then(() => {
         let postToLex = true;
         if (context.state.liveChat.status === liveChatStatus.ENTERING_TOPIC) {
-          // RDB
           if (message.text.toLowerCase().includes('start over') !== true) {
             postToLex = false
             context.dispatch('requestLiveChat', message.text);
@@ -604,6 +603,8 @@ export default {
         if (response.sessionAttributes !== undefined && response.sessionAttributes.livechat !== undefined ) {
           ignoreStartOver = JSON.parse(response.sessionAttributes.livechat).ignoreStartOver
           startOver = JSON.parse(response.sessionAttributes.livechat).start_over
+        } else if (context.state.liveChat.status === liveChatStatus.ENTERING_TOPIC && response.slots.slot != undefined && response.slots.slot.toLowerCase().includes('start over')) {
+          startOver = true
         }
         if (ignoreStartOver === true) {
           context.commit('clearLiveChat');
