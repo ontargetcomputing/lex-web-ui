@@ -594,7 +594,6 @@ export default {
         return false;
       })
       .then((response) => {
-        console.log('***********************reponse = ' + JSON.stringify(response))
         let ignoreStartOver = false
         let startOver = false
         if (response.sessionAttributes.livechat !== undefined ) {
@@ -602,14 +601,13 @@ export default {
           startOver = JSON.parse(response.sessionAttributes.livechat).start_over
         }
         if (ignoreStartOver === true) {
-          console.log('***************** clearning live chat')
           context.commit('clearLiveChat');
           startOver = false
         } else if (startOver === true) {
           context.commit('turnOnIgnoreStartOver');
           const message = {
             type: 'button',
-            text: 'Dummy value',
+            text: 'Start Over',
           };
 
           return context.dispatch('postTextMessage', message)  
