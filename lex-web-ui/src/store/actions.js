@@ -86,6 +86,13 @@ export default {
   initConfig(context, configObj) {
     context.commit('mergeConfig', configObj);
   },
+  sendInitialLocale(context) {
+    const message = {
+      type: 'initialLocale',
+      text: 'English',
+    };
+    return context.dispatch('postTextMessage', message);
+  },
   sendInitialUtterance(context) {
     if (context.state.config.lex.initialUtterance) {
       const message = {
@@ -561,10 +568,16 @@ export default {
         return Promise.resolve();
       })
       .then(() => {
-        let postToLex = true;        
-        if (context.state.liveChat.status === liveChatStatus.REQUESTING_SUBJECT) {
-          postToLex = false
-          context.dispatch('requestLiveChat', message.text);
+        let postToLex = true;
+        if (context.state.liveChat.status === liveChatStatus.ENTERING_TOPIC) {
+          // RDB
+          if (message.text.toLowerCase().includes('start over') !== true) {
+            postToLex = false
+            context.dispatch('requestLiveChat', message.text);
+          } else {
+            context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
+            context.commit('clearLiveChat')
+          }
         }
         
         if (context.state.chatMode === chatMode.LIVECHAT && context.state.liveChat.status === liveChatStatus.ESTABLISHED) {
@@ -586,7 +599,26 @@ export default {
         return false;
       })
       .then((response) => {
-        if (response !== false && context.state.chatMode === chatMode.BOT ) {
+        let ignoreStartOver = false
+        let startOver = false
+        if (response.sessionAttributes.livechat !== undefined ) {
+          ignoreStartOver = JSON.parse(response.sessionAttributes.livechat).ignoreStartOver
+          startOver = JSON.parse(response.sessionAttributes.livechat).start_over
+        }
+        if (ignoreStartOver === true) {
+          context.commit('clearLiveChat');
+          startOver = false
+        } else if (startOver === true) {
+          context.commit('turnOnIgnoreStartOver');
+          const message = {
+            type: 'button',
+            text: 'Start Over',
+          };
+
+          return context.dispatch('postTextMessage', message)  
+        } 
+
+        if (response !== false && context.state.chatMode === chatMode.BOT && message.type !== 'initialLocale' && startOver !== true) {
           // check for an array of messages
           if (response.sessionState || (response.message && response.message.includes('{"messages":'))) {
             if (response.message && response.message.includes('{"messages":')) {
@@ -609,6 +641,7 @@ export default {
                   if (responseCardObject === undefined) { // prefer appContext over lex.responseCard
                     responseCardObject = context.state.lex.responseCard;
                   }
+                  
                   if ((mes.value && mes.value.length > 0) ||
                     (mes.content && mes.content.length > 0)) {
                     context.dispatch(
@@ -650,6 +683,7 @@ export default {
             );
           }
         }
+
         return Promise.resolve();
       })
       .then(() => {
@@ -746,18 +780,17 @@ export default {
         } else if (data.sessionAttributes.topic === 'liveChatStatus.initializing') {
           console.info('liveChat initializing')
           context.commit('setLiveChatStatus', liveChatStatus.INITIALIZING);
-        } else if (data.sessionAttributes.topic === 'liveChatStatus.requestingSubject') {
-          console.info('subject requested')
-          context.commit('setLiveChatStatus', liveChatStatus.REQUESTING_SUBJECT);
+        } else if (data.sessionAttributes.topic === 'liveChatStatus.enteringTopic') {
+          console.info('liveChat entering topic')
+          context.commit('setLiveChatStatus', liveChatStatus.ENTERING_TOPIC);
         } else if (data.sessionAttributes.topic === 'liveChatStatus.disconnected') {
           context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
         } else if (data.sessionAttributes.topic === 'language.changed') {
-          //console.log('*******the data is ' + JSON.stringify(data))
           let qnabotcontext = JSON.parse(data.sessionAttributes.qnabotcontext)
           const languageCode = qnabotcontext.userPreferredLocale
           console.log('Changing langauge to ' + languageCode)      
           context.dispatch('changeLanguage', languageCode);
-        }
+        } 
         context.commit('setIsLexProcessing', false);
         return context.dispatch('updateLexState', data)
           .then(() => Promise.resolve(data));
@@ -918,11 +951,11 @@ export default {
       method: 'post',
       url: `${context.state.config.live_agent.endpoint}/createCase`,
       data: {
-        firstname: livechat.name.FirstName,
-        lastname: livechat.name.LastName,
-        email: livechat.emailaddress.EmailAddress,
+        firstname: livechat.firstname.FreeText,
+        lastname: livechat.lastname.FreeText,
+        email: livechat.emailaddress.FreeText,
         language: context.state.lex.targetLanguage,
-        phonenumber: livechat.phonenumber.PhoneNumber,
+        phonenumber: livechat.phonenumber.FreeText,
         casedescription: subject,
         casesubject: 'Chatbot Inquiry'
       }

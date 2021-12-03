@@ -342,9 +342,7 @@ export default {
           "successfully initialized lex web ui version: ",
           this.$store.state.version
         );
-        // after slight delay, send in initial utterance if it is defined.
-        // waiting for credentials to settle down a bit.
-        setTimeout(() => this.$store.dispatch("sendInitialUtterance"), 500);
+        return this.$store.dispatch("sendInitialLocale")
       })
       .catch(error => {
         console.error(

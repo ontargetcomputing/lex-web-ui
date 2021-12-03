@@ -24,7 +24,7 @@ export const chatMode = {
 export const liveChatStatus = {
   REQUESTED: "requested",
   INITIALIZING: "initializing",
-  REQUESTING_SUBJECT: "requesting_subject",
+  ENTERING_TOPIC: "entering_topic",
   CREATING_CASE: "creating_case",
   CONNECTING: "connecting",
   ESTABLISHED: "established",
@@ -55,7 +55,8 @@ export default {
     slotToElicit: "",
     slots: {},
     targetLanguage: "en",
-    sessionEnded: false
+    sessionEnded: false,
+    initialLocaleSet: false,
   },
   liveChat: {
     username: "",
