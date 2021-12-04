@@ -945,6 +945,7 @@ export default {
       return Promise.reject(new Error('error in initLiveChatSession() endpoint is not set in config'));
     }
     let caseId;
+    let contactId;
     console.info('Live Chat Config Success');
     const livechat = JSON.parse(state.lex.sessionAttributes.livechat)
     // console.log(`******the livechat is ${state.lex.sessionAttributes.livechat}`)
@@ -965,6 +966,7 @@ export default {
       .then((result) => {
         const casenumber = result.data[0].outputValues.var_CaseNumber
         caseId = result.data[0].outputValues.var_CaseId
+        contactId = result.data[0].outputValues.var_Contact.Id
         // console.log("*(*******************the caseid = " + JSON.stringify(result.data[0].outputValues))
         const msg = `Thank you for contacting us. We have logged case number ${casenumber} for your inquiry.  Please wait for the next available agent.`
         return context.dispatch('translate', { targetLanguage: context.state.lex.targetLanguage, message: msg })
@@ -999,7 +1001,7 @@ export default {
         console.info('Live Chat Session Created:', liveChatSession);
         initLiveChatHandlers(context, liveChatSession);
         console.info('Live Chat Handlers initialised:');
-        return connectLiveChatSession(liveChatSession, context, caseId);
+        return connectLiveChatSession(liveChatSession, context, caseId, contactId);
       })
       .then((response) => {
         console.info('live Chat session connection response', response);
