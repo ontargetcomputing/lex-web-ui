@@ -67,7 +67,7 @@ const configDefault = {
     waitingForAgentMessage:
       "Thank you for waiting. An agent will be with you when available.",
     waitingForAgentMessageIntervalSeconds: 30,
-    salesforcePollingInterval: 5000,
+    salesforcePollingInterval: 1000,
     apiCallTimeout: 500
   },
   live_agent: {
@@ -75,7 +75,7 @@ const configDefault = {
     waitingForAgentMessage:
       "Thank you for waiting. An agent will be with you when available.",
     waitingForAgentMessageIntervalSeconds: 30,
-    salesforcePollingInterval: 5000,
+    salesforcePollingInterval: 1000,
     apiCallTimeout: 500
   },
   connect: {

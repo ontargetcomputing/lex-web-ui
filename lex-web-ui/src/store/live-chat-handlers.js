@@ -44,7 +44,9 @@ export const createLiveChatSession = (context) => {
     });
 };
 
-export const connectLiveChatSession = (session, context) => {
+export const connectLiveChatSession = (session, context, caseId, contactId) => {
+  // console.log('***************The case id = ' + caseId)
+  // console.log('***************The contact id = ' + contactId)
   const config = {
     method: 'post',
     url: `${context.state.config.live_agent.endpoint}/connect`,
@@ -52,6 +54,8 @@ export const connectLiveChatSession = (session, context) => {
       session,
       chat_history: context.state.messages,
       livechat_username: context.getters.liveChatUserName(),
+      caseId: caseId,
+      contactId: contactId
     })
   };
   return axios(config)
