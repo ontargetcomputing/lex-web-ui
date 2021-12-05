@@ -107,7 +107,8 @@ export default {
     if (context.state.messages &&
       context.state.messages.length === 0 &&
       context.state.config.lex.initialText.length > 0) {
-        context.commit('pushMessage', {
+      context.commit('pushMessage', {
+          language: context.state.lex.targetLanguage,
           type: 'bot',
           text: context.state.config.lex.initialText,
         });
@@ -222,6 +223,7 @@ export default {
     }
     if (context.state.config.ui.pushInitialTextOnRestart) {
       context.commit('pushMessage', {
+        language: context.state.lex.targetLanguage,
         type: 'bot',
         text: context.state.config.lex.initialText,
         alts: {
@@ -591,7 +593,7 @@ export default {
         if (postToLex && context.state.chatMode === chatMode.BOT
           && context.state.liveChat.status !== liveChatStatus.REQUEST_USERNAME) {
             if(message.type === 'humanClickedButton'){
-              context.dispatch('pushMessage', {type: message.type, buttonText: message.buttonText, text: message.text});
+              context.dispatch('pushMessage', {language: context.state.lex.targetLanguage, type: message.type, buttonText: message.buttonText, text: message.text});
             }
             return context.dispatch('lexPostText', message.text);
         }
@@ -648,6 +650,7 @@ export default {
                     context.dispatch(
                       'pushMessage',
                       {
+                        language: context.state.lex.targetLanguage,
                         text: mes.value ? mes.value : mes.content,
                         type: 'bot',
                         dialogState: context.state.lex.dialogState,
@@ -675,6 +678,7 @@ export default {
             context.dispatch(
               'pushMessage',
               {
+                language: context.state.lex.targetLanguage,
                 text: response.message,
                 type: 'bot',
                 dialogState: context.state.lex.dialogState,
@@ -902,6 +906,7 @@ export default {
    **********************************************************************/
 
   pushMessage(context, message) {
+    message['language'] = context.state.lex.targetLanguage;
     if (context.state.lex.isPostTextRetry === false) {
       if(message.type === 'bot' || message.type === 'button'){
         context.dispatch('playSound', context.state.config.ui.messageReceivedSFX);
@@ -916,6 +921,7 @@ export default {
   pushErrorMessage(context, text, dialogState = 'Failed') {
     context.dispatch('playSound', context.state.config.ui.messageReceivedSFX);
     context.commit('pushMessage', {
+      language: context.state.lex.targetLanguage,
       type: 'bot',
       text,
       dialogState,
@@ -974,6 +980,7 @@ export default {
         context.commit(
           'pushMessage',
           {
+            language: context.state.lex.targetLanguage,
             text: message,
             type: 'bot',
           },
@@ -1312,6 +1319,7 @@ export default {
     context.commit("resetIdleTimerId", "");
     context.commit('clearSessionAttributes');
     context.commit('pushMessage', {
+      language: context.state.lex.targetLanguage,
       type: 'botEnded',
       text: message ? message :  context.state.config.lex.endText,
       alts: {
