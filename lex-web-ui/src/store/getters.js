@@ -58,8 +58,8 @@ export default {
         }
       }
       return `[${v}]`;
-    } else if (livechat.firstname.FreeText && livechat.lastname.FreeText && livechat.emailaddress.FreeText) {
-      return `${livechat.firstname.FreeText} ${livechat.lastname.FreeText} - ${livechat.emailaddress.FreeText}`;
+    } else if (livechat['liveChat.firstname'] && livechat['liveChat.lastname'] && livechat['liveChat.emailaddress']) {
+      return `${livechat['liveChat.firstname']} ${livechat['liveChat.lastname']} - ${livechat['liveChat.emailaddress']}`;
     }
     return v;
   },

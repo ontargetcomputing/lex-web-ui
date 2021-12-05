@@ -776,9 +776,14 @@ export default {
     return context.dispatch('refreshAuthTokens')
       .then(() => context.dispatch('getCredentials'))
       .then(() => {
+        if (context.state.liveChat.status === liveChatStatus.REQUESTED ) {
+          context.commit('addToLiveChat', { key: context.state.lex.sessionAttributes.topic, value: text })
+        } 
         return lexClient.postText(text, localeId, session)
+
       })
       .then((data) => {
+        // console.log(`The data is ${JSON.stringify(data)}`)
         if (data.sessionAttributes.topic === 'liveChatStatus.requested') {
           console.info('liveChat requested')
           context.commit('setLiveChatStatus', liveChatStatus.REQUESTED);
@@ -907,6 +912,9 @@ export default {
 
   pushMessage(context, message) {
     message['language'] = context.state.lex.targetLanguage;
+    if (context.state.liveChat.status === liveChatStatus.REQUESTED) {
+      message['ignoreLanguage'] = true
+    }
     if (context.state.lex.isPostTextRetry === false) {
       if(message.type === 'bot' || message.type === 'button'){
         context.dispatch('playSound', context.state.config.ui.messageReceivedSFX);
@@ -954,26 +962,25 @@ export default {
     let contactId;
     console.info('Live Chat Config Success');
     const livechat = JSON.parse(state.lex.sessionAttributes.livechat)
-    // console.log(`******the livechat is ${state.lex.sessionAttributes.livechat}`)
     const createCaseConfig = {
       method: 'post',
       url: `${context.state.config.live_agent.endpoint}/createCase`,
       data: {
-        firstname: livechat.firstname.FreeText,
-        lastname: livechat.lastname.FreeText,
-        email: livechat.emailaddress.FreeText,
+        firstname: livechat['liveChat.firstname'],
+        lastname: livechat['liveChat.lastname'],
+        email: livechat['liveChat.emailaddress'],
         language: context.state.lex.targetLanguage,
-        phonenumber: livechat.phonenumber.FreeText,
+        phonenumber: livechat['liveChat.phonenumber'],
         casedescription: subject,
         casesubject: 'Chatbot Inquiry'
       }
     };
+
     return axios(createCaseConfig)
       .then((result) => {
         const casenumber = result.data[0].outputValues.var_CaseNumber
         caseId = result.data[0].outputValues.var_CaseId
         contactId = result.data[0].outputValues.var_Contact.Id
-        // console.log("*(*******************the caseid = " + JSON.stringify(result.data[0].outputValues))
         const msg = `Thank you for contacting us. We have logged case number ${casenumber} for your inquiry.  Please wait for the next available agent.`
         return context.dispatch('translate', { targetLanguage: context.state.lex.targetLanguage, message: msg })
       }).then((message) => {
