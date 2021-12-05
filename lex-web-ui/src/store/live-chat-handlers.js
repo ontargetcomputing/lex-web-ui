@@ -44,9 +44,13 @@ export const createLiveChatSession = (context) => {
     });
 };
 
+// export const cookChatHistory = (chat_history) => {
+//   chat_history.forEach(element => console.log(`fodofkdfjdkfjdkfjdk ${JSON.stringify(element)}`));
+// }
+
 export const connectLiveChatSession = (session, context, caseId, contactId) => {
-  // console.log('***************The case id = ' + caseId)
-  // console.log('***************The contact id = ' + contactId)
+  
+  // cookChatHistory(context.state.messages)
   const config = {
     method: 'post',
     url: `${context.state.config.live_agent.endpoint}/connect`,
@@ -106,7 +110,7 @@ export const initLiveChatHandlers = async (context, session) => {
     }
 
     const chatMessage = (data) => {
-      console.info(`Received message: ${JSON.stringify(data.message.text)}`);
+      // console.info(`Received message: ${JSON.stringify(data.message.text)}`);
       context.commit('setIsLiveChatProcessing', false);
 
       const cookedText = convertLinks(data.message.text)
@@ -171,7 +175,7 @@ export const initLiveChatHandlers = async (context, session) => {
               chatEstablished(element);
               break;
             case 'ChatMessage':
-              console.info(JSON.stringify(context.state.messages))
+              // console.info(JSON.stringify(context.state.messages))
               chatMessage(element);
               break;
             case 'CustomEvent':
@@ -196,12 +200,12 @@ export const initLiveChatHandlers = async (context, session) => {
         return Promise.resolve();
       }).catch((error) => {
         if (error.code === 'ECONNABORTED') {
-          console.info('No messages after poll interval');  
+          //console.info('No messages after poll interval');  
         } else {
           console.info(`unsuccessful connection ${JSON.stringify(error)}`);
         }
       }).finally(() => {
-        console.info('Sleeping');
+        //console.info('Sleeping');
         return sleep(context.state.config.live_agent.salesforcePollingInterval);
       });
   }

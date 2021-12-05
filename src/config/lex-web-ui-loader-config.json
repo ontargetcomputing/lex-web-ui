@@ -1,84 +1,10 @@
 {
-  "region": "us-west-2",
-  "cognito": {
-    "poolId": "us-west-2:eda6d0a9-df02-4915-8ade-811774ac2edf",
-    "appUserPoolClientId": "3r5ck7um47dqa7g5qtmfvsp5bb",
-    "appUserPoolName": "us-west-2_Bc2LBqC9U",
-    "appDomainName": "milesklexkwebkuikckstkidentitypoolconfigkad595657360061.auth.us-west-2.amazoncognito.com",
-    "aws_cognito_region": "us-west-2",
-    "region": "us-west-2"
-  },
-  "lex": {
-    "v2BotId": "",
-    "v2BotAliasId": "",
-    "v2BotLocaleId": "en_US",
-    "botName": "miles_chatbot_qnabot_st_BothHhKS",
-    "botAlias": "live",
-    "initialText": "",
-    "initialSpeechInstruction": "",
-    "initialUtterance": "QID::Welcome",
-    "reInitSessionAttributesOnRestart": false,
-    "region": "us-west-2",
-    "retryOnLexPostTextTimeout": "false",
-    "retryCountPostTextTimeout": "1",
-    "endText": "You've ended the Chat."
-  },
-  "ui": {
-    "parentOrigin": "",
-    "toolbarTitle": "",
-    "toolbarLogo": "chatbot-icon-circle.png",
-    "positiveFeedbackIntent": "Thumbs up",
-    "negativeFeedbackIntent": "Thumbs down",
-    "helpIntent": "",
-    "enableLogin": false,
-    "forceLogin": false,
-    "AllowSuperDangerousHTMLInMessage": true,
-    "shouldDisplayResponseCardTitle": false,
-    "saveHistory": false,
-    "shouldRenderSfxButton": false,
-    "minButtonContent": "",
-    "hideInputFieldsForButtonResponse": false,
-    "pushInitialTextOnRestart": false,
-    "directFocusToBotInput": false,
-    "showDialogStateIcon": false,
-    "backButton": false,
-    "messageMenu": true,
-    "hideButtonMessageBubble": false,
-    "enableLiveChat": true,
-    "enableSFX": true,
-    "messageSentSFX": "https://neel-main-site.s3.us-west-2.amazonaws.com/horn.mp3",
-    "messageReceivedSFX": "https://neel-main-site.s3.us-west-2.amazonaws.com/horn.mp3",
-    "urlQueryParams": {
-      "lexWebUiEmbed": "false"
-    }
-  },
-  "live_agent": {
-    "endpoint": "https://bshv32rdth.execute-api.us-west-2.amazonaws.com",
-    "promptForFirstNameMessage": "What is your first name?",
-    "promptForLastNameMessage": "What is your last name?",
-    "promptForEmailAddressMessage": "What is your email address?",
-    "disconnectingMessage": "Thank you, you are being returned to the chatbot",
-    "waitingForAgentMessage": "Thank you for waiting. An agent will be with you when available.",
-    "waitingForAgentMessageIntervalSeconds": 30,
-    "salesforcePollingInterval": 5000,
-    "apiCallTimeout": 500
-  },
   "connect": {
     "contactFlowId": "",
     "instanceId": "",
     "apiGatewayEndpoint": "",
-    "waitingForAgentMessage": "Thanks for waiting. An agent will be with you when available.",
-    "waitingForAgentMessageIntervalSeconds": 60
-  },
-  "polly": {
-    "voiceId": "Salli"
-  },
-  "recorder": {
-    "preset": "speech_recognition"
-  },
-  "iframe": {
-    "iframeOrigin": "",
-    "shouldLoadIframeMinimized": false,
-    "iframeSrcPath": "/index.html#/?lexWebUiEmbed=true"
+    "promptForNameMessage": "",
+    "waitingForAgentMessage": "",
+    "waitingForAgentMessageIntervalSeconds": ""
   }
 }

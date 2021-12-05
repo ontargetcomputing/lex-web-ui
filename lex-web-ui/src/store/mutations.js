@@ -554,4 +554,9 @@ export default {
     state.lex.sessionAttributes.livechat = JSON.stringify(livechat)
 
   },
+  addToLiveChat(state, nvpair) {
+    let livechat = JSON.parse(state.lex.sessionAttributes.livechat)
+    livechat[nvpair.key] = nvpair.value
+    state.lex.sessionAttributes.livechat = JSON.stringify(livechat)
+  }
 };
