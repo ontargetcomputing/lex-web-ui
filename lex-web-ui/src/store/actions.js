@@ -478,7 +478,9 @@ export default {
     });
   },
   playSound(context, fileUrl) {
-    document.getElementById('sound').innerHTML = `<audio autoplay="autoplay"><source src=${fileUrl} type="audio/mpeg" /><embed hidden="true" autostart="true" loop="false" src=${fileUrl} /></audio>`;
+    if (context.state.isSFXOn) {
+      document.getElementById('sound').innerHTML = `<audio autoplay="autoplay"><source src=${fileUrl} type="audio/mpeg" /><embed hidden="true" autostart="true" loop="false" src=${fileUrl} /></audio>`;  
+    }
   },
   closeConnectionLostBanner(context, value){
     context.commit('setConnectionStatus', value)
