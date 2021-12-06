@@ -263,7 +263,7 @@ const configDefault = {
     enableLogin: false,
 
     // enable Sound Effects
-    enableSFX: true,
+    enableSFX: false,
 
     // Optionally force login automatically when load
     forceLogin: false,
