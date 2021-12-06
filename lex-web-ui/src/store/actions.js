@@ -579,7 +579,7 @@ export default {
             context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
             context.commit('clearLiveChat')
           }
-        }
+        } 
         
         if (context.state.chatMode === chatMode.LIVECHAT && context.state.liveChat.status === liveChatStatus.ESTABLISHED) {
           return context.dispatch('sendChatMessage', message.text);
@@ -783,10 +783,49 @@ export default {
 
       })
       .then((data) => {
-        // console.log(`The data is ${JSON.stringify(data)}`)
-        if (data.sessionAttributes.topic === 'liveChatStatus.requested') {
-          console.info('liveChat requested')
-          context.commit('setLiveChatStatus', liveChatStatus.REQUESTED);
+        console.log(`The data is ${JSON.stringify(data)}`)
+        if (data.sessionAttributes.topic === 'liveChatStatus.starting') {
+          console.info('liveChat starting')
+          const agent_available = data.sessionAttributes.agents_available
+          console.log(`agents available = ${agent_available}`)
+          const buttonsArray = data.responseCard.genericAttachments[0].buttons
+          const newButtonsArray = []
+          buttonsArray[0].value = 'QID::20.livechat.firstname'
+          buttonsArray[1].value = 'QID::Welcome'
+          buttonsArray[2].value = 'noagent:QID::Driver_License_Identification_ID_Card'
+          buttonsArray[3].value = 'noagent:QID::Vehicle_Registration'
+          buttonsArray.forEach(button => {
+            if (agent_available === 'true') {
+              context.commit('setLiveChatStatus', liveChatStatus.REQUESTED);
+              // console.log('There are agents available')
+              if (button.value.startsWith('noagent:') !== true) {
+                newButtonsArray.push(button)
+              //   console.log('Adding button ' + JSON.stringify(button))
+              // } else {
+              //   console.log('Not adding button ' + JSON.stringify(button))
+              }
+            } else {
+              context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
+              console.log('There are no agents available')
+              if (button.value.startsWith('noagent') === true) {
+                button.value = button.value.replace('noagent:', '')
+                newButtonsArray.push(button)
+              //   console.log('Adding button ' + JSON.stringify(button))
+              // } else {
+              //   console.log('Not adding button ' + JSON.stringify(button))
+              }
+            }
+          })
+          data.responseCard.genericAttachments[0].buttons = newButtonsArray;
+          const appContext = JSON.parse(data.sessionAttributes.appContext);
+          appContext.responseCard = data.responseCard;
+          // console.log(`The appContext is NOW ${JSON.stringify(appContext)}`)
+          data.sessionAttributes.appContext = JSON.stringify(appContext)
+          // console.log(`The appContext is NOW ${data.appContext}`)
+          // console.log(`The data is NOW ${JSON.stringify(data)}`)
+        // } else if (data.sessionAttributes.topic === 'liveChatStatus.requested') {
+        //   console.info('liveChat requested')
+        //   context.commit('setLiveChatStatus', liveChatStatus.REQUESTED);
         } else if (data.sessionAttributes.topic === 'liveChatStatus.initializing') {
           console.info('liveChat initializing')
           context.commit('setLiveChatStatus', liveChatStatus.INITIALIZING);

@@ -6,7 +6,7 @@
     aria-label="Toolbar with to show idle timer."
   >
     <p class="idle-toolbar-text">
-      Are you still there? Please responde within
+      Are you still there? Please respond within
       <b>{{ counterTimer }}s</b> or this chat will timeout.
     </p>
   </v-toolbar>

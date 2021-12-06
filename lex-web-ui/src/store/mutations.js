@@ -555,8 +555,12 @@ export default {
 
   },
   addToLiveChat(state, nvpair) {
-    let livechat = JSON.parse(state.lex.sessionAttributes.livechat)
-    livechat[nvpair.key] = nvpair.value
-    state.lex.sessionAttributes.livechat = JSON.stringify(livechat)
+    // console.log(`The nvpair is ${JSON.stringify(nvpair)}`)
+    // console.log(`The livechat is ${state.lex.sessionAttributes.livechat}`)
+    if (state.lex.sessionAttributes.livechat !== undefined) {
+      let livechat = JSON.parse(state.lex.sessionAttributes.livechat)
+      livechat[nvpair.key] = nvpair.value
+      state.lex.sessionAttributes.livechat = JSON.stringify(livechat)      
+    }
   }
 };
