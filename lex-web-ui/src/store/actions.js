@@ -783,7 +783,7 @@ export default {
 
       })
       .then((data) => {
-        console.log(`The data is ${JSON.stringify(data)}`)
+        //console.log(`The data is ${JSON.stringify(data)}`)
         if (data.sessionAttributes.topic === 'liveChatStatus.starting') {
           console.info('liveChat starting')
           const agent_available = data.sessionAttributes.agents_available
