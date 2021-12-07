@@ -77,6 +77,8 @@ export const initLiveChatHandlers = async (context, session) => {
   console.info(`initLiveChatHandlers status=${context.state.liveChat.status}`);
   const sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
 
+  const establishedMsg = await context.dispatch('translate', { targetLanguage: context.state.lex.targetLanguage, message: 'Live Chat Connection Established' })
+  const joinedMsg = await context.dispatch('translate', { targetLanguage: context.state.lex.targetLanguage, message: 'has joined' })
   while ([liveChatStatus.ESTABLISHED, liveChatStatus.CONNECTING].includes(context.state.liveChat.status)) {
     console.info('live-chat-handlers: polling live agent');
 
@@ -84,7 +86,7 @@ export const initLiveChatHandlers = async (context, session) => {
       console.info('chatRequestSuccess!', data);
       context.dispatch('pushLiveChatMessage', {
         type: 'bot',
-        text: 'Live Chat Connection Established',
+        text: establishedMsg,
       });      
     }
 
@@ -94,7 +96,7 @@ export const initLiveChatHandlers = async (context, session) => {
       context.commit('setIsLiveChatProcessing', false);      
       context.dispatch('pushLiveChatMessage', {
         type: 'bot',
-        text: `${data.message.name} has joined`,
+        text: `${data.message.name} ${joinedMsg}`,
       });
     }
 

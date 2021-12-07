@@ -1033,6 +1033,12 @@ export default {
             type: 'bot',
           },
         );
+        const msg = context.state.config.live_agent.waitingForAgentMessage
+        return context.dispatch('translate', { targetLanguage: context.state.lex.targetLanguage, message: msg })
+
+
+      }).then((message) => {
+        console.log('The message is ' + message)
         console.info('Live Chat Config Success');
         context.commit('setLiveChatStatus', liveChatStatus.CONNECTING);
         function waitMessage(context, type, message) {
@@ -1043,10 +1049,11 @@ export default {
         };
         if (context.state.config.live_agent.waitingForAgentMessageIntervalSeconds > 0) {
           const intervalID = setInterval(waitMessage,
-            1000 * context.state.config.live_agent.waitingForAgentMessageIntervalSeconds,
+            //1000 * context.state.config.live_agent.waitingForAgentMessageIntervalSeconds,
+            5000,
             context,
             'bot',
-            context.state.config.live_agent.waitingForAgentMessage);
+            message);
           console.info(`interval now set: ${intervalID}`);
           context.commit('setLiveChatIntervalId', intervalID);
         }
