@@ -26,7 +26,7 @@
     "parentOrigin": "",
     "toolbarTitle": "",
     "toolbarLogo": "chatbot-icon-circle.png",
-    "positiveFeedbackIntent": "",
+    "positiveFeedbackIntent": "Thumbs up",
     "negativeFeedbackIntent": "Thumbs down",
     "helpIntent": "",
     "enableLogin": false,
@@ -44,7 +44,9 @@
     "messageMenu": true,
     "hideButtonMessageBubble": true,
     "enableLiveChat": true,
-    "enableSFX": true,
+    "enableSFX": false,
+    "messageSentSFX": "https://miles-qnabot-prod-lexwebuibucket-lfxoukgh1oxo.s3.us-west-2.amazonaws.com/pristine-609.mp3",
+    "messageReceivedSFX": "https://miles-qnabot-prod-lexwebuibucket-lfxoukgh1oxo.s3.us-west-2.amazonaws.com/pristine-609.mp3",
     "urlQueryParams": {
       "lexWebUiEmbed": "false"
     },
