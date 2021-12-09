@@ -1049,8 +1049,7 @@ export default {
         };
         if (context.state.config.live_agent.waitingForAgentMessageIntervalSeconds > 0) {
           const intervalID = setInterval(waitMessage,
-            //1000 * context.state.config.live_agent.waitingForAgentMessageIntervalSeconds,
-            5000,
+            1000 * context.state.config.live_agent.waitingForAgentMessageIntervalSeconds,
             context,
             'bot',
             message);
