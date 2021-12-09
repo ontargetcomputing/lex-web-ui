@@ -176,11 +176,11 @@ const configDefault = {
 
     // mp3 audio file url for message send sound FX
     messageSentSFX:
-      "https://neel-main-site.s3.us-west-2.amazonaws.com/pristine-609.mp3",
+      "https://miles-qnabot-prod-lexwebuibucket-lfxoukgh1oxo.s3.us-west-2.amazonaws.com/pristine-609.mp3",
 
     // mp3 audio file url for message received sound FX
     messageReceivedSFX:
-      "https://neel-main-site.s3.us-west-2.amazonaws.com/succeeded-message-tone.mp3",
+      "https://miles-qnabot-prod-lexwebuibucket-lfxoukgh1oxo.s3.us-west-2.amazonaws.com/pristine-609.mp3",
 
     // chat window text placeholder
     textInputPlaceholder: "Type here",

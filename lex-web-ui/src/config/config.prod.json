@@ -1,10 +1,10 @@
 {
   "region": "us-west-2",
   "cognito": {
-    "poolId": "us-west-2:1845a3f1-6925-47ba-b2df-abfba9c4a6cc",
-    "appUserPoolClientId": "5bnfu6p7n1ah0jhd00913aoa7c",
-    "appUserPoolName": "us-west-2_XEFuWJqJW",
-    "appDomainName": "lexkwebkuikidentitypoolconfigkngurcghkhvhz032802432428.auth.us-west-2.amazoncognito.com",
+    "poolId": "us-west-2:45fa6f61-5775-4f65-987d-e72af377630a",
+    "appUserPoolClientId": "64n65j2dh4ft6safkt81e2hgnt",
+    "appUserPoolName": "us-west-2_xdXct6sSw",
+    "appDomainName": "mileskdevkcklexkwebkuikidentitypoolconfigkt032802432428.auth.us-west-2.amazoncognito.com",
     "aws_cognito_region": "us-west-2",
     "region": "us-west-2"
   },
@@ -44,7 +44,7 @@
     "messageMenu": true,
     "hideButtonMessageBubble": true,
     "enableLiveChat": true,
-    "enableSFX": false,
+    "enableSFX": true,
     "urlQueryParams": {
       "lexWebUiEmbed": "false"
     },
