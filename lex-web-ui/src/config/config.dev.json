@@ -12,7 +12,7 @@
     "v2BotId": "",
     "v2BotAliasId": "",
     "v2BotLocaleId": "en_US",
-    "botName": "miles_dev_dev_dev_master_one_BotKeXvR",
+    "botName": "miles_qnabot_prod_BotTFGUv",
     "botAlias": "live",
     "initialText": "",
     "initialSpeechInstruction": "",
@@ -59,9 +59,9 @@
     }
   },
   "live_agent": {
-    "endpoint": "https://o01h88jsdl.execute-api.us-west-2.amazonaws.com",
+    "endpoint": "https://w6sp5fnz3b.execute-api.us-west-2.amazonaws.com",
     "waitingForAgentMessage": "Thank you for waiting. An agent will be with you when available.",
-    "waitingForAgentMessageIntervalSeconds": 30,
+    "waitingForAgentMessageIntervalSeconds": 120,
     "salesforcePollingInterval": 1000,
     "apiCallTimeout": 500
   },

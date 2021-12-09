@@ -71,10 +71,10 @@ const configDefault = {
     apiCallTimeout: 500
   },
   live_agent: {
-    endpoint: "https://34bdqgokej.execute-api.us-west-2.amazonaws.com",
+    endpoint: "https://w6sp5fnz3b.execute-api.us-west-2.amazonaws.com",
     waitingForAgentMessage:
       "Thank you for waiting. An agent will be with you when available.",
-    waitingForAgentMessageIntervalSeconds: 30,
+    waitingForAgentMessageIntervalSeconds: 120,
     salesforcePollingInterval: 1000,
     apiCallTimeout: 500
   },
