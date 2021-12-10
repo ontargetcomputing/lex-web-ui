@@ -4,7 +4,7 @@
     "poolId": "us-west-2:45fa6f61-5775-4f65-987d-e72af377630a",
     "appUserPoolClientId": "64n65j2dh4ft6safkt81e2hgnt",
     "appUserPoolName": "us-west-2_xdXct6sSw",
-    "appDomainName": "mileskdevkcklexkwebkuikidentitypoolconfigkt032802432428.auth.us-west-2.amazoncognito.com",
+    "appDomainName": "072910055324.auth.us-west-2.amazoncognito.com",
     "aws_cognito_region": "us-west-2",
     "region": "us-west-2"
   },
