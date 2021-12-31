@@ -802,9 +802,6 @@ export default {
               // console.log('There are agents available')
               if (button.value.startsWith('noagent:') !== true) {
                 newButtonsArray.push(button)
-              //   console.log('Adding button ' + JSON.stringify(button))
-              // } else {
-              //   console.log('Not adding button ' + JSON.stringify(button))
               }
             } else {
               context.commit('setLiveChatStatus', liveChatStatus.DISCONNECTED);
@@ -812,9 +809,6 @@ export default {
               if (button.value.startsWith('noagent') === true) {
                 button.value = button.value.replace('noagent:', '')
                 newButtonsArray.push(button)
-              //   console.log('Adding button ' + JSON.stringify(button))
-              // } else {
-              //   console.log('Not adding button ' + JSON.stringify(button))
               }
             }
           })
@@ -1386,6 +1380,7 @@ export default {
   },
   endChat(context, message) {
     console.log('actions: endChat')
+    context.commit('setIsLiveChatProcessing', false);
     context.dispatch('requestLiveChatEnd')
     context.dispatch('resetHistory', message);
     context.dispatch('toggleIsUiMinimized');
