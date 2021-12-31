@@ -61,6 +61,7 @@ const configDefault = {
   live_agent: {
     endpoint: "FIXME",
     waitingForAgentMessageIntervalSeconds: 30,
+    waitingForAgentMessage: "Thank you for waiting. An agent will be with you when available.",
     salesforcePollingInterval: 1000,
     apiCallTimeout: 500
   },
