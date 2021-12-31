@@ -1,22 +1,22 @@
 {
   "region": "us-west-2",
   "cognito": {
-    "poolId": "us-west-2:1845a3f1-6925-47ba-b2df-abfba9c4a6cc",
-    "appUserPoolClientId": "5bnfu6p7n1ah0jhd00913aoa7c",
-    "appUserPoolName": "us-west-2_XEFuWJqJW",
-    "appDomainName": "lexkwebkuikidentitypoolconfigkngurcghkhvhz032802432428.auth.us-west-2.amazoncognito.com",
+    "poolId": "us-west-2:eda6d0a9-df02-4915-8ade-811774ac2edf",
+    "appUserPoolClientId": "3r5ck7um47dqa7g5qtmfvsp5bb",
+    "appUserPoolName": "us-west-2_Bc2LBqC9U",
+    "appDomainName": "milesklexkwebkuikckstkidentitypoolconfigkad595657360061.auth.us-west-2.amazoncognito.com",
     "aws_cognito_region": "us-west-2",
     "region": "us-west-2"
-    },
+  },
   "lex": {
     "v2BotId": "",
     "v2BotAliasId": "",
     "v2BotLocaleId": "en_US",
-    "botName": "miles_dev_dev_dev_master_one_BotKeXvR",
+    "botName": "miles_chatbot_qnabot_st_BothHhKS",
     "botAlias": "live",
     "initialText": "",
     "initialSpeechInstruction": "",
-
+    "initialUtterance": "QID::Welcome",
     "reInitSessionAttributesOnRestart": false,
     "region": "us-west-2",
     "retryOnLexPostTextTimeout": "false",
@@ -27,7 +27,7 @@
     "parentOrigin": "",
     "toolbarTitle": "",
     "toolbarLogo": "chatbot-icon-circle.png",
-    "positiveFeedbackIntent": "Thumbs up",
+    "positiveFeedbackIntent": "Thumbs Up",
     "negativeFeedbackIntent": "Thumbs down",
     "helpIntent": "",
     "enableLogin": false,
@@ -46,6 +46,8 @@
     "hideButtonMessageBubble": true,
     "enableLiveChat": true,
     "enableSFX": true,
+    "messageSentSFX": "https://neel-main-site.s3.us-west-2.amazonaws.com/horn.mp3",
+    "messageReceivedSFX": "https://neel-main-site.s3.us-west-2.amazonaws.com/horn.mp3",
     "urlQueryParams": {
       "lexWebUiEmbed": "false"
     },
@@ -59,10 +61,9 @@
     }
   },
   "live_agent": {
-    "endpoint": "https://o01h88jsdl.execute-api.us-west-2.amazonaws.com",
-    "waitingForAgentMessage": "Thank you for waiting. An agent will be with you when available.",
-    "waitingForAgentMessageIntervalSeconds": 120,
-    "salesforcePollingInterval": 1000,
+    "endpoint": "https://34bdqgokej.execute-api.us-west-2.amazonaws.com",
+    "waitingForAgentMessageIntervalSeconds": 30,
+    "salesforcePollingInterval": 5000,
     "apiCallTimeout": 500
   },
   "connect": {

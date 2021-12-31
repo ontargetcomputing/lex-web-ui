@@ -1,10 +1,10 @@
 {
   "region": "us-west-2",
   "cognito": {
-    "poolId": "us-west-2:45fa6f61-5775-4f65-987d-e72af377630a",
-    "appUserPoolClientId": "64n65j2dh4ft6safkt81e2hgnt",
-    "appUserPoolName": "us-west-2_xdXct6sSw",
-    "appDomainName": "072910055324.auth.us-west-2.amazoncognito.com",
+    "poolId": "us-west-2:eda6d0a9-df02-4915-8ade-811774ac2edf",
+    "appUserPoolClientId": "3r5ck7um47dqa7g5qtmfvsp5bb",
+    "appUserPoolName": "us-west-2_Bc2LBqC9U",
+    "appDomainName": "milesklexkwebkuikckstkidentitypoolconfigkad595657360061.auth.us-west-2.amazoncognito.com",
     "aws_cognito_region": "us-west-2",
     "region": "us-west-2"
   },
@@ -12,7 +12,7 @@
     "v2BotId": "",
     "v2BotAliasId": "",
     "v2BotLocaleId": "en_US",
-    "botName": "miles_qnabot_prod_BotTFGUv",
+    "botName": "miles_chatbot_qnabot_st_BothHhKS",
     "botAlias": "live",
     "initialText": "",
     "initialSpeechInstruction": "",
@@ -20,13 +20,14 @@
     "reInitSessionAttributesOnRestart": false,
     "region": "us-west-2",
     "retryOnLexPostTextTimeout": "false",
-    "retryCountPostTextTimeout": "1"
+    "retryCountPostTextTimeout": "1",
+    "endText": "You've ended the Chat."
   },
   "ui": {
     "parentOrigin": "",
     "toolbarTitle": "",
     "toolbarLogo": "chatbot-icon-circle.png",
-    "positiveFeedbackIntent": "Thumbs up",
+    "positiveFeedbackIntent": "Thumbs Up",
     "negativeFeedbackIntent": "Thumbs down",
     "helpIntent": "",
     "enableLogin": false,
@@ -44,9 +45,9 @@
     "messageMenu": true,
     "hideButtonMessageBubble": true,
     "enableLiveChat": true,
-    "enableSFX": false,
-    "messageSentSFX": "https://miles-qnabot-prod-lexwebuibucket-lfxoukgh1oxo.s3.us-west-2.amazonaws.com/pristine-609.mp3",
-    "messageReceivedSFX": "https://miles-qnabot-prod-lexwebuibucket-lfxoukgh1oxo.s3.us-west-2.amazonaws.com/pristine-609.mp3",
+    "enableSFX": true,
+    "messageSentSFX": "https://neel-main-site.s3.us-west-2.amazonaws.com/horn.mp3",
+    "messageReceivedSFX": "https://neel-main-site.s3.us-west-2.amazonaws.com/horn.mp3",
     "urlQueryParams": {
       "lexWebUiEmbed": "false"
     },
@@ -60,10 +61,9 @@
     }
   },
   "live_agent": {
-    "endpoint": "https://w6sp5fnz3b.execute-api.us-west-2.amazonaws.com",
-    "waitingForAgentMessage": "Thank you for waiting. An agent will be with you when available.",
-    "waitingForAgentMessageIntervalSeconds": 120,
-    "salesforcePollingInterval": 1000,
+    "endpoint": "FIXME",
+    "waitingForAgentMessageIntervalSeconds": 30,
+    "salesforcePollingInterval": 5000,
     "apiCallTimeout": 500
   },
   "connect": {

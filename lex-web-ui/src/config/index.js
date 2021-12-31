@@ -33,7 +33,7 @@
 // TODO turn this into a class
 
 // get env shortname to require file
-const envShortName = ["dev", "prod", "test"].find(env =>
+const envShortName = ["dev", "prod", "test", "uat"].find(env =>
   process.env.NODE_ENV.startsWith(env)
 );
 
@@ -59,22 +59,8 @@ const configDefault = {
     poolId: ""
   },
   live_agent: {
-    endpoint: "https://34bdqgokej.execute-api.us-west-2.amazonaws.com",
-    promptForFirstNameMessage: "What is your first name?",
-    promptForLastNameMessage: "What is your last name?",
-    promptForEmailAddressMessage: "What is your email address?",
-    disconnectingMessage: "Thank you, you are being returned to the chatbot",
-    waitingForAgentMessage:
-      "Thank you for waiting. An agent will be with you when available.",
+    endpoint: "FIXME",
     waitingForAgentMessageIntervalSeconds: 30,
-    salesforcePollingInterval: 1000,
-    apiCallTimeout: 500
-  },
-  live_agent: {
-    endpoint: "https://w6sp5fnz3b.execute-api.us-west-2.amazonaws.com",
-    waitingForAgentMessage:
-      "Thank you for waiting. An agent will be with you when available.",
-    waitingForAgentMessageIntervalSeconds: 120,
     salesforcePollingInterval: 1000,
     apiCallTimeout: 500
   },
@@ -175,12 +161,10 @@ const configDefault = {
     parentOrigin: null,
 
     // mp3 audio file url for message send sound FX
-    messageSentSFX:
-      "https://miles-qnabot-prod-lexwebuibucket-lfxoukgh1oxo.s3.us-west-2.amazonaws.com/pristine-609.mp3",
+    messageSentSFX: "",
 
     // mp3 audio file url for message received sound FX
-    messageReceivedSFX:
-      "https://miles-qnabot-prod-lexwebuibucket-lfxoukgh1oxo.s3.us-west-2.amazonaws.com/pristine-609.mp3",
+    messageReceivedSFX: "",
 
     // chat window text placeholder
     textInputPlaceholder: "Type here",
