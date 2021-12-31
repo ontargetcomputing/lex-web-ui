@@ -153,6 +153,16 @@ export const initLiveChatHandlers = async (context, session) => {
       context.dispatch('liveChatSessionEnded');
     }
     
+    const chatRequestFail = (element) => {
+      console.info('Chat request failed:' + element.message.reason)
+      context.commit('setIsLiveChatProcessing', false);
+      context.dispatch('pushLiveChatMessage', {
+        type: 'bot',
+        text: 'Unable to connect with an agent.',
+      });  
+      context.dispatch('liveChatSessionEnded');
+    }
+
     const config = {
       method: 'post',
       url: `${context.state.config.live_agent.endpoint}/getMessage`,
@@ -194,6 +204,9 @@ export const initLiveChatHandlers = async (context, session) => {
               break;
             case 'ChatEnded':
               agentEndedChat(element);
+              break;
+            case 'ChatRequestFail':
+              chatRequestFail(element);
               break;
             default:
               console.error(`Unknown message type:${type}`)
@@ -260,7 +273,7 @@ export const requestLiveChatEnd = async (context, liveChatSession) => {
       console.info(response);
       context.dispatch('pushLiveChatMessage', {
         type: 'bot',
-        text: 'Livechat session ended, returning you to Miles',
+        text: 'Session ended',
       });
       return Promise.resolve();
     }).catch((error) => {
