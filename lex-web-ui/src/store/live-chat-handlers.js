@@ -112,7 +112,7 @@ export const initLiveChatHandlers = async (context, session) => {
     }
 
     const chatMessage = (data) => {
-      // console.info(`Received message: ${JSON.stringify(data.message.text)}`);
+      context.commit('clearLiveChatIntervalId');
       context.commit('setIsLiveChatProcessing', false);
 
       const cookedText = convertLinks(data.message.text)
