@@ -1,0 +1,16 @@
+on:
+  pull_request:
+    branches:
+      - master
+    types: [opened, synchronize, labeled, unlabeled]
+
+jobs:
+  semver_label_check:
+    runs-on: ubuntu-latest   
+    name: Is the PR labeled (major, minor, patch) for semantic versioning
+    steps:
+      - name: "Check for [major, minor, patch] label"
+        uses: yashhy/pr-label-check-and-comment-action@v1.0.1
+        with:
+          required_labels: 'major, minor, patch'
+          GITHUB_TOKEN: '${{secrets.GITHUB_TOKEN}}'
