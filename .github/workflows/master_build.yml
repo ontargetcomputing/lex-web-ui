@@ -35,6 +35,15 @@ jobs:
       - id: update-lower-lex-web-ui
         name: Update the version on the lex-web-ui/package.json
         run: cd lex-web-ui;npm version ${{ steps.set-bump.outputs.bump }}
+      - name: Determine next version/tag
+        id: next_version
+        uses: zwaldowski/semver-release-action@v1
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+        with:
+          dry_run: true
+          bump: ${{ steps.set-bump.outputs.bump }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}           
       - name: Push the lower level version update
         uses: EndBug/add-and-commit@v7
         with:
@@ -44,4 +53,4 @@ jobs:
           push: --force
       - id: version-repo
         name: Version and tag the repository
-        run: npm version ${{ steps.set-bump.outputs.bump }}         
+        run: 'npm version ${{ steps.set-bump.outputs.bump }}  -m ":octocat: CI Update Version to %s :octocat:'
