@@ -28,7 +28,7 @@
     "build": "npm run build-dev && npm run build-prod",
     "dev": "webpack-dev-server --mode development  --hot",
     "lint": "eslint --format node_modules/eslint-formatter-friendly src/lex-web-ui-loader",
-    "preversion": "cd lex-web-ui; npm --commit-hooks=false version minor",
+    "aaaapreversion": "cd lex-web-ui; npm --commit-hooks=false version minor",
     "version": "cd build; ./release.sh; cd ..; git add .",
     "postversion": "echo foo"
   },
