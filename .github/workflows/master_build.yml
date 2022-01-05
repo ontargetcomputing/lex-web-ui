@@ -53,4 +53,4 @@ jobs:
           push: --force
       - id: version-repo
         name: Version and tag the repository
-        run: 'npm version ${{ steps.set-bump.outputs.bump }}  -m ":octocat: CI Update Version to %s :octocat:'
+        run: 'npm version ${{ steps.set-bump.outputs.bump }}  -m ":octocat: CI Update Version to %s :octocat:"'
