@@ -12,6 +12,10 @@ jobs:
     name: Update Version and Tag
     steps:
       - uses: actions/checkout@v2 
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+      - run: npm install                
       - uses: docker://agilepathway/pull-request-label-checker:v1.0.104
         with:
           one_of: major,minor,patch
@@ -51,7 +55,7 @@ jobs:
         uses: EndBug/add-and-commit@v7
         with:
           author_name: ':octocat: Octocat :octocat:'
-          branch: ci
+          branch: master
           message: ':octocat: CI Update Version to ${{ steps.next_version.outputs.version }} :octocat:'
           tag: '${{ steps.next_version.outputs.version }} --force'
           push: --force
