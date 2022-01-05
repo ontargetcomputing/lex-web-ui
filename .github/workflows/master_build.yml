@@ -32,6 +32,16 @@ jobs:
               echo "Setting bump:patch"
               echo "::set-output name=bump::patch"
             fi
+      - id: update-lower-lex-web-ui
+        name: Update the version on the lex-web-ui/package.json
+        run: cd lex-web-ui;npm version
+      - name: Push the lower level version update
+        uses: EndBug/add-and-commit@v7
+        with:
+          author_name: ':octocat: Octocat :octocat:'
+          branch: master
+          message: ':octocat: CI Update ./lex-web-ui/ Version to ${{ steps.next_version.outputs.version }} :octocat:'
+          push: --force
       # - name: Determine next version/tag
       #   id: next_version
       #   uses: zwaldowski/semver-release-action@v1
