@@ -2,12 +2,12 @@ on:
   pull_request:
     branches:
       - master
-    types: [closed]
-    #types: [labeled]
+    #types: [closed]
+    types: [labeled]
 
 jobs:
   update_version_and_tag:
-    if: github.event.pull_request.merged == true
+    #if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Update Version and Tag
     steps:
