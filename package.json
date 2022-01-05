@@ -30,6 +30,7 @@
     "lint": "eslint --format node_modules/eslint-formatter-friendly src/lex-web-ui-loader",
     "preversion": "cd lex-web-ui; npm version $npm_config_bump",
     "aversion": "cd build; ./release.sh; cd ..; git add .",
+    "version": "echo version",
     "postversion": "echo foo"
   },
   "dependencies": {
