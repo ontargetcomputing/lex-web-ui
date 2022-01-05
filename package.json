@@ -28,7 +28,7 @@
     "build": "npm run build-dev && npm run build-prod",
     "dev": "webpack-dev-server --mode development  --hot",
     "lint": "eslint --format node_modules/eslint-formatter-friendly src/lex-web-ui-loader",
-    "version": "cd build; ./release.sh; cd ..; git add .",
+    "aversion": "cd build; ./release.sh; cd ..; git add .",
     "apostversion": "git push && git push --tags"
   },
   "dependencies": {
