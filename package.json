@@ -28,11 +28,8 @@
     "build": "npm run build-dev && npm run build-prod",
     "dev": "webpack-dev-server --mode development  --hot",
     "lint": "eslint --format node_modules/eslint-formatter-friendly src/lex-web-ui-loader",
-    "apreversion": "cd lex-web-ui; npm version $npm_config_bump",
-    "aversion": "cd build; ./release.sh; cd ..; git add .",
-    "version": "echo version",
-    "postversion": "echo foo",
-    "preversion": "node -e 'console.log(process.env)' | grep npm"
+    "version": "cd build; ./release.sh; cd ..; git add .",
+    "apostversion": "git push && git push --tags"
   },
   "dependencies": {
     "amazon-cognito-auth-js": "^1.2.4",
