@@ -1,6 +1,6 @@
 {
   "name": "aws-lex-web-ui",
-  "version": "2.18.0",
+  "version": "2.18.1",
   "description": "Sample Amazon Lex Web Interface",
   "main": "dist/lex-web-ui.min.js",
   "repository": {
@@ -28,8 +28,8 @@
     "build": "npm run build-dev && npm run build-prod",
     "dev": "webpack-dev-server --mode development  --hot",
     "lint": "eslint --format node_modules/eslint-formatter-friendly src/lex-web-ui-loader",
-    "preversion": "node -e 'console.log(process.env)' | grep npm",
-    "version": "cd build; ./release.sh; cd ..; git add .",
+    "preversion": "echo process.env[npm_config_argv][original][1]",
+    "sssversion": "cd build; ./release.sh; cd ..; git add .",
     "postversion": "echo foo"
   },
   "dependencies": {
