@@ -34,7 +34,7 @@ jobs:
             fi
       - id: update-lower-lex-web-ui
         name: Update the version on the lex-web-ui/package.json
-        run: cd lex-web-ui;npm version
+        run: cd lex-web-ui;npm version ${{ steps.set-bump.outputs.bump }}
       - name: Push the lower level version update
         uses: EndBug/add-and-commit@v7
         with:
@@ -42,27 +42,6 @@ jobs:
           branch: master
           message: ':octocat: CI Update ./lex-web-ui/ Version to ${{ steps.next_version.outputs.version }} :octocat:'
           push: --force
-      # - name: Determine next version/tag
-      #   id: next_version
-      #   uses: zwaldowski/semver-release-action@v1
-      #   env:
-      #     ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-      #   with:
-      #     dry_run: true
-      #     bump: ${{ steps.set-bump.outputs.bump }}
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}            
-      # - name: Update Version file
-      #   run: |
-      #     cat version.yml
-      #     echo "version: \"${{steps.next_version.outputs.version}}\"" > version.yml
-      #     cat version.yml
-      #   shell: bash
-      # - name: Update version, tag, and push
-      #   uses: EndBug/add-and-commit@v7
-      #   with:
-      #     add: 'version.yml'
-      #     author_name: ':octocat: Octocat :octocat:'
-      #     branch: master
-      #     message: ':octocat: CI Update Version to ${{ steps.next_version.outputs.version }} :octocat:'
-      #     push: --force
-      #     tag: '${{ steps.next_version.outputs.version }} --force'
+      - id: version-repo
+        name: Version and tag the repository
+        run: npm version ${{ steps.set-bump.outputs.bump }}         
