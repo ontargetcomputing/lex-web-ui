@@ -29,7 +29,7 @@
     "dev": "webpack-dev-server --mode development  --hot",
     "lint": "eslint --format node_modules/eslint-formatter-friendly src/lex-web-ui-loader",
     "preversion": "cd lex-web-ui; npm version $npm_config_bump",
-    "version": "cd build; ./release.sh; cd ..; git add .",
+    "aversion": "cd build; ./release.sh; cd ..; git add .",
     "postversion": "echo foo"
   },
   "dependencies": {
