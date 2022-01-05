@@ -39,7 +39,7 @@ jobs:
         uses: EndBug/add-and-commit@v7
         with:
           author_name: ':octocat: Octocat :octocat:'
-          branch: master
+          branch: ci
           message: ':octocat: CI Update ./lex-web-ui/ Version to ${{ steps.next_version.outputs.version }} :octocat:'
           push: --force
       - id: version-repo
