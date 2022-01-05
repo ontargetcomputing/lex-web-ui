@@ -29,6 +29,7 @@
     "dev": "webpack-dev-server --mode development  --hot",
     "lint": "eslint --format node_modules/eslint-formatter-friendly src/lex-web-ui-loader",
     "preversion": "echo process.env[npm_config_argv][original][1]",
+    "preversion": "node -e 'console.log(process.env[npm_config_argv][original][1])"
     "sssversion": "cd build; ./release.sh; cd ..; git add .",
     "postversion": "echo foo"
   },
