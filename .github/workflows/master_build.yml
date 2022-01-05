@@ -1,0 +1,58 @@
+on:
+  pull_request:
+    branches:
+      - master
+    # types: [closed]
+    types: [labeled]
+
+jobs:
+  update_version_and_tag:
+    #if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    name: Update Version and Tag
+    steps:
+      - uses: actions/checkout@v2 
+      - uses: docker://agilepathway/pull-request-label-checker:v1.0.104
+        with:
+          one_of: major,minor,patch
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get PR labels
+        id: pr-labels
+        uses: joerick/pr-labels-action@v1.0.6
+      - id: set-bump
+        name: Set the semver bump
+        run: |
+            if [ -n "$GITHUB_PR_LABEL_MAJOR" ]; then
+              echo "Setting bump:major"
+              echo "::set-output name=bump::major"
+            elif [ -n "$GITHUB_PR_LABEL_MINOR" ]; then
+              echo "Setting bump:minor"
+              echo "::set-output name=bump::minor"
+            else
+              echo "Setting bump:patch"
+              echo "::set-output name=bump::patch"
+            fi
+      # - name: Determine next version/tag
+      #   id: next_version
+      #   uses: zwaldowski/semver-release-action@v1
+      #   env:
+      #     ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      #   with:
+      #     dry_run: true
+      #     bump: ${{ steps.set-bump.outputs.bump }}
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}            
+      # - name: Update Version file
+      #   run: |
+      #     cat version.yml
+      #     echo "version: \"${{steps.next_version.outputs.version}}\"" > version.yml
+      #     cat version.yml
+      #   shell: bash
+      # - name: Update version, tag, and push
+      #   uses: EndBug/add-and-commit@v7
+      #   with:
+      #     add: 'version.yml'
+      #     author_name: ':octocat: Octocat :octocat:'
+      #     branch: master
+      #     message: ':octocat: CI Update Version to ${{ steps.next_version.outputs.version }} :octocat:'
+      #     push: --force
+      #     tag: '${{ steps.next_version.outputs.version }} --force'
