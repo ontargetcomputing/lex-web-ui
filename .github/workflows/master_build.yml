@@ -44,13 +44,14 @@ jobs:
           dry_run: true
           bump: ${{ steps.set-bump.outputs.bump }}
           github_token: ${{ secrets.GITHUB_TOKEN }}           
-      - name: Push the lower level version update
+      - id: version-repo
+        name: Version and tag the repository
+        run: 'npm --force --git-tag-version=false --commit-hooks=false version ${{ steps.set-bump.outputs.bump }}  -m ":octocat: CI Update Version to %s :octocat:"'
+      - name: Push and tag
         uses: EndBug/add-and-commit@v7
         with:
           author_name: ':octocat: Octocat :octocat:'
           branch: master
-          message: ':octocat: CI Update ./lex-web-ui/ Version to ${{ steps.next_version.outputs.version }} :octocat:'
+          message: ':octocat: CI Update Version to ${{ steps.next_version.outputs.version }} :octocat:'
+          tag: '${{ steps.next_version.outputs.version }} --force'
           push: --force
-      - id: version-repo
-        name: Version and tag the repository
-        run: 'npm version ${{ steps.set-bump.outputs.bump }}  -m ":octocat: CI Update Version to %s :octocat:"'
