@@ -2,12 +2,12 @@ on:
   pull_request:
     branches:
       - master
-    # types: [closed]
-    types: [labeled]
+    types: [closed]
+    #types: [labeled]
 
 jobs:
   update_version_and_tag:
-    #if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Update Version and Tag
     steps:
@@ -48,7 +48,7 @@ jobs:
         uses: EndBug/add-and-commit@v7
         with:
           author_name: ':octocat: Octocat :octocat:'
-          branch: ci
+          branch: master
           message: ':octocat: CI Update ./lex-web-ui/ Version to ${{ steps.next_version.outputs.version }} :octocat:'
           push: --force
       - id: version-repo
