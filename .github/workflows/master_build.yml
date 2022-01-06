@@ -16,6 +16,7 @@ jobs:
         with:
           node-version: '12'
       - run: npm install    
+      - run: cd lex-web-ui; npm install
       - run: npm install -g @vue/cli-service            
       - uses: docker://agilepathway/pull-request-label-checker:v1.0.104
         with:
