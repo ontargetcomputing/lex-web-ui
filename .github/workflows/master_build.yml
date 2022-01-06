@@ -15,7 +15,8 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '12'
-      - run: npm install                
+      - run: npm install    
+      - run: npm install -g @vue/cli            
       - uses: docker://agilepathway/pull-request-label-checker:v1.0.104
         with:
           one_of: major,minor,patch

@@ -549,7 +549,11 @@ Resources:
                 CodeBuildProjectName: !GetAtt CodeBuildDeploy.Outputs.CodeBuildProject
                 CognitoUserPool: !GetAtt CognitoIdentityPool.Outputs.CognitoUserPoolId
                 CognitoUserPoolClient: !GetAtt CognitoIdentityPool.Outputs.CognitoUserPoolClientId
+<<<<<<< Updated upstream
                 Timestamp: 1641392730
+=======
+                Timestamp: 1641392907
+>>>>>>> Stashed changes
 
 Outputs:
     BotName:
