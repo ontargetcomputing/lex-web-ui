@@ -656,4 +656,3 @@ pages. The CloudFormation deployment is documented in the
 [README](templates/README.md) file under the [templates](templates)
 directory.
 
-### force
