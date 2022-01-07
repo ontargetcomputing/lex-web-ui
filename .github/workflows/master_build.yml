@@ -11,10 +11,12 @@ jobs:
     name: Update Version and Tag
     steps:
       - uses: actions/checkout@v2 
+        with:
+          token: ${{ secrets.ELEVATED_GITHUB_TOKEN }}      
       - uses: docker://agilepathway/pull-request-label-checker:v1.0.104
         with:
           one_of: major,minor,patch
-          repo_token: ${{ secrets.ELEVATED_GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Get PR labels
         id: pr-labels
         uses: joerick/pr-labels-action@v1.0.6
