@@ -1,0 +1,56 @@
+on:
+  pull_request:
+    branches:
+      - master
+    types: [closed]
+
+jobs:
+  update_version_and_tag:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    name: Update Version and Tag
+    steps:
+      - uses: actions/checkout@v2 
+      - uses: docker://agilepathway/pull-request-label-checker:v1.0.104
+        with:
+          one_of: major,minor,patch
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get PR labels
+        id: pr-labels
+        uses: joerick/pr-labels-action@v1.0.6
+      - id: set-bump
+        name: Set the semver bump
+        run: |
+            if [ -n "$GITHUB_PR_LABEL_MAJOR" ]; then
+              echo "Setting bump:major"
+              echo "::set-output name=bump::major"
+            elif [ -n "$GITHUB_PR_LABEL_MINOR" ]; then
+              echo "Setting bump:minor"
+              echo "::set-output name=bump::minor"
+            else
+              echo "Setting bump:patch"
+              echo "::set-output name=bump::patch"
+            fi
+      - id: update-lower-lex-web-ui
+        name: Update the version on the lex-web-ui/package.json
+        run: cd lex-web-ui;npm version ${{ steps.set-bump.outputs.bump }}
+      - name: Determine next version/tag
+        id: next_version
+        uses: zwaldowski/semver-release-action@v1
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+        with:
+          dry_run: true
+          bump: ${{ steps.set-bump.outputs.bump }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}           
+      - id: version-repo
+        name: Version and tag the repository
+        run: 'npm --force --git-tag-version=false --commit-hooks=false version ${{ steps.set-bump.outputs.bump }}  -m ":octocat: CI Update Version to %s :octocat:"'
+      - name: Push and tag
+        uses: EndBug/add-and-commit@v7
+        with:
+          author_name: ':octocat: Octocat :octocat:'
+          branch: master
+          message: ':octocat: CI Update Version to ${{ steps.next_version.outputs.version }} :octocat:'
+          tag: '${{ steps.next_version.outputs.version }} --force'
+          push: --force
