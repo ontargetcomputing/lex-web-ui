@@ -14,7 +14,7 @@ jobs:
       - uses: docker://agilepathway/pull-request-label-checker:v1.0.104
         with:
           one_of: major,minor,patch
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.ELEVATED_GITHUB_TOKEN }}
       - name: Get PR labels
         id: pr-labels
         uses: joerick/pr-labels-action@v1.0.6
@@ -42,7 +42,7 @@ jobs:
         with:
           dry_run: true
           bump: ${{ steps.set-bump.outputs.bump }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}           
+          github_token: ${{ secrets.ELEVATED_GITHUB_TOKEN }}           
       - id: version-repo
         name: Version and tag the repository
         run: 'npm --force --git-tag-version=false --commit-hooks=false version ${{ steps.set-bump.outputs.bump }}  -m ":octocat: CI Update Version to %s :octocat:"'
