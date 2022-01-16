@@ -24,8 +24,8 @@
 //   type: 'CUSTOMER',
 // }));
 /* eslint-disable */
-import axios from 'axios';
 import { liveChatStatus } from '@/store/state';
+import { axiosWithRetry } from '@/store/axios-wrapper';
 
 export const createLiveChatSession = (context) => {
   const config = {
@@ -33,7 +33,7 @@ export const createLiveChatSession = (context) => {
     url: `${context.state.config.live_agent.endpoint}/startSession`,
   };
 
-  return axios(config)
+  return axiosWithRetry(config)
     .then((response) => response.data)
     .then((data) => {
       console.info(`successful session creation: ${JSON.stringify(data)}`);
@@ -62,7 +62,7 @@ export const connectLiveChatSession = (session, context, caseId, contactId) => {
       contactId: contactId
     })
   };
-  return axios(config)
+  return axiosWithRetry(config)
     .then((response) => response.data)
     .then((data) => {
       console.info(`successful connection: ${JSON.stringify(data)}`);
@@ -172,7 +172,7 @@ export const initLiveChatHandlers = async (context, session) => {
         targetLanguage: context.state.lex.targetLanguage
       }
     };
-    await axios(config)
+    await axiosWithRetry(config)
       .then((response) => {
         console.info('live-chat-handlers - get messages')
         console.info(response);
@@ -237,7 +237,7 @@ export const sendChatMessage = (context, liveChatSession, message) => {
         targetLanguage: 'en'    // This is always EN    
     },
   };
-  return axios(config)
+  return axiosWithRetry(config)
     .then((response) => response.data)
     .then((data) => {
       console.info(`successful sendMessage: ${JSON.stringify(data)}`);
@@ -268,7 +268,7 @@ export const requestLiveChatEnd = async (context, liveChatSession) => {
       session: liveChatSession,
     }
   };
-  await axios(config)
+  await axiosWithRetry(config)
     .then((response) => {
       console.info(response);
       context.dispatch('pushLiveChatMessage', {
