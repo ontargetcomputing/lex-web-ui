@@ -22,11 +22,11 @@ import LexAudioRecorder from '@/lib/lex/recorder';
 import initRecorderHandlers from '@/store/recorder-handlers';
 import { chatMode, liveChatStatus } from '@/store/state';
 import { createLiveChatSession, connectLiveChatSession, initLiveChatHandlers, sendChatMessage, sendTypingEvent, requestLiveChatEnd } from '@/store/live-chat-handlers';
+import { axiosWithRetry } from '@/store/axios-wrapper';
 import silentOgg from '@/assets/silent.ogg';
 import silentMp3 from '@/assets/silent.mp3';
 
 import LexClient from '@/lib/lex/client';
-import axios from 'axios';
 // import { startsWith } from 'core-js/core/string';
 import state from './state';
 import { AccessAnalyzer } from 'aws-sdk';
@@ -1011,7 +1011,7 @@ export default {
       }
     };
 
-    return axios(createCaseConfig)
+    return axiosWithRetry(createCaseConfig)
       .then((result) => {
         const casenumber = result.data[0].outputValues.var_CaseNumber
         caseId = result.data[0].outputValues.var_CaseId
@@ -1393,7 +1393,7 @@ export default {
       url: `${context.state.config.live_agent.endpoint}/translate`,
       data,
     };
-    return axios(config)
+    return axiosWithRetry(config)
       .then((response) => {
         return Promise.resolve(response['data']['translation'])
       })
